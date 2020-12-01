@@ -4,7 +4,9 @@
 package com.iii.amirutham.service;
 
 import java.util.List;
+import java.util.Optional;
 
+import com.iii.amirutham.dto.model.UserDto;
 import com.iii.amirutham.model.User;
 
 /**
@@ -15,9 +17,9 @@ public interface UserService {
 	
 	public List<User> findAllUsers();
 	
-	public User findUserById(int i);
+	public Optional<User> findUserById(int id);
 	
-	public User createUser(User userData);
+	public User createUser(UserDto userData);
 	
-	public User deleteUserById(int id);
+	public void deleteUserById(int id);
 }
