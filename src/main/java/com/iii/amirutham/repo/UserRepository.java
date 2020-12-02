@@ -12,6 +12,7 @@ import com.iii.amirutham.model.User;
   public interface UserRepository extends JpaRepository<User, Integer> {
 	  
 	  Optional<User> findByPhoneNbr(String username);
+	  Optional<User> findByEmailAddress(String username);
 
 		Boolean existsByPhoneNbr(String username);
 

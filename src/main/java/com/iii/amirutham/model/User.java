@@ -57,7 +57,7 @@ public class User extends BaseEntity {
 	@JoinColumn(name = "USER_ID")
 	private List<UserAddress> address;
 	
-	@ManyToMany(fetch = FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(	name = "user_roles", 
 				joinColumns = @JoinColumn(name = "user_id"), 
 				inverseJoinColumns = @JoinColumn(name = "role_id"))

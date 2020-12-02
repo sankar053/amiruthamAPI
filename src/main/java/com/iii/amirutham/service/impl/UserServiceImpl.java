@@ -7,9 +7,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.iii.amirutham.dto.model.UserAddressDto;
 import com.iii.amirutham.dto.model.UserDto;
 import com.iii.amirutham.exception.UserNotFoundException;
 import com.iii.amirutham.model.ERole;
@@ -34,9 +34,10 @@ public class UserServiceImpl implements UserService {
 	  @Autowired
 	 RoleRepository roleRepository;
 	  
-		/*
-		 * @Autowired PasswordEncoder encoder;
-		 */
+		
+		  @Autowired 
+		  PasswordEncoder encoder;
+		 
 	 
 	@Override
 	public List<User> findAllUsers() {
@@ -64,7 +65,7 @@ public class UserServiceImpl implements UserService {
 		// Create new user's account
 		User user = new User(null,userData.getFirstName(),
 				userData.getLastName(),userData.getPhoneNbr(),userData.getEmailAddress(),						
-							userData.getPassword(),null,null);
+				encoder.encode(userData.getPassword()),null,null);
 
 		Set<String> strRoles = userData.getRole();
 		Set<Role> roles = new HashSet<>();
