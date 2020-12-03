@@ -1,53 +1,63 @@
 package com.iii.amirutham.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.iii.amirutham.dto.model.CategoryDto;
-import com.iii.amirutham.model.product.AmiruthamCategory;
+import com.iii.amirutham.dto.model.ProductDto;
 import com.iii.amirutham.service.ProductService;
 
 @RestController
-@RequestMapping("/Catogory")
+@RequestMapping("/products")
 public class ProductController {
 
 	@Autowired
 	private ProductService productService;
 
-	@PostMapping
-	public ResponseEntity<Object> saveProducts(@Valid @RequestBody CategoryDto categories) {
-		productService.createProduct(categories);
+	@PostMapping("/t")
+	public ResponseEntity<Object> saveProducts(@RequestBody @Valid  ProductDto products) {
+		productService.createProduct(products,null);
 
 		return new ResponseEntity("Product Added Successfully", HttpStatus.OK);
 
 	}
+	
+	@PostMapping("/{id}")
+	public ResponseEntity<Object> saveProducts(@PathVariable String id,
+			@RequestPart("file") @Valid @NotNull @NotBlank List<MultipartFile> files) {
+		productService.createProduct(id,files);
 
-	@GetMapping
-	public ResponseEntity<Object> getAllCatogry() {
-		List<CategoryDto> catogList = productService.findAllCatogry();
-System.out.println(catogList.size());
-		return new ResponseEntity(catogList, HttpStatus.OK);
-
-	}
-
-	@GetMapping("/{id}")
-	public ResponseEntity<Object> getCatogryById(@PathVariable int id) {
-		Optional<AmiruthamCategory> cato = productService.findCatogryById(id);
-
-		return new ResponseEntity(cato.get(), HttpStatus.OK);
+		return new ResponseEntity("Product Added Successfully", HttpStatus.OK);
 
 	}
+	
+	/*
+	 * @PostMapping public ResponseEntity<Object>
+	 * saveProducts(@RequestParam("payload") @Valid @RequestBody ProductDto
+	 * products,
+	 * 
+	 * @RequestParam("file") @Valid @NotNull @NotBlank MultipartFile files[]) {
+	 * productService.createProduct(products,files);
+	 * 
+	 * return new ResponseEntity("Product Added Successfully", HttpStatus.OK);
+	 * 
+	 * }
+	 */
+
+
 
 }

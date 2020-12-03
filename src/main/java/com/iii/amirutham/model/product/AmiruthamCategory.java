@@ -17,6 +17,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+import com.iii.amirutham.model.BaseEntity;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,9 +30,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "PRODUCT_CATEGORY")
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class AmiruthamCategory {
+public class AmiruthamCategory extends BaseEntity {
 	
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,13 +44,12 @@ public class AmiruthamCategory {
 	
 	@ManyToMany(fetch = FetchType.LAZY,
 	            cascade = {
-	                CascadeType.PERSIST,
-	                CascadeType.MERGE
+	                CascadeType.ALL
 	            })
 	    @JoinTable(name = "category_product",
 	            joinColumns = { @JoinColumn(name = "category_id") },
 	            inverseJoinColumns = { @JoinColumn(name = "product_id") })
-	    private Set<AmiruthamProducts> products = new HashSet<>();
+		private Set<AmiruthamProducts> products =new HashSet<AmiruthamProducts>();
 
 	public AmiruthamCategory(String categoryCd, String categoryNm,
 			String categoryDesc) {
@@ -59,6 +58,11 @@ public class AmiruthamCategory {
 		this.categoryNm = categoryNm;
 		this.categoryDesc = categoryDesc;
 	
+	}
+
+	public AmiruthamCategory() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
 	
 	

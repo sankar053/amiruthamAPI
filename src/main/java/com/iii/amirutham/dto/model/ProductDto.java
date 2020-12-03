@@ -3,35 +3,33 @@
  */
 package com.iii.amirutham.dto.model;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author sanka
  *
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ProductDto {
 	
 
 	private Integer id;
+	
+	private Integer categId;
 	
 	private String productCode;
 		
 	private String productNm;
 	
 	private String productDesc;
+	
+	List<ProductMediaDto> prodMedias;
 	
    
 }

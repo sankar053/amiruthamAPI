@@ -1,17 +1,17 @@
 package com.iii.amirutham.service;
 
 import java.util.List;
-import java.util.Optional;
 
-import com.iii.amirutham.dto.model.CategoryDto;
-import com.iii.amirutham.model.product.AmiruthamCategory;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.iii.amirutham.dto.model.ProductDto;
 
 public interface ProductService {
 	
-	public void createProduct(CategoryDto categories);
+	public void createProduct(ProductDto products,MultipartFile files[]);
 	
-	public List<CategoryDto> findAllCatogry();
+	public void createProduct(String products,List<MultipartFile> files);
 	
-	public Optional<AmiruthamCategory> findCatogryById(int id);
+
 
 }

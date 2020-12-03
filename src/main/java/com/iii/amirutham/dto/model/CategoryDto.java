@@ -3,8 +3,8 @@
  */
 package com.iii.amirutham.dto.model;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import lombok.Data;
 
@@ -24,7 +24,7 @@ public class CategoryDto {
 	
 	private String categoryDesc;
 	
-   private Set<ProductDto> products = new HashSet<>();
+   private List<ProductDto> products = new ArrayList();
 	
 
 }
