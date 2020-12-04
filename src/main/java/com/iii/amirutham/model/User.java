@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -14,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
 import io.swagger.annotations.ApiModel;
@@ -23,7 +25,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @ApiModel(description = "All Details about User")
-@Entity
+@Entity(name = "User")
+@Table(name = "AMIR_USER")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -35,26 +38,31 @@ public class User extends BaseEntity {
 
 	@Size(min = 2, message = "FirstName Should have Atleast two character")
 	@ApiModelProperty(notes = "FirstName Should have Atleast two character")
+	@Column(name = "AMIR_USER_FST_NM")
 	private String firstName;
 
 	@Size(min = 2, message = "LastName Should have Atleast two character")
 	@ApiModelProperty(notes = "LastName Should have Atleast two character")
+	@Column(name = "AMIR_USER_LST_NM")
 	private String lastName;
 
 	@Size(min = 10, message = "LastName Should have Atleast two character")
 	@ApiModelProperty(notes = "LastName Should have Atleast two character")
+	@Column(name = "AMIR_USER_PHN_NBR")
 	private String phoneNbr;
 
 	@Size(min = 2, message = "LastName Should have Atleast two character")
 	@ApiModelProperty(notes = "LastName Should have Atleast two character")
+	@Column(name = "AMIR_USER_MAIL_ADDR")
 	private String emailAddress;
 
 	@Size(min = 2, message = "LastName Should have Atleast two character")
 	@ApiModelProperty(notes = "LastName Should have Atleast two character")
+	@Column(name = "AMIR_USER_PWD")
 	private String password;
 
 	@OneToMany( cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-	@JoinColumn(name = "USER_ID")
+	@JoinColumn(name = "AMIR_USER_ID")
 	private List<UserAddress> address;
 	
 	@ManyToMany(fetch = FetchType.EAGER)

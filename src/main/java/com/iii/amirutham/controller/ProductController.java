@@ -9,6 +9,8 @@ import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,36 +30,40 @@ public class ProductController {
 	@Autowired
 	private ProductService productService;
 
-	@PostMapping("/t")
-	public ResponseEntity<Object> saveProducts(@RequestBody @Valid  ProductDto products) {
-		productService.createProduct(products,null);
-
-		return new ResponseEntity("Product Added Successfully", HttpStatus.OK);
-
-	}
+	
 	
 	@PostMapping("/{id}")
 	public ResponseEntity<Object> saveProducts(@PathVariable String id,
 			@RequestPart("file") @Valid @NotNull @NotBlank List<MultipartFile> files) {
-		productService.createProduct(id,files);
+		productService.addImgToProduct(id,files);
 
 		return new ResponseEntity("Product Added Successfully", HttpStatus.OK);
 
 	}
 	
-	/*
-	 * @PostMapping public ResponseEntity<Object>
-	 * saveProducts(@RequestParam("payload") @Valid @RequestBody ProductDto
-	 * products,
-	 * 
-	 * @RequestParam("file") @Valid @NotNull @NotBlank MultipartFile files[]) {
-	 * productService.createProduct(products,files);
-	 * 
-	 * return new ResponseEntity("Product Added Successfully", HttpStatus.OK);
-	 * 
-	 * }
-	 */
+	@GetMapping
+	public ResponseEntity<Object> retriveProducts() {
+		List<ProductDto> products =productService.retriveProducts();
 
+		return new ResponseEntity(products, HttpStatus.OK);
+
+	}
+	
+	@GetMapping("/{id}")
+	public ResponseEntity<Object> retriveProducts(@PathVariable int id) {
+		ProductDto product =productService.retriveProductById(id);
+
+		return new ResponseEntity(product, HttpStatus.OK);
+
+	}
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Object> deleteProduct(@PathVariable int id) {
+		productService.deleteProductById(id);
+
+		return new ResponseEntity("Product Deleted Successfully", HttpStatus.OK);
+
+	}
+	
 
 
 }

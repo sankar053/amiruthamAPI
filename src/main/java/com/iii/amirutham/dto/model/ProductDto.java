@@ -21,13 +21,13 @@ public class ProductDto {
 
 	private Integer id;
 	
-	private Integer categId;
-	
 	private String productCode;
 		
 	private String productNm;
 	
 	private String productDesc;
+	
+	private String productuses;
 	
 	List<ProductMediaDto> prodMedias;
 	

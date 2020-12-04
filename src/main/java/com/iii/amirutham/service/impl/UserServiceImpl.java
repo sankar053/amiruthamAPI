@@ -26,19 +26,16 @@ import com.iii.amirutham.service.UserService;
  */
 @Service
 public class UserServiceImpl implements UserService {
-	
-	
-	  @Autowired 
-	  private UserRepository userRepo;
-	  
-	  @Autowired
-	 RoleRepository roleRepository;
-	  
-		
-		  @Autowired 
-		  PasswordEncoder encoder;
-		 
-	 
+
+	@Autowired
+	private UserRepository userRepo;
+
+	@Autowired
+	RoleRepository roleRepository;
+
+	@Autowired
+	PasswordEncoder encoder;
+
 	@Override
 	public List<User> findAllUsers() {
 		// TODO Auto-generated method stub
@@ -53,19 +50,18 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User createUser(UserDto userData) {
-	
+
 		if (userRepo.existsByPhoneNbr(userData.getPhoneNbr())) {
-			throw new  UserNotFoundException("Error: Username is already taken!");
+			throw new UserNotFoundException("Error: Username is already taken!");
 		}
 
 		if (userRepo.existsByEmailAddress(userData.getEmailAddress())) {
-			throw new  UserNotFoundException("Error: Email is already in use!");
+			throw new UserNotFoundException("Error: Email is already in use!");
 		}
 
 		// Create new user's account
-		User user = new User(null,userData.getFirstName(),
-				userData.getLastName(),userData.getPhoneNbr(),userData.getEmailAddress(),						
-				encoder.encode(userData.getPassword()),null,null);
+		User user = new User(null, userData.getFirstName(), userData.getLastName(), userData.getPhoneNbr(),
+				userData.getEmailAddress(), encoder.encode(userData.getPassword()), null, null);
 
 		Set<String> strRoles = userData.getRole();
 		Set<Role> roles = new HashSet<>();
@@ -96,21 +92,22 @@ public class UserServiceImpl implements UserService {
 				}
 			});
 		}
-		List<UserAddress> B = userData.getAddress().stream()
-		        .map(addr -> new UserAddress(null,addr.getAddress1(), addr.getAddress2(),addr.getCity(),addr.getState(),addr.getPostalCopde()))
-		        .collect(Collectors.toList());
-		user.setAddress(B);	
+		List<UserAddress> addressDao = userData
+				.getAddress().stream().map(addr -> new UserAddress(null, addr.getAddress1(), addr.getAddress2(),
+						addr.getAddressType(), addr.getCity(), addr.getState(), addr.getPostalCopde()))
+				.collect(Collectors.toList());
+		user.setAddress(addressDao);
 
 		user.setRoles(roles);
-		
+
 		return userRepo.save(user);
-		
 
 	}
 
 	@Override
 	public void deleteUserById(int id) {
-		 userRepo.deleteById(id);;
+		userRepo.deleteById(id);
+		;
 		// TODO Auto-generated method stub
 
 	}

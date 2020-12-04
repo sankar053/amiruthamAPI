@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.iii.amirutham.dto.model.CategoryDto;
 import com.iii.amirutham.dto.model.ProductDto;
+import com.iii.amirutham.dto.model.ProductMediaDto;
 import com.iii.amirutham.model.product.AmiruthamCategory;
 import com.iii.amirutham.model.product.AmiruthamProducts;
 import com.iii.amirutham.model.product.ProductMediaGallary;
@@ -31,103 +32,95 @@ public class ProductServiceImpl implements ProductService {
 	@Autowired
 	private CategoryRepository categryRepo;
 
+	private String Upload_Path = "C:\\catalogs\\";
+
 	@Override
-	public void createProduct(ProductDto products, MultipartFile files[]) {
+	public void addImgToProduct(String productstr, List<MultipartFile> files) {
+
+		// ProductDto products = (ProductDto)
+		// AmirthumUtills.convertJsontoObject(ProductDto.class, productstr);
+		Optional<AmiruthamProducts> product = productRepo.findById(Integer.valueOf(productstr));
+
+		if (product.isPresent()) {
+			AmiruthamProducts prod = product.get();
+			List<ProductMediaGallary> mediaArray = new ArrayList<ProductMediaGallary>();
+			if (null != files) {
+				for (MultipartFile file : files) {
+
+					try {
+
+						byte[] bytes = file.getBytes();
+						Path path = Paths.get("C:\\catalogs\\" + file.getOriginalFilename());
+						Files.write(path, bytes);
+
+						mediaArray.add(new ProductMediaGallary(file.getOriginalFilename(),
+								"C:\\catalogs\\" + file.getOriginalFilename(), "http://Localhost:8080/files"));
+					} catch (IOException e) { // TODO Auto-generated catch block e.printStackTrace(); }
+
+					}
+					// TODO Auto-generated method stub
+				}
+			}
+			prod.setProdImgs(mediaArray);
+			productRepo.save(prod);
+
+			// System.out.println(categryRepo.findById(14).isPresent());
+
+		}
+	}
+
+	@Override
+	public List<ProductDto> retriveProducts() {
 		// TODO Auto-generated method stub
 
-		Optional<AmiruthamCategory> category = categryRepo.findById(products.getCategId());
+		List<AmiruthamProducts> prodList = productRepo.findAll();
+		List<ProductDto> productlistdto = new ArrayList<ProductDto>();
 
-		if (category.isPresent()) {
-			AmiruthamProducts product = new AmiruthamProducts(products.getProductCode(), products.getProductNm(),
-					products.getProductDesc());
-			product.getCategory().add(category.get());
-			productRepo.save(product);
-		}
-
-		/*
-		 * List<ProductMediaGallary> mediaArray= new ArrayList<ProductMediaGallary>();
-		 * if (null != files) { for (MultipartFile file : files) { byte[] bytes; try {
-		 * bytes = file.getBytes(); Path path = Paths.get("C:\\catalogs" +
-		 * file.getOriginalFilename()); Files.write(path, bytes);
-		 * 
-		 * mediaArray.add(new
-		 * ProductMediaGallary(file.getOriginalFilename(),"C:\\catalogs" +
-		 * file.getOriginalFilename(), "http://Localhost:8080/files")); } catch
-		 * (IOException e) { // TODO Auto-generated catch block e.printStackTrace(); }
-		 * 
-		 * 
-		 * } }
-		 */
-
-	}
-	
-	//@Override
-	public void createProduct1(String productstr, List<MultipartFile> files) {
-
-		ProductDto products = (ProductDto) AmirthumUtills.convertJsontoObject(ProductDto.class, productstr);
-		
-
-	
-			
-
-		
-
-		List<ProductMediaGallary> mediaArray = new ArrayList<ProductMediaGallary>();
-		if (null != files) {
-			for (MultipartFile file : files) {
-
-				try {
-
-					byte[] bytes = file.getBytes();
-					Path path = Paths.get("C:\\catalogs\\" + file.getOriginalFilename());
-					Files.write(path, bytes);
-
-					mediaArray.add(new ProductMediaGallary(file.getOriginalFilename(),
-							"C:\\catalogs\\" + file.getOriginalFilename(), "http://Localhost:8080/files"));
-				} catch (IOException e) { // TODO Auto-generated catch block e.printStackTrace(); }
-
+		for (AmiruthamProducts prod : prodList) {
+			List<ProductMediaDto> mediaarray = new ArrayList<ProductMediaDto>();
+			if (null != prod.getProdImgs() && prod.getProdImgs().size() > 0) {
+				for (ProductMediaGallary prodmed : prod.getProdImgs()) {
+					mediaarray.add(new ProductMediaDto(prodmed.getId(), prodmed.getProdImgNm(),
+							prodmed.getProdImgPath(), prodmed.getProdImgurl()));
 				}
-				// TODO Auto-generated method stub
+				// }
+
 			}
+			productlistdto.add(new ProductDto(prod.getId(), prod.getProductCode(), prod.getProductNm(),
+					prod.getProductDesc(), prod.getProductuses(), mediaarray));
 		}
-		AmiruthamProducts	product = new AmiruthamProducts(products.getId(),products.getProductCode(), products.getProductNm(),
-				products.getProductDesc(),mediaArray);
-		product.setProdImgs(mediaArray);
-		productRepo.save(product);
+
+		return productlistdto;
 	}
 
 	@Override
-	public void createProduct(String productstr, List<MultipartFile> files) {
-
-		//ProductDto products = (ProductDto) AmirthumUtills.convertJsontoObject(ProductDto.class, productstr);
-		Optional<AmiruthamProducts> product = productRepo.findById(Integer.valueOf(productstr));
-	
-if(product.isPresent()) {
-	AmiruthamProducts prod=product.get();
-		List<ProductMediaGallary> mediaArray = new ArrayList<ProductMediaGallary>();
-		if (null != files) {
-			for (MultipartFile file : files) {
-
-				try {
-
-					byte[] bytes = file.getBytes();
-					Path path = Paths.get("C:\\catalogs\\" + file.getOriginalFilename());
-					Files.write(path, bytes);
-
-					mediaArray.add(new ProductMediaGallary(file.getOriginalFilename(),
-							"C:\\catalogs\\" + file.getOriginalFilename(), "http://Localhost:8080/files"));
-				} catch (IOException e) { // TODO Auto-generated catch block e.printStackTrace(); }
-
+	public ProductDto retriveProductById(int id) {
+		// TODO Auto-generated method stub
+		Optional<AmiruthamProducts> product = productRepo.findById(id);
+		ProductDto productdto = null;
+		if (product.isPresent()) {
+			AmiruthamProducts prod = product.get();
+			List<ProductMediaDto> mediaarray = new ArrayList<ProductMediaDto>();
+			if (null != prod.getProdImgs() && prod.getProdImgs().size() > 0) {
+				for (ProductMediaGallary prodmed : prod.getProdImgs()) {
+					mediaarray.add(new ProductMediaDto(prodmed.getId(), prodmed.getProdImgNm(),
+							prodmed.getProdImgPath(), prodmed.getProdImgurl()));
 				}
-				// TODO Auto-generated method stub
+				// }
+
 			}
+			productdto = (new ProductDto(prod.getId(), prod.getProductCode(), prod.getProductNm(),
+					prod.getProductDesc(), prod.getProductuses(), mediaarray));
 		}
-		prod.setProdImgs(mediaArray);
-		productRepo.save(prod);
-		
-		//System.out.println(categryRepo.findById(14).isPresent());
-		
-}
+
+		return productdto;
+
+	}
+
+	@Override
+	public void deleteProductById(int id) {
+		// TODO Auto-generated method stub
+		productRepo.deleteById(id);
 	}
 
 }

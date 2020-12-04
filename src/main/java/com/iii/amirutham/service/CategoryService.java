@@ -10,12 +10,16 @@ import com.iii.amirutham.model.product.AmiruthamCategory;
 
 public interface CategoryService {
 
-	 void createCategory(CategoryDto categories);
+	void createCategory(CategoryDto categories);
 
-	 public void createCategory(String products,List<MultipartFile> files);
-		public List<CategoryDto> findAllCatogry();
-		public List<AmiruthamCategory> findAllCatogrydao();
-		
-		public Optional<AmiruthamCategory> findCatogryById(int id);
-	
+	public void createCategory(String products, List<MultipartFile> files);
+
+	public List<CategoryDto> findAllCatogry();
+
+	public List<AmiruthamCategory> findAllCatogrydao();
+
+	public CategoryDto findCatogryById(int id);
+
+	public void deleteCatogry(int id);
+
 }

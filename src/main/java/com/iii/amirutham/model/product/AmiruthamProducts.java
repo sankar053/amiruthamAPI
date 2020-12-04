@@ -3,23 +3,20 @@
  */
 package com.iii.amirutham.model.product;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.iii.amirutham.model.BaseEntity;
-import com.iii.amirutham.model.UserAddress;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,7 +26,7 @@ import lombok.NoArgsConstructor;
  * @author sanka
  *
  */
-@Entity
+@Entity(name = "PRODUCTS")
 @Table(name = "PRODUCTS")
 @Data
 @AllArgsConstructor
@@ -40,18 +37,22 @@ public class AmiruthamProducts extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
+	@Column(name = "PROD_CODE")
 	private String productCode;
-		
+	
+	@Column(name = "PROD_NME")
 	private String productNm;
 	
+	@Column(name = "PROD_DESC")
 	private String productDesc;
 	
-    @ManyToMany(fetch = FetchType.LAZY,
-	            cascade = {
-	                CascadeType.ALL
-	            },
-	            mappedBy = "products")
-	    private Set<AmiruthamCategory> category = new HashSet<>();
+	@Column(name = "PROD_BEN_USE")
+	private String productuses;
+	
+	/*
+	 * @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy =
+	 * "products") private Set<AmiruthamCategory> category = new HashSet<>();
+	 */
     
     @OneToMany(fetch = FetchType.EAGER, cascade = {
     		 CascadeType.ALL
@@ -59,32 +60,16 @@ public class AmiruthamProducts extends BaseEntity {
 	@JoinColumn(name = "PROD_ID")
 	private List<ProductMediaGallary> prodImgs;
 
-	public AmiruthamProducts(Integer id, String productCode, String productNm, String productDesc,
-			List<ProductMediaGallary> prodImgs) {
+	public AmiruthamProducts(Integer id, String productCode, String productNm, String productDesc, String productuses) {
 		super();
 		this.id = id;
 		this.productCode = productCode;
 		this.productNm = productNm;
 		this.productDesc = productDesc;
-		this.prodImgs = prodImgs;
+		this.productuses = productuses;
 	}
 
-	public AmiruthamProducts(String productCode, String productNm, String productDesc) {
-		super();
-		this.productCode = productCode;
-		this.productNm = productNm;
-		this.productDesc = productDesc;
-	}
 
-	
-	public AmiruthamProducts(Integer id,String productCode, String productNm, String productDesc) {
-		super();
-		this.id = id;
-		this.productCode = productCode;
-		this.productNm = productNm;
-		this.productDesc = productDesc;
-	}
 
-    
 
 }

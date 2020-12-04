@@ -20,8 +20,6 @@ import com.iii.amirutham.dto.model.UserDto;
 import com.iii.amirutham.model.User;
 import com.iii.amirutham.service.UserService;
 
-
-
 @RestController
 @RequestMapping
 public class UserController {
@@ -38,12 +36,6 @@ public class UserController {
 	@GetMapping("/users/{id}")
 	public User retriveUsersById(@PathVariable int id) {
 		Optional<User> user = userDaoService.findUserById(id);
-	/*	if (null == user)
-			throw new UserNotFoundException("id-" + id);
-		
-		EntityModel<User> resource = new EntityModel<User>(user);
-		WebMvcLinkBuilder reportLink = linkTo(methodOn(this.getClass()).retriveAllUsers());
-		resource.add(reportLink.withRel("all-users"));*/
 		return (user.get());
 
 	}
@@ -53,23 +45,14 @@ public class UserController {
 		System.out.println();
 		User savedUser = userDaoService.createUser(user);
 
-		/*
-		 * URI currentReqUri =
-		 * ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-		 * .buildAndExpand(savedUser.getId()).toUri();
-		 */
-		return new ResponseEntity<Object>(savedUser,HttpStatus.OK);
+		return new ResponseEntity<Object>(savedUser, HttpStatus.OK);
 	}
 
 	@DeleteMapping("/users/{id}")
-	public void deleteUser(@PathVariable int id) {
+	public ResponseEntity<Object> deleteUser(@PathVariable int id) {
 
 		userDaoService.deleteUserById(id);
-
-		/*
-		 * if (null == deletedUser) throw new UserNotFoundException("id-" + id);
-		 */
-	//	return (deletedUser);
+		return new ResponseEntity<>("User got Deleted Succesfully", HttpStatus.OK);
 
 	}
 

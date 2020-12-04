@@ -8,9 +8,10 @@ import com.iii.amirutham.dto.model.ProductDto;
 
 public interface ProductService {
 	
-	public void createProduct(ProductDto products,MultipartFile files[]);
-	
-	public void createProduct(String products,List<MultipartFile> files);
+	public List<ProductDto> retriveProducts();
+	public ProductDto retriveProductById(int id);
+	public void deleteProductById(int id);
+	public void addImgToProduct(String productid,List<MultipartFile> files);
 	
 
 
