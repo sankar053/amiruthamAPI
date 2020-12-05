@@ -21,6 +21,8 @@ public class ProductDto {
 
 	private Integer id;
 	
+	private String categoryid;
+	
 	private String productCode;
 		
 	private String productNm;

@@ -37,12 +37,14 @@ public class CategoryServiceImpl implements CategoryService {
 			category.setCategoryDesc(categoryDto.getCategoryDesc());
 			category.setCategoryNm(categoryDto.getCategoryNm());
 
-			for (ProductDto products : categoryDto.getProducts()) {
-				AmiruthamProducts product = new AmiruthamProducts(null, products.getProductCode(),
-						products.getProductNm(), products.getProductDesc(), products.getProductuses(), null);
-				category.getProducts().add(product);
-
-			}
+			/*
+			 * for (ProductDto products : categoryDto.getProducts()) { AmiruthamProducts
+			 * product = new AmiruthamProducts(null, products.getProductCode(),
+			 * products.getProductNm(), products.getProductDesc(),
+			 * products.getProductuses(), null); category.getProducts().add(product);
+			 * 
+			 * }
+			 */
 
 			categryRepo.save(category);
 		} else {
@@ -70,7 +72,7 @@ public class CategoryServiceImpl implements CategoryService {
 			catgryDto.setCategoryCd(cato.getCategoryCd());
 			catgryDto.setCategoryDesc(cato.getCategoryDesc());
 			catgryDto.setCategoryNm(cato.getCategoryNm());
-
+			
 			for (AmiruthamProducts prod : cato.getProducts()) {
 				List<ProductMediaDto> mediaarray = new ArrayList<ProductMediaDto>();
 				if (null != prod.getProdImgs() && prod.getProdImgs().size() > 0) {
@@ -81,7 +83,7 @@ public class CategoryServiceImpl implements CategoryService {
 					// }
 
 				}
-				catgryDto.getProducts().add(new ProductDto(prod.getId(),prod.getProductCode(),
+				catgryDto.getProducts().add(new ProductDto(prod.getId(),"",prod.getProductCode(),
 						prod.getProductNm(), prod.getProductDesc(), prod.getProductuses(), mediaarray));
 			}
 			catoglistdto.add(catgryDto);
@@ -119,7 +121,7 @@ public class CategoryServiceImpl implements CategoryService {
 					// }
 
 				}
-				catgryDto.getProducts().add(new ProductDto(prod.getId(), prod.getProductCode(),
+				catgryDto.getProducts().add(new ProductDto(prod.getId(), "",prod.getProductCode(),
 						prod.getProductNm(), prod.getProductDesc(), prod.getProductuses(), mediaarray));
 			}
 			return catgryDto;
@@ -144,30 +146,16 @@ public class CategoryServiceImpl implements CategoryService {
 		category.setCategoryCd(categoryDto.getCategoryCd());
 		category.setCategoryDesc(categoryDto.getCategoryDesc());
 		category.setCategoryNm(categoryDto.getCategoryNm());
-		AmiruthamProducts product = null;
-		for (ProductDto products : categoryDto.getProducts()) {
-			product = new AmiruthamProducts(null, products.getProductCode(), products.getProductNm(),
-					products.getProductDesc(), products.getProductuses(), null);
-			category.getProducts().add(product);
-
-		}
-
 		/*
-		 * List<ProductMediaGallary> mediaArray = new ArrayList<ProductMediaGallary>();
-		 * if (null != files) { for (MultipartFile file : files) {
+		 * AmiruthamProducts product = null; for (ProductDto products :
+		 * categoryDto.getProducts()) { product = new AmiruthamProducts(null,
+		 * products.getProductCode(), products.getProductNm(),
+		 * products.getProductDesc(), products.getProductuses(), null);
+		 * category.getProducts().add(product);
 		 * 
-		 * try {
-		 * 
-		 * byte[] bytes = file.getBytes(); Path path = Paths.get("C:\\catalogs\\" +
-		 * file.getOriginalFilename()); Files.write(path, bytes);
-		 * 
-		 * mediaArray.add(new ProductMediaGallary(file.getOriginalFilename(),
-		 * "C:\\catalogs\\" + file.getOriginalFilename(), "http://Localhost:8080/files")
-		 * ); } catch (IOException e) { // TODO Auto-generated catch block
-		 * e.printStackTrace(); }
-		 * 
-		 * } // TODO Auto-generated method stub } } product.setProdImgs(mediaArray);
+		 * }
 		 */
+		
 		categryRepo.save(category);
 
 	}

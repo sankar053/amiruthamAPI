@@ -11,7 +11,7 @@ public interface ProductService {
 	public List<ProductDto> retriveProducts();
 	public ProductDto retriveProductById(int id);
 	public void deleteProductById(int id);
-	public void addImgToProduct(String productid,List<MultipartFile> files);
+	public void addImgToProduct(String prodStr,List<MultipartFile> files);
 	
 
 

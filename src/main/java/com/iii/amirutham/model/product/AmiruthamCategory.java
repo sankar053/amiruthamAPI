@@ -23,7 +23,9 @@ import com.iii.amirutham.model.BaseEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * @author sanka
@@ -31,7 +33,8 @@ import lombok.NoArgsConstructor;
  */
 @Entity
 @Table(name = "AMIR_PROD_CATEGORY")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class AmiruthamCategory extends BaseEntity {
@@ -50,16 +53,7 @@ public class AmiruthamCategory extends BaseEntity {
 	@Column(name = "CATE_DESC")
 	private String categoryDesc;
 	
-	/*
-	 * @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
-	 * 
-	 * @JoinTable(name = "category_product", joinColumns = { @JoinColumn(name =
-	 * "category_id") }, inverseJoinColumns = { @JoinColumn(name = "product_id") })
-	 */
-	  @OneToMany(fetch = FetchType.EAGER, cascade = {
-	    		 CascadeType.ALL
-	        })
-	@JoinColumn(name = "CATE_ID")
+	@OneToMany(mappedBy="category")
 	private Set<AmiruthamProducts> products =new HashSet<AmiruthamProducts>();
 
 	

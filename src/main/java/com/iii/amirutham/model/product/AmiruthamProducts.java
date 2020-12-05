@@ -4,6 +4,7 @@
 package com.iii.amirutham.model.product;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -13,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -20,7 +22,9 @@ import com.iii.amirutham.model.BaseEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * @author sanka
@@ -28,7 +32,8 @@ import lombok.NoArgsConstructor;
  */
 @Entity(name = "PRODUCTS")
 @Table(name = "PRODUCTS")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class AmiruthamProducts extends BaseEntity {
@@ -49,12 +54,11 @@ public class AmiruthamProducts extends BaseEntity {
 	@Column(name = "PROD_BEN_USE")
 	private String productuses;
 	
-	/*
-	 * @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy =
-	 * "products") private Set<AmiruthamCategory> category = new HashSet<>();
-	 */
+	@ManyToOne
+    @JoinColumn(name="cart_id", nullable=false)
+    private AmiruthamCategory category;
     
-    @OneToMany(fetch = FetchType.EAGER, cascade = {
+    @OneToMany(fetch = FetchType.LAZY, cascade = {
     		 CascadeType.ALL
         })
 	@JoinColumn(name = "PROD_ID")

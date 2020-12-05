@@ -32,10 +32,10 @@ public class ProductController {
 
 	
 	
-	@PostMapping("/{id}")
-	public ResponseEntity<Object> saveProducts(@PathVariable String id,
+	@PostMapping
+	public ResponseEntity<Object> saveProducts(@RequestPart("payload") String payload,
 			@RequestPart("file") @Valid @NotNull @NotBlank List<MultipartFile> files) {
-		productService.addImgToProduct(id,files);
+		productService.addImgToProduct(payload,files);
 
 		return new ResponseEntity("Product Added Successfully", HttpStatus.OK);
 

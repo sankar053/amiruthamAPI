@@ -1,5 +1,7 @@
 package com.iii.amirutham.model.product;
 
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,12 +13,15 @@ import com.iii.amirutham.model.BaseEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
 @Entity
 @Table(name = "PRODUCT_MEDIA_GALLARY")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductMediaGallary extends BaseEntity{

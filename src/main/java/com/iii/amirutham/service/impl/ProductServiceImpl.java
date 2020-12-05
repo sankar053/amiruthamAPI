@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.iii.amirutham.dto.model.CategoryDto;
 import com.iii.amirutham.dto.model.ProductDto;
 import com.iii.amirutham.dto.model.ProductMediaDto;
 import com.iii.amirutham.model.product.AmiruthamCategory;
@@ -37,13 +36,17 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public void addImgToProduct(String productstr, List<MultipartFile> files) {
 
-		// ProductDto products = (ProductDto)
-		// AmirthumUtills.convertJsontoObject(ProductDto.class, productstr);
-		Optional<AmiruthamProducts> product = productRepo.findById(Integer.valueOf(productstr));
-
-		if (product.isPresent()) {
-			AmiruthamProducts prod = product.get();
-			List<ProductMediaGallary> mediaArray = new ArrayList<ProductMediaGallary>();
+		 ProductDto products = (ProductDto) AmirthumUtills.convertJsontoObject(ProductDto.class, productstr);
+	 	Optional<AmiruthamCategory> catogory = categryRepo.findById(Integer.valueOf(products.getCategoryid()));
+	 	
+	 	if(catogory.isPresent()) {
+	 		AmiruthamProducts product = new AmiruthamProducts();
+	 		product.setCategory(catogory.get());
+	 		product.setProductCode(products.getProductCode());
+	 		product.setProductNm(products.getProductNm());
+	 		product.setProductDesc(products.getProductDesc());
+	 		
+	 		List<ProductMediaGallary> mediaArray = new ArrayList<ProductMediaGallary>();
 			if (null != files) {
 				for (MultipartFile file : files) {
 
@@ -61,12 +64,13 @@ public class ProductServiceImpl implements ProductService {
 					// TODO Auto-generated method stub
 				}
 			}
-			prod.setProdImgs(mediaArray);
-			productRepo.save(prod);
-
-			// System.out.println(categryRepo.findById(14).isPresent());
-
-		}
+			product.setProdImgs(mediaArray);
+			productRepo.save(product);
+	 	}
+	 	
+	 	
+			
+		
 	}
 
 	@Override
@@ -86,8 +90,11 @@ public class ProductServiceImpl implements ProductService {
 				// }
 
 			}
-			productlistdto.add(new ProductDto(prod.getId(), prod.getProductCode(), prod.getProductNm(),
-					prod.getProductDesc(), prod.getProductuses(), mediaarray));
+			
+			  productlistdto.add(new ProductDto(prod.getId(),String.valueOf(prod.getCategory().getId()), prod.getProductCode(),
+			  prod.getProductNm(), prod.getProductDesc(), prod.getProductuses(),
+			  mediaarray));
+			 
 		}
 
 		return productlistdto;
@@ -109,8 +116,11 @@ public class ProductServiceImpl implements ProductService {
 				// }
 
 			}
-			productdto = (new ProductDto(prod.getId(), prod.getProductCode(), prod.getProductNm(),
-					prod.getProductDesc(), prod.getProductuses(), mediaarray));
+			/*
+			 * productdto = (new ProductDto(prod.getId(), prod.getProductCode(),
+			 * prod.getProductNm(), prod.getProductDesc(), prod.getProductuses(),
+			 * mediaarray));
+			 */
 		}
 
 		return productdto;
