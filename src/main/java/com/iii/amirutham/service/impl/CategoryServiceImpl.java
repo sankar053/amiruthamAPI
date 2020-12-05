@@ -11,6 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.iii.amirutham.dto.model.CategoryDto;
 import com.iii.amirutham.dto.model.ProductDto;
 import com.iii.amirutham.dto.model.ProductMediaDto;
+import com.iii.amirutham.exception.AmirthumCommonException;
+import com.iii.amirutham.exception.UserNotFoundException;
 import com.iii.amirutham.model.product.AmiruthamCategory;
 import com.iii.amirutham.model.product.AmiruthamProducts;
 import com.iii.amirutham.model.product.ProductMediaGallary;
@@ -29,37 +31,16 @@ public class CategoryServiceImpl implements CategoryService {
 	private ProductRepository productRepo;
 
 	@Override
-	public void createCategory(CategoryDto categoryDto) {
+	public AmiruthamCategory createCategory(CategoryDto categoryDto) {
 		// TODO Auto-generated method stub
 		if (null == categoryDto.getId()) {
 			AmiruthamCategory category = new AmiruthamCategory();
 			category.setCategoryCd(categoryDto.getCategoryCd());
 			category.setCategoryDesc(categoryDto.getCategoryDesc());
 			category.setCategoryNm(categoryDto.getCategoryNm());
-
-			/*
-			 * for (ProductDto products : categoryDto.getProducts()) { AmiruthamProducts
-			 * product = new AmiruthamProducts(null, products.getProductCode(),
-			 * products.getProductNm(), products.getProductDesc(),
-			 * products.getProductuses(), null); category.getProducts().add(product);
-			 * 
-			 * }
-			 */
-
-			categryRepo.save(category);
-		} else {
-			AmiruthamCategory category = new AmiruthamCategory(categoryDto.getId(), categoryDto.getCategoryCd(),
-					categoryDto.getCategoryNm(), categoryDto.getCategoryDesc());
-			if (categoryDto.getProducts() != null && categoryDto.getProducts().size() > 0) {
-				for (ProductDto products : categoryDto.getProducts()) {
-					AmiruthamProducts product = new AmiruthamProducts(products.getId(), products.getProductCode(),
-							products.getProductNm(), products.getProductDesc(), products.getProductuses());
-					category.getProducts().add(product);
-
-				}
-			}
-			categryRepo.save(category);
+			return categryRepo.save(category);
 		}
+		return null;
 	}
 
 	@Override
@@ -72,7 +53,7 @@ public class CategoryServiceImpl implements CategoryService {
 			catgryDto.setCategoryCd(cato.getCategoryCd());
 			catgryDto.setCategoryDesc(cato.getCategoryDesc());
 			catgryDto.setCategoryNm(cato.getCategoryNm());
-			
+
 			for (AmiruthamProducts prod : cato.getProducts()) {
 				List<ProductMediaDto> mediaarray = new ArrayList<ProductMediaDto>();
 				if (null != prod.getProdImgs() && prod.getProdImgs().size() > 0) {
@@ -83,8 +64,8 @@ public class CategoryServiceImpl implements CategoryService {
 					// }
 
 				}
-				catgryDto.getProducts().add(new ProductDto(prod.getId(),"",prod.getProductCode(),
-						prod.getProductNm(), prod.getProductDesc(), prod.getProductuses(), mediaarray));
+				catgryDto.getProducts().add(new ProductDto(prod.getId(), "", prod.getProductCode(), prod.getProductNm(),
+						prod.getProductDesc(), prod.getProductuses(), mediaarray));
 			}
 			catoglistdto.add(catgryDto);
 
@@ -121,8 +102,8 @@ public class CategoryServiceImpl implements CategoryService {
 					// }
 
 				}
-				catgryDto.getProducts().add(new ProductDto(prod.getId(), "",prod.getProductCode(),
-						prod.getProductNm(), prod.getProductDesc(), prod.getProductuses(), mediaarray));
+				catgryDto.getProducts().add(new ProductDto(prod.getId(), "", prod.getProductCode(), prod.getProductNm(),
+						prod.getProductDesc(), prod.getProductuses(), mediaarray));
 			}
 			return catgryDto;
 		}
@@ -146,16 +127,7 @@ public class CategoryServiceImpl implements CategoryService {
 		category.setCategoryCd(categoryDto.getCategoryCd());
 		category.setCategoryDesc(categoryDto.getCategoryDesc());
 		category.setCategoryNm(categoryDto.getCategoryNm());
-		/*
-		 * AmiruthamProducts product = null; for (ProductDto products :
-		 * categoryDto.getProducts()) { product = new AmiruthamProducts(null,
-		 * products.getProductCode(), products.getProductNm(),
-		 * products.getProductDesc(), products.getProductuses(), null);
-		 * category.getProducts().add(product);
-		 * 
-		 * }
-		 */
-		
+
 		categryRepo.save(category);
 
 	}
@@ -163,7 +135,30 @@ public class CategoryServiceImpl implements CategoryService {
 	@Override
 	public void deleteCatogry(int id) {
 		// TODO Auto-generated method stub
-		 categryRepo.deleteById(id);;
+		categryRepo.deleteById(id);
+		;
+	}
+
+	@Override
+	public AmiruthamCategory updateCategory(CategoryDto categoryDto) {
+		// TODO Auto-generated method stub
+
+		if (null != categoryDto.getId()) {
+			Optional<AmiruthamCategory> catogory = categryRepo.findById(categoryDto.getId());
+			if (catogory.isPresent()) {
+				AmiruthamCategory categoryDao = catogory.get();
+				categoryDao.setCategoryCd(categoryDto.getCategoryCd());
+				categoryDao.setCategoryDesc(categoryDto.getCategoryDesc());
+				categoryDao.setCategoryNm(categoryDto.getCategoryNm());
+				return categryRepo.save(categoryDao);
+			} else {
+				throw new UserNotFoundException("Category Not Found  " + categoryDto.getId());
+			}
+
+		} else {
+			throw new AmirthumCommonException("Category id shoud Not be Empty");
+		}
+
 	}
 
 }

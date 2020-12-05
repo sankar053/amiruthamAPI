@@ -12,8 +12,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -34,8 +36,24 @@ public class CategoryController {
 	@PostMapping
 	public ResponseEntity<Object> saveCategory(@Valid @RequestBody CategoryDto categories) {
 
-		categoryService.createCategory(categories);
-		return new ResponseEntity("Category Added Successfully", HttpStatus.OK);
+		AmiruthamCategory createdCategory =categoryService.createCategory(categories);
+		return new ResponseEntity(createdCategory, HttpStatus.OK);
+
+	}
+	
+	@PutMapping
+	public ResponseEntity<Object> updateCategory(@Valid @RequestBody CategoryDto categories) {
+
+		AmiruthamCategory updatedCategory =categoryService.updateCategory(categories);
+		return new ResponseEntity(updatedCategory, HttpStatus.OK);
+
+	}
+	
+	@PatchMapping
+	public ResponseEntity<Object> updateCategoryPatch(@Valid @RequestBody CategoryDto categories) {
+
+		AmiruthamCategory updatedCategory = categoryService.updateCategory(categories);
+		return new ResponseEntity(updatedCategory, HttpStatus.OK);
 
 	}
 

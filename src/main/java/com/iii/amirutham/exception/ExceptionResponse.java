@@ -11,6 +11,8 @@ import java.util.Date;
  */
 public class ExceptionResponse {
 	
+	private String code;
+	
 	private String message;
 	
 	private Date timestamp;
@@ -41,8 +43,17 @@ public class ExceptionResponse {
 		this.details = details;
 	}
 
-	public ExceptionResponse(String message, Date timestamp, String details) {
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	public ExceptionResponse(String code,String message, Date timestamp, String details) {
 		super();
+		this.code = code;
 		this.message = message;
 		this.timestamp = timestamp;
 		this.details = details;

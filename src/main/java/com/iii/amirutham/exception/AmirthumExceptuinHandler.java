@@ -17,7 +17,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class AmirthumExceptuinHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(Exception.class)
 	public final ResponseEntity<Object> handleAllException(Exception ex, WebRequest request) throws Exception {
-		ExceptionResponse exceptionResponse = new ExceptionResponse(ex.getMessage(), new Date(),
+		ExceptionResponse exceptionResponse = new ExceptionResponse("500",ex.getMessage(), new Date(),
 				request.getDescription(false));
 
 		return new ResponseEntity<Object>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -27,10 +27,20 @@ public class AmirthumExceptuinHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(UserNotFoundException.class)
 	public final ResponseEntity<Object> handleNotFoundException(UserNotFoundException ex, WebRequest request)
 			throws Exception {
-		ExceptionResponse exceptionResponse = new ExceptionResponse(ex.getMessage(), new Date(),
+		ExceptionResponse exceptionResponse = new ExceptionResponse("4000",ex.getMessage(), new Date(),
 				request.getDescription(false));
 
 		return new ResponseEntity<Object>(exceptionResponse, HttpStatus.NOT_FOUND);
+
+	}
+	
+	@ExceptionHandler(AmirthumCommonException.class)
+	public final ResponseEntity<Object> handleNotFoundException(AmirthumCommonException ex, WebRequest request)
+			throws Exception {
+		ExceptionResponse exceptionResponse = new ExceptionResponse("4001",ex.getMessage(), new Date(),
+				request.getDescription(false));
+
+		return new ResponseEntity<Object>(exceptionResponse, HttpStatus.OK);
 
 	}
 
@@ -38,7 +48,7 @@ public class AmirthumExceptuinHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 
-		ExceptionResponse exceptionResponse = new ExceptionResponse("Input Validation Failed", new Date(),
+		ExceptionResponse exceptionResponse = new ExceptionResponse("4002","Input Validation Failed", new Date(),
 				ex.getBindingResult().getFieldError().toString());
 		return new ResponseEntity<Object>(exceptionResponse, HttpStatus.BAD_REQUEST);
 	}
