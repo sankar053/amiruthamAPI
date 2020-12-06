@@ -22,6 +22,7 @@ import com.iii.amirutham.dto.model.ProductDto;
 import com.iii.amirutham.dto.model.ProductMediaDto;
 import com.iii.amirutham.exception.FileStorageException;
 import com.iii.amirutham.exception.MyFileNotFoundException;
+import com.iii.amirutham.exception.UserNotFoundException;
 import com.iii.amirutham.model.product.AmiruthamCategory;
 import com.iii.amirutham.model.product.AmiruthamProducts;
 import com.iii.amirutham.model.product.ProductMediaGallary;
@@ -43,17 +44,17 @@ public class ProductServiceImpl implements ProductService {
 	private CategoryRepository categryRepo;
 
 	@Override
-	public void addImgToProduct(String productstr, List<MultipartFile> files) {
+	public AmiruthamProducts addImgToProduct(String productstr, List<MultipartFile> files) {
 
-		ProductDto products = (ProductDto) AmirthumUtills.convertJsontoObject(ProductDto.class, productstr);
-		Optional<AmiruthamCategory> catogory = categryRepo.findById(Integer.valueOf(products.getCategoryid()));
+		ProductDto productsDto = (ProductDto) AmirthumUtills.convertJsontoObject(ProductDto.class, productstr);
+		Optional<AmiruthamCategory> catogory = categryRepo.findById(Integer.valueOf(productsDto.getCategoryid()));
 
 		if (catogory.isPresent()) {
 			AmiruthamProducts product = new AmiruthamProducts();
 			product.setCategory(catogory.get());
-			product.setProductCode(products.getProductCode());
-			product.setProductNm(products.getProductNm());
-			product.setProductDesc(products.getProductDesc());
+			product.setProductCode(productsDto.getProductCode());
+			product.setProductNm(productsDto.getProductNm());
+			product.setProductDesc(productsDto.getProductDesc());
 
 			List<ProductMediaGallary> mediaArray = new ArrayList<ProductMediaGallary>();
 			if (null != files) {
@@ -73,7 +74,7 @@ public class ProductServiceImpl implements ProductService {
 				                .toUriString();
 
 						mediaArray.add(new ProductMediaGallary(fileName, targetLocation.toString(),
-								fileDownloadUri));
+								fileDownloadUri,file.getContentType(),file.getSize()));
 					} catch (IOException e) { // TODO Auto-generated catch block e.printStackTrace(); }
 
 					}
@@ -81,7 +82,9 @@ public class ProductServiceImpl implements ProductService {
 				}
 			}
 			product.setProdImgs(mediaArray);
-			productRepo.save(product);
+			return productRepo.save(product);
+		}else {
+			throw new UserNotFoundException("Category Not Found  " + productsDto.getCategoryid());
 		}
 
 	}
@@ -98,7 +101,7 @@ public class ProductServiceImpl implements ProductService {
 			if (null != prod.getProdImgs() && prod.getProdImgs().size() > 0) {
 				for (ProductMediaGallary prodmed : prod.getProdImgs()) {
 					mediaarray.add(new ProductMediaDto(prodmed.getId(), prodmed.getProdImgNm(),
-							prodmed.getProdImgPath(), prodmed.getProdImgurl()));
+							prodmed.getProdImgPath(), prodmed.getProdImgUrl(),prodmed.getProdImgType(),prodmed.getProdImgSize()));
 				}
 				// }
 
@@ -124,7 +127,7 @@ public class ProductServiceImpl implements ProductService {
 			if (null != prod.getProdImgs() && prod.getProdImgs().size() > 0) {
 				for (ProductMediaGallary prodmed : prod.getProdImgs()) {
 					mediaarray.add(new ProductMediaDto(prodmed.getId(), prodmed.getProdImgNm(),
-							prodmed.getProdImgPath(), prodmed.getProdImgurl()));
+							prodmed.getProdImgPath(), prodmed.getProdImgUrl(),prodmed.getProdImgType(),prodmed.getProdImgSize()));
 				}
 				// }
 

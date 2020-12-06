@@ -59,10 +59,9 @@ public class CategoryServiceImpl implements CategoryService {
 				if (null != prod.getProdImgs() && prod.getProdImgs().size() > 0) {
 					for (ProductMediaGallary prodmed : prod.getProdImgs()) {
 						mediaarray.add(new ProductMediaDto(prodmed.getId(), prodmed.getProdImgNm(),
-								prodmed.getProdImgPath(), prodmed.getProdImgurl()));
+								prodmed.getProdImgPath(), prodmed.getProdImgUrl(),prodmed.getProdImgType(),prodmed.getProdImgSize()));
 					}
-					// }
-
+					
 				}
 				catgryDto.getProducts().add(new ProductDto(prod.getId(), "", prod.getProductCode(), prod.getProductNm(),
 						prod.getProductDesc(), prod.getProductuses(), mediaarray));
@@ -97,7 +96,7 @@ public class CategoryServiceImpl implements CategoryService {
 				if (null != prod.getProdImgs() && prod.getProdImgs().size() > 0) {
 					for (ProductMediaGallary prodmed : prod.getProdImgs()) {
 						mediaarray.add(new ProductMediaDto(prodmed.getId(), prodmed.getProdImgNm(),
-								prodmed.getProdImgPath(), prodmed.getProdImgurl()));
+								prodmed.getProdImgPath(), prodmed.getProdImgUrl(),prodmed.getProdImgType(),prodmed.getProdImgSize()));
 					}
 					// }
 

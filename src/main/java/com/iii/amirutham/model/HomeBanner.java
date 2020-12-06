@@ -47,4 +47,12 @@ public class HomeBanner extends BaseEntity {
 	@ApiModelProperty(notes = "LastName Should have Atleast two character")
 	@Column(name = "AMIR_BAN_FILE_URI")
 	private String bannerImgUrl;
+	
+	@Column(name = "AMIR_BAN_FILE_TYPE")
+	private String bannerImgType;
+
+	
+	@Column(name = "AMIR_BAN_FILE_SIZE")
+	private Long bannerImgSize;
+
 }

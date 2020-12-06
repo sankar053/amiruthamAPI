@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.iii.amirutham.dto.model.ProductDto;
+import com.iii.amirutham.model.product.AmiruthamProducts;
 import com.iii.amirutham.service.ProductService;
 
 @RestController
@@ -38,14 +39,13 @@ public class ProductController {
 	@PostMapping
 	public ResponseEntity<Object> saveProducts(@RequestPart("payload") String payload,
 			@RequestPart("file") @Valid @NotNull @NotBlank List<MultipartFile> files) {
-		try {
-			productService.addImgToProduct(payload,files);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
+			AmiruthamProducts productDao=	productService.addImgToProduct(payload,files);
+		
 
-		return new ResponseEntity("Product Added Successfully", HttpStatus.OK);
+		return  ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+               .body(productDao);
 
 	}
 	

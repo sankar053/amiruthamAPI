@@ -40,14 +40,26 @@ public class ProductMediaGallary extends BaseEntity{
 	private String prodImgPath;
 	
 	@Column(name = "PROD_MED_URL")
-	private String prodImgurl;
+	private String prodImgUrl;
+	
+	@Column(name = "PROD_MED_TYPE")
+	private String prodImgType;
 
-	public ProductMediaGallary(String prodImgNm, String prodImgPath, String prodImgurl) {
+	
+	@Column(name = "PROD_MED_SIZE")
+	private Long prodImgSize;
+
+
+	public ProductMediaGallary(String prodImgNm, String prodImgPath, String prodImgUrl, String prodImgType,
+			Long prodImgSize) {
 		super();
 		this.prodImgNm = prodImgNm;
 		this.prodImgPath = prodImgPath;
-		this.prodImgurl = prodImgurl;
+		this.prodImgUrl = prodImgUrl;
+		this.prodImgType = prodImgType;
+		this.prodImgSize = prodImgSize;
 	}
+
 
 
 	

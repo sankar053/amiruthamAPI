@@ -64,6 +64,8 @@ public class BannerServiceImpl implements BannerService {
 					Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 					bannerDao.setBannerFileNm(fileName);
 					bannerDao.setBannerFilepth(targetLocation.toString());
+					bannerDao.setBannerImgSize(file.getSize());
+					bannerDao.setBannerImgType(file.getContentType());
 					String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
 			                .path("/banner/downloadFile/")
 			                .path(fileName)
