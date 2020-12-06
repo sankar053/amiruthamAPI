@@ -1,8 +1,5 @@
 package com.iii.amirutham.model;
 
-import java.util.List;
-import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -45,4 +42,9 @@ public class HomeBanner extends BaseEntity {
 	@ApiModelProperty(notes = "LastName Should have Atleast two character")
 	@Column(name = "AMIR_BAN_FILE_PTH")
 	private String bannerFilepth;
+	
+	@Size(min = 2, message = "LastName Should have Atleast two character")
+	@ApiModelProperty(notes = "LastName Should have Atleast two character")
+	@Column(name = "AMIR_BAN_FILE_URI")
+	private String bannerImgUrl;
 }

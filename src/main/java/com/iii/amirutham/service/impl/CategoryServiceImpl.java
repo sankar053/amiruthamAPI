@@ -27,9 +27,9 @@ public class CategoryServiceImpl implements CategoryService {
 	@Autowired
 	private CategoryRepository categryRepo;
 
-	@Autowired
-	private ProductRepository productRepo;
-
+	/*
+	 * @Autowired private ProductRepository productRepo;
+	 */
 	@Override
 	public AmiruthamCategory createCategory(CategoryDto categoryDto) {
 		// TODO Auto-generated method stub

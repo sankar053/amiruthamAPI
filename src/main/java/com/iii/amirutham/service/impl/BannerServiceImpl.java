@@ -4,17 +4,25 @@
 package com.iii.amirutham.service.impl;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.iii.amirutham.dto.model.BannerDto;
+import com.iii.amirutham.exception.FileStorageException;
+import com.iii.amirutham.exception.MyFileNotFoundException;
 import com.iii.amirutham.model.HomeBanner;
 import com.iii.amirutham.repo.BannerRepository;
 import com.iii.amirutham.service.BannerService;
@@ -29,14 +37,18 @@ public class BannerServiceImpl implements BannerService {
 
 	@Autowired
 	private BannerRepository bannerRepo;
+	private String Upload_Path = "C:\\catalogs\\";
+
+	private final Path fileStorageLocation = Paths.get(Upload_Path).toAbsolutePath().normalize();
+
 
 	@Override
-	public void addHomeBanner(String payload, MultipartFile file) {
+	public HomeBanner addHomeBanner(String payload, MultipartFile file) {
 
 		BannerDto bannerdto = (BannerDto) AmirthumUtills.convertJsontoObject(BannerDto.class, payload);
-
+		HomeBanner bannerDao = new HomeBanner();
 		if (null != bannerdto) {
-			HomeBanner bannerDao = new HomeBanner();
+			
 			bannerDao.setBannerName(bannerdto.getBannerName());
 			bannerDao.setBannerDesc(bannerdto.getBannerDesc());
 
@@ -44,12 +56,20 @@ public class BannerServiceImpl implements BannerService {
 
 				try {
 
-					byte[] bytes = file.getBytes();
-					Path path = Paths.get("C:\\catalogs\\" + file.getOriginalFilename());
-					Files.write(path, bytes);
-					bannerDao.setBannerFileNm(file.getOriginalFilename());
-					bannerDao.setBannerFilepth("C:\\catalogs\\" + file.getOriginalFilename());
+					String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+					if (fileName.contains("..")) {
+						throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
+					}
+					Path targetLocation = this.fileStorageLocation.resolve(fileName);
+					Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+					bannerDao.setBannerFileNm(fileName);
+					bannerDao.setBannerFilepth(targetLocation.toString());
+					String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+			                .path("/banner/downloadFile/")
+			                .path(fileName)
+			                .toUriString();
 
+					bannerDao.setBannerImgUrl(fileDownloadUri);
 				} catch (IOException e) { // TODO Auto-generated catch block e.printStackTrace(); }
 
 				}
@@ -57,8 +77,9 @@ public class BannerServiceImpl implements BannerService {
 
 			}
 
-			bannerRepo.save(bannerDao);
+			return bannerRepo.save(bannerDao);
 		}
+		return bannerDao;
 
 	}
 
@@ -73,5 +94,21 @@ public class BannerServiceImpl implements BannerService {
 		// TODO Auto-generated method stub
 		return bannerRepo.findById(id);
 	}
+
+	@Override
+	public Resource loadBannerAsResource(String fileName) {
+		try {
+            Path filePath = this.fileStorageLocation.resolve(fileName).normalize();
+            Resource resource = new UrlResource(filePath.toUri());
+            if(resource.exists()) {
+                return resource;
+            } else {
+                throw new MyFileNotFoundException("File not found " + fileName);
+            }
+        } catch (MalformedURLException ex) {
+            throw new MyFileNotFoundException("File not found " + fileName, ex);
+        }
+    }
+	
 
 }

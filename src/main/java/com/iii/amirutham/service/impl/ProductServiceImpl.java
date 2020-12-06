@@ -1,19 +1,27 @@
 package com.iii.amirutham.service.impl;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.iii.amirutham.dto.model.ProductDto;
 import com.iii.amirutham.dto.model.ProductMediaDto;
+import com.iii.amirutham.exception.FileStorageException;
+import com.iii.amirutham.exception.MyFileNotFoundException;
 import com.iii.amirutham.model.product.AmiruthamCategory;
 import com.iii.amirutham.model.product.AmiruthamProducts;
 import com.iii.amirutham.model.product.ProductMediaGallary;
@@ -27,37 +35,45 @@ public class ProductServiceImpl implements ProductService {
 
 	@Autowired
 	private ProductRepository productRepo;
+	private String Upload_Path = "C:\\catalogs\\";
+
+	private final Path fileStorageLocation = Paths.get(Upload_Path).toAbsolutePath().normalize();
 
 	@Autowired
 	private CategoryRepository categryRepo;
 
-	private String Upload_Path = "C:\\catalogs\\";
-
 	@Override
 	public void addImgToProduct(String productstr, List<MultipartFile> files) {
 
-		 ProductDto products = (ProductDto) AmirthumUtills.convertJsontoObject(ProductDto.class, productstr);
-	 	Optional<AmiruthamCategory> catogory = categryRepo.findById(Integer.valueOf(products.getCategoryid()));
-	 	
-	 	if(catogory.isPresent()) {
-	 		AmiruthamProducts product = new AmiruthamProducts();
-	 		product.setCategory(catogory.get());
-	 		product.setProductCode(products.getProductCode());
-	 		product.setProductNm(products.getProductNm());
-	 		product.setProductDesc(products.getProductDesc());
-	 		
-	 		List<ProductMediaGallary> mediaArray = new ArrayList<ProductMediaGallary>();
+		ProductDto products = (ProductDto) AmirthumUtills.convertJsontoObject(ProductDto.class, productstr);
+		Optional<AmiruthamCategory> catogory = categryRepo.findById(Integer.valueOf(products.getCategoryid()));
+
+		if (catogory.isPresent()) {
+			AmiruthamProducts product = new AmiruthamProducts();
+			product.setCategory(catogory.get());
+			product.setProductCode(products.getProductCode());
+			product.setProductNm(products.getProductNm());
+			product.setProductDesc(products.getProductDesc());
+
+			List<ProductMediaGallary> mediaArray = new ArrayList<ProductMediaGallary>();
 			if (null != files) {
 				for (MultipartFile file : files) {
 
 					try {
+						String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+						if (fileName.contains("..")) {
+							throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
+						}
+						Path targetLocation = this.fileStorageLocation.resolve(fileName);
+						Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+						
+						String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+				                .path("/products/downloadFile/")
+				                .path(fileName)
+				                .toUriString();
 
-						byte[] bytes = file.getBytes();
-						Path path = Paths.get("C:\\catalogs\\" + file.getOriginalFilename());
-						Files.write(path, bytes);
-
-						mediaArray.add(new ProductMediaGallary(file.getOriginalFilename(),
-								"C:\\catalogs\\" + file.getOriginalFilename(), "http://Localhost:8080/files"));
+						mediaArray.add(new ProductMediaGallary(fileName, targetLocation.toString(),
+								fileDownloadUri));
 					} catch (IOException e) { // TODO Auto-generated catch block e.printStackTrace(); }
 
 					}
@@ -66,11 +82,8 @@ public class ProductServiceImpl implements ProductService {
 			}
 			product.setProdImgs(mediaArray);
 			productRepo.save(product);
-	 	}
-	 	
-	 	
-			
-		
+		}
+
 	}
 
 	@Override
@@ -90,11 +103,11 @@ public class ProductServiceImpl implements ProductService {
 				// }
 
 			}
-			
-			  productlistdto.add(new ProductDto(prod.getId(),String.valueOf(prod.getCategory().getId()), prod.getProductCode(),
-			  prod.getProductNm(), prod.getProductDesc(), prod.getProductuses(),
-			  mediaarray));
-			 
+
+			productlistdto
+					.add(new ProductDto(prod.getId(), String.valueOf(prod.getCategory().getId()), prod.getProductCode(),
+							prod.getProductNm(), prod.getProductDesc(), prod.getProductuses(), mediaarray));
+
 		}
 
 		return productlistdto;
@@ -132,5 +145,19 @@ public class ProductServiceImpl implements ProductService {
 		// TODO Auto-generated method stub
 		productRepo.deleteById(id);
 	}
+	
+	 public Resource loadProductAsResource(String fileName) {
+	        try {
+	            Path filePath = this.fileStorageLocation.resolve(fileName).normalize();
+	            Resource resource = new UrlResource(filePath.toUri());
+	            if(resource.exists()) {
+	                return resource;
+	            } else {
+	                throw new MyFileNotFoundException("File not found " + fileName);
+	            }
+	        } catch (MalformedURLException ex) {
+	            throw new MyFileNotFoundException("File not found " + fileName, ex);
+	        }
+	    }
 
 }
