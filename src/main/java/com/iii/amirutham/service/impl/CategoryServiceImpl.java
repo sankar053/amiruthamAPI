@@ -8,17 +8,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.iii.amirutham.dto.base.CategoryRequest;
 import com.iii.amirutham.dto.model.CategoryDto;
 import com.iii.amirutham.dto.model.ProductDto;
 import com.iii.amirutham.dto.model.ProductMediaDto;
+import com.iii.amirutham.dto.model.SequnceDto;
 import com.iii.amirutham.exception.AmirthumCommonException;
 import com.iii.amirutham.exception.UserNotFoundException;
 import com.iii.amirutham.model.product.AmiruthamCategory;
 import com.iii.amirutham.model.product.AmiruthamProducts;
 import com.iii.amirutham.model.product.ProductMediaGallary;
 import com.iii.amirutham.repo.CategoryRepository;
-import com.iii.amirutham.repo.ProductRepository;
 import com.iii.amirutham.service.CategoryService;
+import com.iii.amirutham.service.SequenceService;
 import com.iii.amirutham.utills.AmirthumUtills;
 
 @Service
@@ -26,21 +28,29 @@ public class CategoryServiceImpl implements CategoryService {
 
 	@Autowired
 	private CategoryRepository categryRepo;
+	
+	@Autowired
+	private SequenceService seqservice;
+	
+	
 
 	/*
 	 * @Autowired private ProductRepository productRepo;
 	 */
 	@Override
-	public AmiruthamCategory createCategory(CategoryDto categoryDto) {
+	public List<AmiruthamCategory> createCategory(CategoryRequest categoryRequest) {
 		// TODO Auto-generated method stub
-		if (null == categoryDto.getId()) {
+		List<AmiruthamCategory> categoryList =new ArrayList<>();
+		for(CategoryDto categoryDto:categoryRequest.getCategories()) {
 			AmiruthamCategory category = new AmiruthamCategory();
-			category.setCategoryCd(categoryDto.getCategoryCd());
+			SequnceDto sequence =seqservice.findMySeQuence("CATEGERY");
+			category.setCategoryCd(sequence.getSeqChar()+String.format("%05d", sequence.getSeqNxtVal()));
+			seqservice.updateMySeQuence(sequence);
 			category.setCategoryDesc(categoryDto.getCategoryDesc());
 			category.setCategoryNm(categoryDto.getCategoryNm());
-			return categryRepo.save(category);
+			categoryList.add(category);
 		}
-		return null;
+		return categryRepo.saveAll(categoryList);
 	}
 
 	@Override

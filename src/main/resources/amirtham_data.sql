@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `amirutham` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `amirutham`;
 -- MySQL dump 10.13  Distrib 8.0.22, for Win64 (x86_64)
 --
 -- Host: localhost    Database: amirutham
@@ -18,163 +16,103 @@ USE `amirutham`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `amir_prod_category`
+-- Dumping data for table `amir_banner`
 --
 
-DROP TABLE IF EXISTS `amir_prod_category`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `amir_prod_category` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `creation_ts` datetime DEFAULT NULL,
-  `update_ts` datetime DEFAULT NULL,
-  `active_yn` varchar(255) DEFAULT NULL,
-  `deleted_yn` varchar(255) DEFAULT NULL,
-  `cate_code` varchar(255) DEFAULT NULL,
-  `cate_desc` varchar(255) DEFAULT NULL,
-  `cate_nme` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+LOCK TABLES `amir_banner` WRITE;
+/*!40000 ALTER TABLE `amir_banner` DISABLE KEYS */;
+/*!40000 ALTER TABLE `amir_banner` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
--- Table structure for table `amir_user`
+-- Dumping data for table `amir_prod_category`
 --
 
-DROP TABLE IF EXISTS `amir_user`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `amir_user` (
-  `id` int NOT NULL,
-  `creation_ts` datetime DEFAULT NULL,
-  `update_ts` datetime DEFAULT NULL,
-  `active_yn` varchar(255) DEFAULT NULL,
-  `deleted_yn` varchar(255) DEFAULT NULL,
-  `amir_user_mail_addr` varchar(255) DEFAULT NULL,
-  `amir_user_fst_nm` varchar(255) DEFAULT NULL,
-  `amir_user_lst_nm` varchar(255) DEFAULT NULL,
-  `amir_user_pwd` varchar(255) DEFAULT NULL,
-  `amir_user_phn_nbr` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+LOCK TABLES `amir_prod_category` WRITE;
+/*!40000 ALTER TABLE `amir_prod_category` DISABLE KEYS */;
+INSERT INTO `amir_prod_category` VALUES (1,'2020-12-06 16:57:50',NULL,'Y','N','CATE00001','Amirthum Organic Sugars','Sugar'),(2,'2020-12-06 16:57:50',NULL,'Y','N','CATE00002','Amirthum HerbalPowder Powder','HerbalPowder'),(3,'2020-12-06 16:57:50',NULL,'Y','N','CATE00003','Amirthum Natural Sweetners','NaturalSweetners'),(4,'2020-12-06 16:57:50',NULL,'Y','N','CATE00004','Amirthum Organic Oils','Oils'),(5,'2020-12-06 16:57:50',NULL,'Y','N','CATE00005','Amirthum Seeds','Seed'),(6,'2020-12-06 16:57:50',NULL,'Y','N','CATE00006','Amirthum Organic Soaps','Soap');
+/*!40000 ALTER TABLE `amir_prod_category` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
--- Table structure for table `amir_user_addr`
+-- Dumping data for table `amir_sequnce`
 --
 
-DROP TABLE IF EXISTS `amir_user_addr`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `amir_user_addr` (
-  `id` int NOT NULL,
-  `creation_ts` datetime DEFAULT NULL,
-  `update_ts` datetime DEFAULT NULL,
-  `active_yn` varchar(255) DEFAULT NULL,
-  `deleted_yn` varchar(255) DEFAULT NULL,
-  `amir_user_addr_lne1` varchar(255) DEFAULT NULL,
-  `amir_user_addr_lne2` varchar(255) DEFAULT NULL,
-  `amir_user_addr_type` varchar(255) DEFAULT NULL,
-  `amir_user_addr_city` varchar(255) DEFAULT NULL,
-  `amir_user_addr_zipcode` varchar(255) DEFAULT NULL,
-  `amir_user_addr_state` varchar(255) DEFAULT NULL,
-  `amir_user_id` int DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FKseqrs6ki68abxwgwl4nvtm30p` (`amir_user_id`),
-  CONSTRAINT `FKseqrs6ki68abxwgwl4nvtm30p` FOREIGN KEY (`amir_user_id`) REFERENCES `amir_user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+LOCK TABLES `amir_sequnce` WRITE;
+/*!40000 ALTER TABLE `amir_sequnce` DISABLE KEYS */;
+INSERT INTO `amir_sequnce` VALUES (1,'2020-12-06 16:10:54','2020-12-06 17:31:41','Y','N','PROD',15,999999,'PRODUCT',16),(2,'2020-12-06 16:10:54','2020-12-06 16:57:50','Y','N','CATE',6,999999,'CATEGERY',7);
+/*!40000 ALTER TABLE `amir_sequnce` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
--- Table structure for table `amir_user_role`
+-- Dumping data for table `amir_user`
 --
 
-DROP TABLE IF EXISTS `amir_user_role`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `amir_user_role` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `amir_user_rle` varchar(20) DEFAULT NULL,
-  `amir_user_rle_dsc` varchar(20) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+LOCK TABLES `amir_user` WRITE;
+/*!40000 ALTER TABLE `amir_user` DISABLE KEYS */;
+INSERT INTO `amir_user` VALUES (1,'2020-12-05 09:06:33',NULL,'Y','N','sankaraasn@gmail.com','Mari','selvam','$2a$10$qwdizHk21N.384eDI.gUY.0SsRp9dUIRAGCdfL5JU4vf6g0YME3Wq','9791255264');
+/*!40000 ALTER TABLE `amir_user` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
--- Table structure for table `hibernate_sequence`
+-- Dumping data for table `amir_user_addr`
 --
 
-DROP TABLE IF EXISTS `hibernate_sequence`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `hibernate_sequence` (
-  `next_val` bigint DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+LOCK TABLES `amir_user_addr` WRITE;
+/*!40000 ALTER TABLE `amir_user_addr` DISABLE KEYS */;
+INSERT INTO `amir_user_addr` VALUES (2,'2020-12-05 09:06:33',NULL,'Y','N','73 KR garden','railway feeder road','Home','virudhunagar','626001','tamilnadu',1),(3,'2020-12-05 09:06:34',NULL,'Y','N','74 KR garden','railway feeder road','WORK','virudhunagar','626001','tamilnadu',1);
+/*!40000 ALTER TABLE `amir_user_addr` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
--- Table structure for table `product_media_gallary`
+-- Dumping data for table `amir_user_role`
 --
 
-DROP TABLE IF EXISTS `product_media_gallary`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `product_media_gallary` (
-  `prod_med_id` int NOT NULL AUTO_INCREMENT,
-  `creation_ts` datetime DEFAULT NULL,
-  `update_ts` datetime DEFAULT NULL,
-  `active_yn` varchar(255) DEFAULT NULL,
-  `deleted_yn` varchar(255) DEFAULT NULL,
-  `prod_med_nm` varchar(255) DEFAULT NULL,
-  `prod_med_file_path` varchar(255) DEFAULT NULL,
-  `prod_med_url` varchar(255) DEFAULT NULL,
-  `prod_id` int DEFAULT NULL,
-  PRIMARY KEY (`prod_med_id`),
-  KEY `FK9c8hj2678cwtafn999h1xamys` (`prod_id`),
-  CONSTRAINT `FK9c8hj2678cwtafn999h1xamys` FOREIGN KEY (`prod_id`) REFERENCES `products` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+LOCK TABLES `amir_user_role` WRITE;
+/*!40000 ALTER TABLE `amir_user_role` DISABLE KEYS */;
+INSERT INTO `amir_user_role` VALUES (4,'Admin role','ROLE_ADMIN'),(5,'User role','ROLE_USER');
+/*!40000 ALTER TABLE `amir_user_role` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
--- Table structure for table `products`
+-- Dumping data for table `hibernate_sequence`
 --
 
-DROP TABLE IF EXISTS `products`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `products` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `creation_ts` datetime DEFAULT NULL,
-  `update_ts` datetime DEFAULT NULL,
-  `active_yn` varchar(255) DEFAULT NULL,
-  `deleted_yn` varchar(255) DEFAULT NULL,
-  `prod_code` varchar(255) DEFAULT NULL,
-  `prod_desc` varchar(855) DEFAULT NULL,
-  `prod_nme` varchar(255) DEFAULT NULL,
-  `prod_ben_use` varchar(855) DEFAULT NULL,
-  `cate_id` int DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FKg2u34a9wwxec1jtp9p9l15m4y` (`cate_id`),
-  CONSTRAINT `FKg2u34a9wwxec1jtp9p9l15m4y` FOREIGN KEY (`cate_id`) REFERENCES `amir_prod_category` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+LOCK TABLES `hibernate_sequence` WRITE;
+/*!40000 ALTER TABLE `hibernate_sequence` DISABLE KEYS */;
+INSERT INTO `hibernate_sequence` VALUES (1);
+/*!40000 ALTER TABLE `hibernate_sequence` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
--- Table structure for table `user_roles`
+-- Dumping data for table `product_media_gallary`
 --
 
-DROP TABLE IF EXISTS `user_roles`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `user_roles` (
-  `user_id` int NOT NULL,
-  `role_id` int NOT NULL,
-  PRIMARY KEY (`user_id`,`role_id`),
-  KEY `FK46wdarhhkt7h25466c7n61h2r` (`role_id`),
-  CONSTRAINT `FK46wdarhhkt7h25466c7n61h2r` FOREIGN KEY (`role_id`) REFERENCES `amir_user_role` (`id`),
-  CONSTRAINT `FKq98yjmbyg8232bh3yn56tt37` FOREIGN KEY (`user_id`) REFERENCES `amir_user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+LOCK TABLES `product_media_gallary` WRITE;
+/*!40000 ALTER TABLE `product_media_gallary` DISABLE KEYS */;
+INSERT INTO `product_media_gallary` VALUES (1,'2020-12-06 17:12:32',NULL,'Y','N','New Doc 2019-01-21 09.59.28_1.jpg','C:\\catalogs\\New Doc 2019-01-21 09.59.28_1.jpg',38524,'image/jpeg','http://localhost:8085/products/downloadFile/New%20Doc%202019-01-21%2009.59.28_1.jpg',1),(2,'2020-12-06 17:12:32',NULL,'Y','N','pho.jpg','C:\\catalogs\\pho.jpg',24845,'image/jpeg','http://localhost:8085/products/downloadFile/pho.jpg',1),(3,'2020-12-06 17:15:46',NULL,'Y','N','New Doc 2019-01-21 09.59.28_1.jpg','C:\\catalogs\\New Doc 2019-01-21 09.59.28_1.jpg',38524,'image/jpeg','http://localhost:8085/products/downloadFile/New%20Doc%202019-01-21%2009.59.28_1.jpg',2),(4,'2020-12-06 17:15:46',NULL,'Y','N','pho.jpg','C:\\catalogs\\pho.jpg',24845,'image/jpeg','http://localhost:8085/products/downloadFile/pho.jpg',2),(5,'2020-12-06 17:15:57',NULL,'Y','N','New Doc 2019-01-21 09.59.28_1.jpg','C:\\catalogs\\New Doc 2019-01-21 09.59.28_1.jpg',38524,'image/jpeg','http://localhost:8085/products/downloadFile/New%20Doc%202019-01-21%2009.59.28_1.jpg',3),(6,'2020-12-06 17:15:57',NULL,'Y','N','pho.jpg','C:\\catalogs\\pho.jpg',24845,'image/jpeg','http://localhost:8085/products/downloadFile/pho.jpg',3),(7,'2020-12-06 17:16:09',NULL,'Y','N','New Doc 2019-01-21 09.59.28_1.jpg','C:\\catalogs\\New Doc 2019-01-21 09.59.28_1.jpg',38524,'image/jpeg','http://localhost:8085/products/downloadFile/New%20Doc%202019-01-21%2009.59.28_1.jpg',4),(8,'2020-12-06 17:16:09',NULL,'Y','N','pho.jpg','C:\\catalogs\\pho.jpg',24845,'image/jpeg','http://localhost:8085/products/downloadFile/pho.jpg',4),(9,'2020-12-06 17:16:23',NULL,'Y','N','New Doc 2019-01-21 09.59.28_1.jpg','C:\\catalogs\\New Doc 2019-01-21 09.59.28_1.jpg',38524,'image/jpeg','http://localhost:8085/products/downloadFile/New%20Doc%202019-01-21%2009.59.28_1.jpg',5),(10,'2020-12-06 17:16:23',NULL,'Y','N','pho.jpg','C:\\catalogs\\pho.jpg',24845,'image/jpeg','http://localhost:8085/products/downloadFile/pho.jpg',5),(11,'2020-12-06 17:23:39',NULL,'Y','N','New Doc 2019-01-21 09.59.28_1.jpg','C:\\catalogs\\New Doc 2019-01-21 09.59.28_1.jpg',38524,'image/jpeg','http://localhost:8085/products/downloadFile/New%20Doc%202019-01-21%2009.59.28_1.jpg',6),(12,'2020-12-06 17:23:39',NULL,'Y','N','pho.jpg','C:\\catalogs\\pho.jpg',24845,'image/jpeg','http://localhost:8085/products/downloadFile/pho.jpg',6),(13,'2020-12-06 17:23:53',NULL,'Y','N','New Doc 2019-01-21 09.59.28_1.jpg','C:\\catalogs\\New Doc 2019-01-21 09.59.28_1.jpg',38524,'image/jpeg','http://localhost:8085/products/downloadFile/New%20Doc%202019-01-21%2009.59.28_1.jpg',7),(14,'2020-12-06 17:23:53',NULL,'Y','N','pho.jpg','C:\\catalogs\\pho.jpg',24845,'image/jpeg','http://localhost:8085/products/downloadFile/pho.jpg',7),(15,'2020-12-06 17:24:09',NULL,'Y','N','New Doc 2019-01-21 09.59.28_1.jpg','C:\\catalogs\\New Doc 2019-01-21 09.59.28_1.jpg',38524,'image/jpeg','http://localhost:8085/products/downloadFile/New%20Doc%202019-01-21%2009.59.28_1.jpg',8),(16,'2020-12-06 17:24:09',NULL,'Y','N','pho.jpg','C:\\catalogs\\pho.jpg',24845,'image/jpeg','http://localhost:8085/products/downloadFile/pho.jpg',8),(17,'2020-12-06 17:24:23',NULL,'Y','N','New Doc 2019-01-21 09.59.28_1.jpg','C:\\catalogs\\New Doc 2019-01-21 09.59.28_1.jpg',38524,'image/jpeg','http://localhost:8085/products/downloadFile/New%20Doc%202019-01-21%2009.59.28_1.jpg',9),(18,'2020-12-06 17:24:23',NULL,'Y','N','pho.jpg','C:\\catalogs\\pho.jpg',24845,'image/jpeg','http://localhost:8085/products/downloadFile/pho.jpg',9),(19,'2020-12-06 17:24:35',NULL,'Y','N','New Doc 2019-01-21 09.59.28_1.jpg','C:\\catalogs\\New Doc 2019-01-21 09.59.28_1.jpg',38524,'image/jpeg','http://localhost:8085/products/downloadFile/New%20Doc%202019-01-21%2009.59.28_1.jpg',10),(20,'2020-12-06 17:24:35',NULL,'Y','N','pho.jpg','C:\\catalogs\\pho.jpg',24845,'image/jpeg','http://localhost:8085/products/downloadFile/pho.jpg',10),(21,'2020-12-06 17:31:00',NULL,'Y','N','New Doc 2019-01-21 09.59.28_1.jpg','C:\\catalogs\\New Doc 2019-01-21 09.59.28_1.jpg',38524,'image/jpeg','http://localhost:8085/products/downloadFile/New%20Doc%202019-01-21%2009.59.28_1.jpg',11),(22,'2020-12-06 17:31:00',NULL,'Y','N','pho.jpg','C:\\catalogs\\pho.jpg',24845,'image/jpeg','http://localhost:8085/products/downloadFile/pho.jpg',11),(23,'2020-12-06 17:31:13',NULL,'Y','N','New Doc 2019-01-21 09.59.28_1.jpg','C:\\catalogs\\New Doc 2019-01-21 09.59.28_1.jpg',38524,'image/jpeg','http://localhost:8085/products/downloadFile/New%20Doc%202019-01-21%2009.59.28_1.jpg',12),(24,'2020-12-06 17:31:13',NULL,'Y','N','pho.jpg','C:\\catalogs\\pho.jpg',24845,'image/jpeg','http://localhost:8085/products/downloadFile/pho.jpg',12),(25,'2020-12-06 17:31:22',NULL,'Y','N','New Doc 2019-01-21 09.59.28_1.jpg','C:\\catalogs\\New Doc 2019-01-21 09.59.28_1.jpg',38524,'image/jpeg','http://localhost:8085/products/downloadFile/New%20Doc%202019-01-21%2009.59.28_1.jpg',13),(26,'2020-12-06 17:31:22',NULL,'Y','N','pho.jpg','C:\\catalogs\\pho.jpg',24845,'image/jpeg','http://localhost:8085/products/downloadFile/pho.jpg',13),(27,'2020-12-06 17:31:32',NULL,'Y','N','New Doc 2019-01-21 09.59.28_1.jpg','C:\\catalogs\\New Doc 2019-01-21 09.59.28_1.jpg',38524,'image/jpeg','http://localhost:8085/products/downloadFile/New%20Doc%202019-01-21%2009.59.28_1.jpg',14),(28,'2020-12-06 17:31:32',NULL,'Y','N','pho.jpg','C:\\catalogs\\pho.jpg',24845,'image/jpeg','http://localhost:8085/products/downloadFile/pho.jpg',14),(29,'2020-12-06 17:31:41',NULL,'Y','N','New Doc 2019-01-21 09.59.28_1.jpg','C:\\catalogs\\New Doc 2019-01-21 09.59.28_1.jpg',38524,'image/jpeg','http://localhost:8085/products/downloadFile/New%20Doc%202019-01-21%2009.59.28_1.jpg',15),(30,'2020-12-06 17:31:41',NULL,'Y','N','pho.jpg','C:\\catalogs\\pho.jpg',24845,'image/jpeg','http://localhost:8085/products/downloadFile/pho.jpg',15);
+/*!40000 ALTER TABLE `product_media_gallary` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping data for table `products`
+--
+
+LOCK TABLES `products` WRITE;
+/*!40000 ALTER TABLE `products` DISABLE KEYS */;
+INSERT INTO `products` VALUES (1,'2020-12-06 17:12:32',NULL,'Y','N','PROD00001','Jaggery is popularly used as a natural sugar substitute. It is obtained from the concentrated cane sugar without separation of the molasses and crystals. The Amirutham Jaggery is made by evaporating the water from concentrated sugar cane juice and solidifying it.','Jaggery',NULL,1),(2,'2020-12-06 17:15:46',NULL,'Y','N','PROD00002','Brown sugar is a sucrose sugar product with a distinctive brown color due to the presence of molasses. It is unrefined soft sugar and has more liquid and has around 0.25 fewer calories per gram than white sugar. ','Brown Sugar',NULL,1),(3,'2020-12-06 17:15:57',NULL,'Y','N','PROD00003','Palm jaggery is a much sweeter variant of jaggery, which has a melt-in the mouth texture. This form of jaggery is made by extracting sap of palm which is manually boiled and churned to make the jaggery. Palm jaggery is considered to be better than the sugar cane jaggery because of its high medicinal properties.  ','Palm Jaggery',NULL,1),(4,'2020-12-06 17:16:09',NULL,'Y','N','PROD00004','Palm Candy has a number of minerals, vitamins, calcium, iron and phyto nutrients including zinc and potassium. It is a good source of Vitamin B1, B2, B3, B6 and B12. The sugar content in palm sugar is well balanced and it is a great natural substitute for sugar. ','Palm Candy – Small',NULL,1),(5,'2020-12-06 17:16:23',NULL,'Y','N','PROD00005','Palm Candy has a number of minerals, vitamins, calcium, iron and phyto nutrients including zinc and potassium. It is a good source of Vitamin B1, B2, B3, B6 and B12. The sugar content in palm sugar is well balanced and it is a great natural substitute for sugar. ','Palm Candy – Big',NULL,1),(6,'2020-12-06 17:23:39',NULL,'Y','N','PROD00006','The ashwagandha also known as the Indian ginseng is ancient medicinal herb with multiple health benefits.','Ashwagandha Powder',NULL,2),(7,'2020-12-06 17:23:53',NULL,'Y','N','PROD00007','The kadukkai powder also known Harad is made by grinding freshly obtained haritaki into fine powder.','Kadukkai Powder',NULL,2),(8,'2020-12-06 17:24:09',NULL,'Y','N','PROD00008','The fully grown moringa leaves from the homegrown moringa trees are plucked, sundried and grinded to fine powder.The moringa powder has vital mineral and vitamins. This leaf is said to possess 7 times more Vitamin C than oranges and 15 times more potassium than bananas. It has calcium, protein, iron, and amino acids, which heals body and helps in muscle building. ','Moringa Powder',NULL,2),(9,'2020-12-06 17:24:23',NULL,'Y','N','PROD00009','Arappu powder is made from the leaves of the arappu tree. When the leaves are fully grown, its plucked, sundried and made into fine powder. ','Arappu',NULL,2),(10,'2020-12-06 17:24:35',NULL,'Y','N','PROD00010','When it comes to external application, Kasturi Manjal is the king as it does not stain the skin like the regular turmeric. In addition to this, Kasturi Manjal has a pleasant fragrance to it and antibacterial and anti-inflammation properties.  ','Kasturi Manjal (Wild Turmeric)',NULL,2),(11,'2020-12-06 17:31:00',NULL,'Y','N','PROD00011','For making the sesame oil, the cleaned sesame seeds and palm jaggery are crushed using the wooden cold press machine. The extracted oil is left for sedimentation before we pack it in bottles and offer it to our customers. The raw materials for these oils are hand-picked from farmers cultivating it and are cleaned in a highly sanitized area by our team before using it for oil extraction.','Sesame Oil',NULL,4),(12,'2020-12-06 17:31:13',NULL,'Y','N','PROD00012','For making the coconut oil, the cleaned coconut coprais are crushed using the wooden cold press machine. The extracted oil is left for sedimentation before we pack it in bottles and offer it to our customers. The raw materials for these oils are hand-picked from farmers cultivating it and are cleaned in a highly sanitized area by our team before using it for oil extraction.','Coconut Oil',NULL,4),(13,'2020-12-06 17:31:22',NULL,'Y','N','PROD00013','For making the groundnut oil, the cleaned raw groundnuts are crushed using the wooden cold press machine. The extracted oil is left for sedimentation before we pack it in bottles and offer it to our customers. The raw materials for these oils are hand-picked from farmers cultivating it and are cleaned in a highly sanitized area by our team before using it for oil extraction.','Groundnut Oil',NULL,4),(14,'2020-12-06 17:31:32',NULL,'Y','N','PROD00014','For making the mustard oil, the handpicked mustard seeds are crushed using the wooden cold press machine. The extracted oil is left for sedimentation before we pack it in bottles and offer it to our customers. The raw materials for these oils are hand-picked from farmers cultivating it and are cleaned in a highly sanitized area by our team before using it for oil extraction. ','Mustard Oil',NULL,4),(15,'2020-12-06 17:31:41',NULL,'Y','N','PROD00015','For making the flax seed oil, the handpicked flax seeds are crushed using the wooden cold press machine. The extracted oil is left for sedimentation before we pack it in bottles and offer it to our customers. The raw materials for these oils are hand-picked from farmers cultivating it and are cleaned in a highly sanitized area by our team before using it for oil extraction. ','Flax seed Oil',NULL,4);
+/*!40000 ALTER TABLE `products` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping data for table `user_roles`
+--
+
+LOCK TABLES `user_roles` WRITE;
+/*!40000 ALTER TABLE `user_roles` DISABLE KEYS */;
+INSERT INTO `user_roles` VALUES (1,4);
+/*!40000 ALTER TABLE `user_roles` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -185,4 +123,4 @@ CREATE TABLE `user_roles` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-12-04 22:05:50
+-- Dump completed on 2020-12-06 23:03:19

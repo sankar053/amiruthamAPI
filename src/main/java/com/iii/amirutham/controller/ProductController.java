@@ -51,9 +51,11 @@ public class ProductController {
 	
 	@GetMapping
 	public ResponseEntity<Object> retriveProducts() {
-		List<ProductDto> products =productService.retriveProducts();
+		List<ProductDto> productList =productService.retriveProducts();
 
-		return new ResponseEntity(products, HttpStatus.OK);
+		return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+               .body(productList);
 
 	}
 	
@@ -61,7 +63,9 @@ public class ProductController {
 	public ResponseEntity<Object> retriveProducts(@PathVariable int id) {
 		ProductDto product =productService.retriveProductById(id);
 
-		return new ResponseEntity(product, HttpStatus.OK);
+		return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+               .body(product);
 
 	}
 	@DeleteMapping("/{id}")

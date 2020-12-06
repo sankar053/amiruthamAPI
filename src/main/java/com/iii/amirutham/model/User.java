@@ -36,7 +36,7 @@ import lombok.Setter;
 public class User extends BaseEntity {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
 	@Size(min = 2, message = "FirstName Should have Atleast two character")

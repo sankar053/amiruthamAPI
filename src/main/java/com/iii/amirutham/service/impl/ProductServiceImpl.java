@@ -20,6 +20,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.iii.amirutham.dto.model.ProductDto;
 import com.iii.amirutham.dto.model.ProductMediaDto;
+import com.iii.amirutham.dto.model.SequnceDto;
 import com.iii.amirutham.exception.FileStorageException;
 import com.iii.amirutham.exception.MyFileNotFoundException;
 import com.iii.amirutham.exception.UserNotFoundException;
@@ -29,6 +30,7 @@ import com.iii.amirutham.model.product.ProductMediaGallary;
 import com.iii.amirutham.repo.CategoryRepository;
 import com.iii.amirutham.repo.ProductRepository;
 import com.iii.amirutham.service.ProductService;
+import com.iii.amirutham.service.SequenceService;
 import com.iii.amirutham.utills.AmirthumUtills;
 
 @Service
@@ -42,6 +44,9 @@ public class ProductServiceImpl implements ProductService {
 
 	@Autowired
 	private CategoryRepository categryRepo;
+	
+	@Autowired
+	private SequenceService seqservice;
 
 	@Override
 	public AmiruthamProducts addImgToProduct(String productstr, List<MultipartFile> files) {
@@ -52,7 +57,9 @@ public class ProductServiceImpl implements ProductService {
 		if (catogory.isPresent()) {
 			AmiruthamProducts product = new AmiruthamProducts();
 			product.setCategory(catogory.get());
-			product.setProductCode(productsDto.getProductCode());
+			SequnceDto sequence =seqservice.findMySeQuence("PRODUCT");
+			product.setProductCode(sequence.getSeqChar()+String.format("%05d", sequence.getSeqNxtVal()));
+			seqservice.updateMySeQuence(sequence);
 			product.setProductNm(productsDto.getProductNm());
 			product.setProductDesc(productsDto.getProductDesc());
 

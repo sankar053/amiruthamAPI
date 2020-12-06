@@ -1,14 +1,12 @@
 package com.iii.amirutham.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,10 +16,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
+import com.iii.amirutham.dto.base.CategoryRequest;
 import com.iii.amirutham.dto.model.CategoryDto;
 import com.iii.amirutham.model.product.AmiruthamCategory;
 import com.iii.amirutham.service.CategoryService;
@@ -34,10 +31,12 @@ public class CategoryController {
 	private CategoryService categoryService;
 
 	@PostMapping
-	public ResponseEntity<Object> saveCategory(@Valid @RequestBody CategoryDto categories) {
+	public ResponseEntity<Object> saveCategory(@Valid @RequestBody CategoryRequest categoryRequest) {
 
-		AmiruthamCategory createdCategory =categoryService.createCategory(categories);
-		return new ResponseEntity(createdCategory, HttpStatus.OK);
+		List<AmiruthamCategory> createdCategoryList =categoryService.createCategory(categoryRequest);
+		return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+               .body(createdCategoryList) ;
 
 	}
 	
