@@ -122,6 +122,21 @@ public class UserController {
 			return new ModelAndView("redirect:/updatePassword");
 		}
 	}
+	
+	 @GetMapping("/updatePassword")
+	    public ModelAndView updatePassword(final HttpServletRequest request, final ModelMap model, @RequestParam("messageKey" ) final Optional<String> messageKey) {
+	        Locale locale = request.getLocale();
+	        model.addAttribute("lang", locale.getLanguage());
+	        messageKey.ifPresent( key -> {
+	                    String message = messages.getMessage(key, null, locale);
+	                    model.addAttribute("message", message);
+	                }
+	        );
+
+	        return new ModelAndView("updatePassword", model);
+	    }
+	
+	
 
 	private String getAppUrl(HttpServletRequest request) {
 		return "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();

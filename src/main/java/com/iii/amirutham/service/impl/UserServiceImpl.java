@@ -21,10 +21,12 @@ import com.iii.amirutham.model.Role;
 import com.iii.amirutham.model.User;
 import com.iii.amirutham.model.UserAddress;
 import com.iii.amirutham.model.UserLocation;
+import com.iii.amirutham.model.VerificationToken;
 import com.iii.amirutham.repo.PasswordResetTokenRepository;
 import com.iii.amirutham.repo.RoleRepository;
 import com.iii.amirutham.repo.UserLocationRepository;
 import com.iii.amirutham.repo.UserRepository;
+import com.iii.amirutham.repo.VerificationTokenRepository;
 import com.iii.amirutham.service.UserService;
 import com.maxmind.geoip2.DatabaseReader;
 
@@ -49,6 +51,9 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
     private PasswordResetTokenRepository passwordTokenRepository;
+	
+	@Autowired
+    private VerificationTokenRepository tokenRepository;
 
 	@Autowired
 	@Qualifier("GeoIPCountry")
@@ -182,6 +187,13 @@ public class UserServiceImpl implements UserService {
 	private boolean isGeoIpLibEnabled() {
 		System.out.println(env.getProperty("geo.ip.lib.enabled"));
 		return false;// Boolean.parseBoolean(env.getProperty("geo.ip.lib.enabled"));
+	}
+
+	@Override
+	public void createVerificationTokenForUser(User user, String token) {
+		  final VerificationToken myToken = new VerificationToken(token, user);
+	        tokenRepository.save(myToken);
+		
 	}
 
 }

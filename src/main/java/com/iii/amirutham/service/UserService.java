@@ -28,4 +28,6 @@ public interface UserService {
 	public void createPasswordResetTokenForUser(User user, String token);
 
 	public void addUserLocation(User registered, String clientIP);
+
+	public void createVerificationTokenForUser(User user, String token);
 }
