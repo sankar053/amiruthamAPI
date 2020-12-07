@@ -1,5 +1,8 @@
 package com.iii.amirutham.config;
 
+import java.io.File;
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +18,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.iii.amirutham.service.impl.UserDetailsServiceImpl;
+import com.maxmind.geoip2.DatabaseReader;
+import com.maxmind.geoip2.exception.GeoIp2Exception;
 
 @Configuration
 @EnableWebSecurity
@@ -64,5 +69,11 @@ public class WebSecurityConfig  extends WebSecurityConfigurerAdapter {
 
 		http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 	}
+	
+	 @Bean(name="GeoIPCountry")
+	    public DatabaseReader databaseReader() throws IOException, GeoIp2Exception {
+	        final File resource = new File("src/main/resources/maxmind/geolite2-country.mmdb");
+	        return new DatabaseReader.Builder(resource).build();
+	    }
 
 }

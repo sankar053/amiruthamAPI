@@ -36,32 +36,28 @@ import lombok.Setter;
 public class User extends BaseEntity {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(unique = true, nullable = false)
 	private Integer id;
 
 	@Size(min = 2, message = "FirstName Should have Atleast two character")
-	@ApiModelProperty(notes = "FirstName Should have Atleast two character")
 	@Column(name = "AMIR_USER_FST_NM")
 	private String firstName;
 
 	@Size(min = 2, message = "LastName Should have Atleast two character")
-	@ApiModelProperty(notes = "LastName Should have Atleast two character")
 	@Column(name = "AMIR_USER_LST_NM")
 	private String lastName;
 
 	@Size(min = 10, message = "LastName Should have Atleast two character")
-	@ApiModelProperty(notes = "LastName Should have Atleast two character")
 	@Column(name = "AMIR_USER_PHN_NBR")
 	private String phoneNbr;
 
 	@Size(min = 2, message = "LastName Should have Atleast two character")
-	@ApiModelProperty(notes = "LastName Should have Atleast two character")
 	@Column(name = "AMIR_USER_MAIL_ADDR")
 	private String emailAddress;
 
 	@Size(min = 2, message = "LastName Should have Atleast two character")
-	@ApiModelProperty(notes = "LastName Should have Atleast two character")
-	@Column(name = "AMIR_USER_PWD")
+	@Column(name = "AMIR_USER_PWD",length = 60)
 	private String password;
 
 	@OneToMany( cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
@@ -70,8 +66,8 @@ public class User extends BaseEntity {
 	
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(	name = "user_roles", 
-				joinColumns = @JoinColumn(name = "user_id"), 
-				inverseJoinColumns = @JoinColumn(name = "role_id"))
+				joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), 
+				inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
 	private Set<Role> roles = new HashSet<>();
 
 	/*

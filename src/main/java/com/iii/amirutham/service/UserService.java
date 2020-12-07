@@ -19,7 +19,13 @@ public interface UserService {
 	
 	public Optional<User> findUserById(int id);
 	
-	public User createUser(UserDto userData);
+	public User registerNewUserAccount(UserDto userData);
 	
 	public void deleteUserById(int id);
+
+	public Optional<User> findUserByEmail(String userEmailORPhone);
+
+	public void createPasswordResetTokenForUser(User user, String token);
+
+	public void addUserLocation(User registered, String clientIP);
 }
