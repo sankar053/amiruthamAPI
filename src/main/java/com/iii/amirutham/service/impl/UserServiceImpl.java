@@ -14,7 +14,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.iii.amirutham.dto.model.UserDto;
+import com.iii.amirutham.dto.model.ValidateOtpDto;
 import com.iii.amirutham.exception.UserAlreadyExistException;
+import com.iii.amirutham.exception.UserNotFoundException;
 import com.iii.amirutham.model.ERole;
 import com.iii.amirutham.model.PasswordResetToken;
 import com.iii.amirutham.model.Role;
@@ -28,6 +30,7 @@ import com.iii.amirutham.repo.UserLocationRepository;
 import com.iii.amirutham.repo.UserRepository;
 import com.iii.amirutham.repo.VerificationTokenRepository;
 import com.iii.amirutham.service.UserService;
+import com.iii.amirutham.utills.AmirthumUtills;
 import com.maxmind.geoip2.DatabaseReader;
 
 /**
@@ -38,22 +41,22 @@ import com.maxmind.geoip2.DatabaseReader;
 public class UserServiceImpl implements UserService {
 
 	@Autowired
-	private UserRepository userRepo;
+	private UserRepository userRepository;
 
 	@Autowired
 	RoleRepository roleRepository;
 
 	@Autowired
-	PasswordEncoder encoder;
+	PasswordEncoder passwordEncoder;
 
 	@Autowired
 	private Environment env;
-	
+
 	@Autowired
-    private PasswordResetTokenRepository passwordTokenRepository;
-	
+	private PasswordResetTokenRepository passwordTokenRepository;
+
 	@Autowired
-    private VerificationTokenRepository tokenRepository;
+	private VerificationTokenRepository tokenRepository;
 
 	@Autowired
 	@Qualifier("GeoIPCountry")
@@ -65,31 +68,31 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<User> findAllUsers() {
 		// TODO Auto-generated method stub
-		return userRepo.findAll();
+		return userRepository.findAll();
 	}
 
 	@Override
 	public Optional<User> findUserById(int id) {
 		// TODO Auto-generated method stub
-		return userRepo.findById(id);
+		return userRepository.findById(id);
 	}
 
 	@Override
 	public User registerNewUserAccount(UserDto accountDto) {
 
-		if (userRepo.existsByPhoneNbr(accountDto.getPhoneNbr())) {
+		if (userRepository.existsByPhoneNbr(accountDto.getPhoneNbr())) {
 			throw new UserAlreadyExistException(
 					"There is an account with that Phone Number: " + accountDto.getPhoneNbr());
 		}
 
-		if (userRepo.existsByEmailAddress(accountDto.getEmailAddress())) {
+		if (userRepository.existsByEmailAddress(accountDto.getEmailAddress())) {
 			throw new UserAlreadyExistException(
 					"There is an account with that email address: " + accountDto.getEmailAddress());
 		}
 
 		// Create new user's account
 		User user = new User(null, accountDto.getFirstName(), accountDto.getLastName(), accountDto.getPhoneNbr(),
-				accountDto.getEmailAddress(), encoder.encode(accountDto.getPassword()), null, null);
+				accountDto.getEmailAddress(), passwordEncoder.encode(accountDto.getPassword()), null, null);
 
 		Set<String> strRoles = accountDto.getRole();
 		Set<Role> roles = new HashSet<>();
@@ -120,25 +123,23 @@ public class UserServiceImpl implements UserService {
 				}
 			});
 		}
-		if(null !=accountDto
-				.getAddress() && accountDto
-				.getAddress().size()>0) {
-		List<UserAddress> addressDao = accountDto
-				.getAddress().stream().map(addr -> new UserAddress(null, addr.getAddress1(), addr.getAddress2(),
-						addr.getAddressType(), addr.getCity(), addr.getState(), addr.getPostalCopde()))
-				.collect(Collectors.toList());
-		user.setAddress(addressDao);
-	}
+		if (null != accountDto.getAddress() && accountDto.getAddress().size() > 0) {
+			List<UserAddress> addressDao = accountDto
+					.getAddress().stream().map(addr -> new UserAddress(null, addr.getAddress1(), addr.getAddress2(),
+							addr.getAddressType(), addr.getCity(), addr.getState(), addr.getPostalCopde()))
+					.collect(Collectors.toList());
+			user.setAddress(addressDao);
+		}
 
 		user.setRoles(roles);
 
-		return userRepo.save(user);
+		return userRepository.save(user);
 
 	}
 
 	@Override
 	public void deleteUserById(int id) {
-		userRepo.deleteById(id);
+		userRepository.deleteById(id);
 		;
 		// TODO Auto-generated method stub
 
@@ -147,21 +148,28 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public Optional<User> findUserByEmail(String userEmailORPhone) {
 		// TODO Auto-generated method stub
-		
-		if (userRepo.existsByPhoneNbr(userEmailORPhone)) {
-			return userRepo.findByPhoneNbr(userEmailORPhone);
+
+		if (userRepository.existsByPhoneNbr(userEmailORPhone)) {
+			return userRepository.findByPhoneNbr(userEmailORPhone);
 		}
 
-		if (userRepo.existsByEmailAddress(userEmailORPhone)) {
-			return userRepo.findByEmailAddress(userEmailORPhone);
+		if (userRepository.existsByEmailAddress(userEmailORPhone)) {
+			return userRepository.findByEmailAddress(userEmailORPhone);
 		}
 		return null;
 	}
 
+	/*
+	 * @Override public void createPasswordResetTokenForUser(User user, String
+	 * token) { final PasswordResetToken myToken = new PasswordResetToken(token,
+	 * user); passwordTokenRepository.save(myToken); }
+	 */
 	@Override
-	public void createPasswordResetTokenForUser(User user, String token) {
-		  final PasswordResetToken myToken = new PasswordResetToken(token, user);
-	        passwordTokenRepository.save(myToken);
+	public String createPasswordResetTokenForUser(User user, String token) {
+		String otp = AmirthumUtills.generateOTP();
+		final PasswordResetToken myToken = new PasswordResetToken(token, user, otp);
+		passwordTokenRepository.save(myToken);
+		return otp;
 	}
 
 	@Override
@@ -191,9 +199,25 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void createVerificationTokenForUser(User user, String token) {
-		  final VerificationToken myToken = new VerificationToken(token, user);
-	        tokenRepository.save(myToken);
-		
+		final VerificationToken myToken = new VerificationToken(token, user);
+		tokenRepository.save(myToken);
+
+	}
+
+	@Override
+	public boolean updatePassword(ValidateOtpDto otpDto) {
+
+		Optional<User> user = findUserByEmail(otpDto.getUserName());
+
+		if (user.isPresent()) {
+			user.get().setPassword(passwordEncoder.encode(otpDto.getChangePassword()));
+			userRepository.save(user.get());
+			return true;
+		} else {
+
+			throw new UserNotFoundException("");
+		}
+
 	}
 
 }

@@ -1,7 +1,10 @@
 package com.iii.amirutham.controller;
 
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -18,6 +21,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,16 +31,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.iii.amirutham.dto.base.EmailTemplate;
 import com.iii.amirutham.dto.base.GenericResponse;
 import com.iii.amirutham.dto.base.OnRegistrationCompleteEvent;
 import com.iii.amirutham.dto.model.UserDto;
+import com.iii.amirutham.dto.model.ValidateOtpDto;
 import com.iii.amirutham.exception.UserNotFoundException;
 import com.iii.amirutham.model.User;
 import com.iii.amirutham.service.ISecurityUserService;
 import com.iii.amirutham.service.UserService;
+import com.iii.amirutham.utills.OtpService;
 
 @RestController
 @RequestMapping
@@ -51,6 +60,9 @@ public class UserController {
 
 	@Autowired
 	private JavaMailSender mailSender;
+
+	@Autowired
+	public OtpService otpService;
 
 	@Autowired
 	private Environment env;
@@ -95,11 +107,24 @@ public class UserController {
 
 	}
 
+	@PostMapping("/user/forgetPassword")
+	public GenericResponse forgetPassword(HttpServletRequest request,
+			@RequestParam("username") String userEmailORPhone) {
+		Optional<User> user = userService.findUserByEmail(userEmailORPhone);
+		if (null == user) {
+			throw new UserNotFoundException(messages.getMessage("auth.message.invalidUser", null, request.getLocale()));
+		}
+		String token = UUID.randomUUID().toString();
+		String otp = userService.createPasswordResetTokenForUser(user.get(), token);
+		 constructOTPEmail(user.get(),request.getLocale(),otp);
+		return new GenericResponse(messages.getMessage("message.otpEmail", null, request.getLocale()));
+	}
+
 	@PostMapping("/user/resetPassword")
 	public GenericResponse resetPassword(HttpServletRequest request,
 			@RequestParam("username") String userEmailORPhone) {
 		Optional<User> user = userService.findUserByEmail(userEmailORPhone);
-		System.out.println(request.getLocale());
+
 		if (null == user) {
 			throw new UserNotFoundException("");
 		}
@@ -107,6 +132,49 @@ public class UserController {
 		userService.createPasswordResetTokenForUser(user.get(), token);
 		mailSender.send(constructResetTokenEmail(getAppUrl(request), request.getLocale(), token, user.get()));
 		return new GenericResponse(messages.getMessage("message.resetPasswordEmail", null, request.getLocale()));
+	}
+
+	public void constructOTPEmail(User to, Locale locale, String otp) {
+
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String username = auth.getName();
+		LOGGER.info("OTP : " + otp);
+
+		// Generate The Template to send OTP
+		EmailTemplate template = new EmailTemplate("SendOtp.html");
+
+		Map<String, String> replacements = new HashMap<String, String>();
+		replacements.put("user", username);
+		replacements.put("otpnum", otp);
+
+		String message = template.getTemplate(replacements);
+
+		sendOtpMessage(to, "OTP -SpringBoot", message, locale);
+	}
+
+	public void sendOtpMessage(User to, String subject, String body, final Locale locale) {
+		final String message = messages.getMessage("message.resetPassword", null, locale);
+		mailSender.send(constructEmail(subject, body, to));
+
+	}
+
+	@PostMapping("/user/validateOtp")
+	public @ResponseBody GenericResponse validateOtp(@Valid @RequestBody ValidateOtpDto otpDto,final HttpServletRequest request) {
+
+		final String result = securityUserService.validateOneTimePassword(otpDto.getOneTimePassword());
+
+		if (result != null) {
+			return new GenericResponse(messages.getMessage("auth.message." + result, null, request.getLocale()));
+		}
+
+		boolean updated = userService.updatePassword(otpDto);
+		if (updated) {
+
+			return new GenericResponse(messages.getMessage("message.resetPasswordSuc", null, request.getLocale()));
+		} else {
+			return new GenericResponse(messages.getMessage("auth.message.invalid", null, request.getLocale()));
+		}
+
 	}
 
 	@GetMapping("/user/changePassword")
@@ -122,21 +190,19 @@ public class UserController {
 			return new ModelAndView("redirect:/updatePassword");
 		}
 	}
-	
-	 @GetMapping("/updatePassword")
-	    public ModelAndView updatePassword(final HttpServletRequest request, final ModelMap model, @RequestParam("messageKey" ) final Optional<String> messageKey) {
-	        Locale locale = request.getLocale();
-	        model.addAttribute("lang", locale.getLanguage());
-	        messageKey.ifPresent( key -> {
-	                    String message = messages.getMessage(key, null, locale);
-	                    model.addAttribute("message", message);
-	                }
-	        );
 
-	        return new ModelAndView("updatePassword", model);
-	    }
-	
-	
+	@GetMapping("/updatePassword")
+	public ModelAndView updatePassword(final HttpServletRequest request, final ModelMap model,
+			@RequestParam("messageKey") final Optional<String> messageKey) {
+		Locale locale = request.getLocale();
+		model.addAttribute("lang", locale.getLanguage());
+		messageKey.ifPresent(key -> {
+			String message = messages.getMessage(key, null, locale);
+			model.addAttribute("message", message);
+		});
+
+		return new ModelAndView("updatePassword", model);
+	}
 
 	private String getAppUrl(HttpServletRequest request) {
 		return "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
@@ -155,6 +221,8 @@ public class UserController {
 		email.setText(body);
 		email.setTo(user.getEmailAddress());
 		email.setFrom(env.getProperty("support.email"));
+		email.setSentDate(new Date());
+
 		return email;
 	}
 

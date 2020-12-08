@@ -3,6 +3,8 @@
  */
 package com.iii.amirutham.utills;
 
+import java.util.Random;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -27,6 +29,12 @@ public class AmirthumUtills {
 
 	}
 	
+	 public static String generateOTP(){
+		 
+		Random random = new Random();	
+		int otp = 100000 + random.nextInt(900000);
+		return String.valueOf(otp);
+	 }
 	
 
 }

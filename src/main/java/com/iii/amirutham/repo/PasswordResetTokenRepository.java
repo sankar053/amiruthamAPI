@@ -13,6 +13,8 @@ import com.iii.amirutham.model.User;
 public interface PasswordResetTokenRepository extends JpaRepository<PasswordResetToken, Long> {
 
     PasswordResetToken findByToken(String token);
+    
+    PasswordResetToken findByOneTimePassword(String otp);
 
     PasswordResetToken findByUser(User user);
 

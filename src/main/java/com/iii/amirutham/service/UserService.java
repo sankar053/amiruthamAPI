@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.iii.amirutham.dto.model.UserDto;
+import com.iii.amirutham.dto.model.ValidateOtpDto;
 import com.iii.amirutham.model.User;
 
 /**
@@ -24,10 +25,12 @@ public interface UserService {
 	public void deleteUserById(int id);
 
 	public Optional<User> findUserByEmail(String userEmailORPhone);
-
-	public void createPasswordResetTokenForUser(User user, String token);
+	
+	public boolean updatePassword(ValidateOtpDto otpDto);
 
 	public void addUserLocation(User registered, String clientIP);
 
 	public void createVerificationTokenForUser(User user, String token);
+
+	String createPasswordResetTokenForUser(User user, String token);
 }

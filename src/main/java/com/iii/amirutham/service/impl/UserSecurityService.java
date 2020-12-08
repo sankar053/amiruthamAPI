@@ -35,4 +35,14 @@ public class UserSecurityService implements ISecurityUserService {
         final Calendar cal = Calendar.getInstance();
         return passToken.getExpiryDate().before(cal.getTime());
     }
+
+	@Override
+	public String validateOneTimePassword(String otp) {
+		// TODO Auto-generated method stub
+		 final PasswordResetToken passToken = passwordTokenRepository.findByOneTimePassword(otp);
+
+	        return !isTokenFound(passToken) ? "invalidToken"
+	                : isTokenExpired(passToken) ? "expired"
+	                : null;
+	}
 }
