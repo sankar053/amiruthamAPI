@@ -44,7 +44,6 @@ import com.iii.amirutham.exception.UserNotFoundException;
 import com.iii.amirutham.model.User;
 import com.iii.amirutham.service.ISecurityUserService;
 import com.iii.amirutham.service.UserService;
-import com.iii.amirutham.utills.OtpService;
 
 @RestController
 @RequestMapping
@@ -60,9 +59,6 @@ public class UserController {
 
 	@Autowired
 	private JavaMailSender mailSender;
-
-	@Autowired
-	public OtpService otpService;
 
 	@Autowired
 	private Environment env;
