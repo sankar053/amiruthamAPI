@@ -40,7 +40,7 @@ public class ProductController {
 	public ResponseEntity<Object> saveProducts(@RequestPart("payload") String payload,
 			@RequestPart("file") @Valid @NotNull @NotBlank List<MultipartFile> files) {
 		
-			AmiruthamProducts productDao=	productService.addImgToProduct(payload,files);
+			AmiruthamProducts productDao=	productService.addProductandMedia(payload,files);
 		
 
 		return  ResponseEntity.ok()
@@ -76,10 +76,11 @@ public class ProductController {
 
 	}
 	
-	@GetMapping("/downloadFile/{fileName:.+}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
+	@GetMapping("/downloadFile/{fileName:.+}/{catCode}")
+    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, @PathVariable String catCode,
+    		HttpServletRequest request) {
         // Load file as Resource
-        Resource resource = productService.loadProductAsResource(fileName);
+        Resource resource = productService.loadProductAsResource(fileName,catCode);
 
         // Try to determine file's content type
         String contentType = null;

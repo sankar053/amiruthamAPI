@@ -38,9 +38,9 @@ public class ProductServiceImpl implements ProductService {
 
 	@Autowired
 	private ProductRepository productRepo;
-	private String Upload_Path = "C:\\catalogs\\";
+	private String Upload_Path = "C:\\Amirthum\\";
 
-	private final Path fileStorageLocation = Paths.get(Upload_Path).toAbsolutePath().normalize();
+	//private Path fileStorageLocation = Paths.get(Upload_Path).toAbsolutePath().normalize();
 
 	@Autowired
 	private CategoryRepository categryRepo;
@@ -49,11 +49,11 @@ public class ProductServiceImpl implements ProductService {
 	private SequenceService seqservice;
 
 	@Override
-	public AmiruthamProducts addImgToProduct(String productstr, List<MultipartFile> files) {
+	public AmiruthamProducts addProductandMedia(String productstr, List<MultipartFile> files) {
 
 		ProductDto productsDto = (ProductDto) AmirthumUtills.convertJsontoObject(ProductDto.class, productstr);
 		Optional<AmiruthamCategory> catogory = categryRepo.findById(Integer.valueOf(productsDto.getCategoryid()));
-
+		Path fileStorageLocation = Paths.get(Upload_Path+catogory.get().getCategoryCd()+"//").toAbsolutePath().normalize();
 		if (catogory.isPresent()) {
 			AmiruthamProducts product = new AmiruthamProducts();
 			product.setCategory(catogory.get());
@@ -156,9 +156,10 @@ public class ProductServiceImpl implements ProductService {
 		productRepo.deleteById(id);
 	}
 	
-	 public Resource loadProductAsResource(String fileName) {
+	 public Resource loadProductAsResource(String fileName,String catCode) {
 	        try {
-	            Path filePath = this.fileStorageLocation.resolve(fileName).normalize();
+	        	Path fileStorageLocation = Paths.get(Upload_Path+catCode+"//").toAbsolutePath().normalize();
+	            Path filePath = fileStorageLocation.resolve(fileName).normalize();
 	            Resource resource = new UrlResource(filePath.toUri());
 	            if(resource.exists()) {
 	                return resource;

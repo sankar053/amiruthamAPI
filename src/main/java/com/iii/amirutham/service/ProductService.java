@@ -13,8 +13,8 @@ public interface ProductService {
 	public List<ProductDto> retriveProducts();
 	public ProductDto retriveProductById(int id);
 	public void deleteProductById(int id);
-	public AmiruthamProducts addImgToProduct(String prodStr,List<MultipartFile> files);
-	public Resource loadProductAsResource(String fileName);
+	public AmiruthamProducts addProductandMedia(String prodStr,List<MultipartFile> files);
+	public Resource loadProductAsResource(String fileName,String catid);
 	
 
 
