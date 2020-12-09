@@ -72,7 +72,7 @@ public class ProductServiceImpl implements ProductService {
 						if (fileName.contains("..")) {
 							throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
 						}
-						Path targetLocation = this.fileStorageLocation.resolve(fileName);
+						Path targetLocation = fileStorageLocation.resolve(fileName);
 						Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 						
 						String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
