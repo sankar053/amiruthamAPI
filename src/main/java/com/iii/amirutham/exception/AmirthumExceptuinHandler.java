@@ -5,12 +5,15 @@ import java.util.Date;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import com.iii.amirutham.dto.base.GenericResponse;
 
 @ControllerAdvice
 @RestController
@@ -44,13 +47,15 @@ public class AmirthumExceptuinHandler extends ResponseEntityExceptionHandler {
 
 	}
 
-	@Override
-	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-			HttpHeaders headers, HttpStatus status, WebRequest request) {
-
-		ExceptionResponse exceptionResponse = new ExceptionResponse("4002","Input Validation Failed", new Date(),
-				ex.getBindingResult().getFieldError().toString());
-		return new ResponseEntity<Object>(exceptionResponse, HttpStatus.BAD_REQUEST);
-	}
+	
+	
+	 @Override
+	    protected ResponseEntity<Object> handleMethodArgumentNotValid(final MethodArgumentNotValidException ex,
+	    		final HttpHeaders headers, final HttpStatus status, final WebRequest request) {
+	        logger.error("400 Status Code", ex);
+	        final BindingResult result = ex.getBindingResult();
+	        final GenericResponse bodyOfResponse = new GenericResponse(result.getAllErrors(), "Invalid" + result.getObjectName());
+	        return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+	    }
 
 }

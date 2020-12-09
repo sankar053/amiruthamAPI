@@ -46,10 +46,10 @@ public class AmiruthamProducts extends BaseEntity {
 	@Column(name = "PROD_NME")
 	private String productNm;
 	
-	@Column(name = "PROD_DESC",length = 1500)
+	@Column(name = "PROD_DESC",columnDefinition="LONGTEXT")
 	private String productDesc;
 	
-	@Column(name = "PROD_BEN_USE",length = 1500)
+	@Column(name = "PROD_BEN_USE",columnDefinition="LONGTEXT")
 	private String productuses;
 	
 	@ManyToOne

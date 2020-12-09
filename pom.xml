@@ -17,16 +17,23 @@
 
 	<properties>
 		<java.version>11</java.version>
-		 <geoip2.version>2.12.0</geoip2.version>
+		<geoip2.version>2.12.0</geoip2.version>
+		<logstash-logback-encoder.version>4.8</logstash-logback-encoder.version>
 	</properties>
 
 	<dependencies>
-	
-	  <dependency>
-            <groupId>com.maxmind.geoip2</groupId>
-            <artifactId>geoip2</artifactId>
-            <version>${geoip2.version}</version>
-        </dependency>
+
+		<dependency>
+			<groupId>com.maxmind.geoip2</groupId>
+			<artifactId>geoip2</artifactId>
+			<version>${geoip2.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.logstash.logback</groupId>
+			<artifactId>logstash-logback-encoder</artifactId>
+			<version>${logstash-logback-encoder.version}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -37,17 +44,17 @@
 			<artifactId>spring-boot-devtools</artifactId>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
-<!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
-<dependency>
-    <groupId>com.google.guava</groupId>
-    <artifactId>guava</artifactId>
-    <version>21.0</version>
-</dependency>
+		<!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>21.0</version>
+		</dependency>
 
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-thymeleaf</artifactId>
-</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
