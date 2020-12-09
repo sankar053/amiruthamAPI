@@ -43,6 +43,9 @@ public class AmiruthamProducts extends BaseEntity {
 	@Column(name = "PROD_CODE")
 	private String productCode;
 	
+	@Column(name = "PROD_CAT_CODE")
+	private String productCategoryCode;
+	
 	@Column(name = "PROD_NME")
 	private String productNm;
 	

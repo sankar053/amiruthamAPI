@@ -41,6 +41,9 @@ public class ProductMediaGallary extends BaseEntity{
 	
 	@Column(name = "PROD_MED_TYPE")
 	private String prodImgType;
+	
+	@Column(name = "MED_PROD_CODE")
+	private String productCode;
 
 	
 	@Column(name = "PROD_MED_SIZE")
