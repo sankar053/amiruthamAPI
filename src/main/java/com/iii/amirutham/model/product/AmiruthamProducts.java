@@ -43,6 +43,9 @@ public class AmiruthamProducts extends BaseEntity {
 	@Column(name = "PROD_CODE")
 	private String productCode;
 	
+	@Column(name = "PROD_BRAND")
+	private String productBrand;
+	
 	@Column(name = "PROD_CAT_CODE")
 	private String productCategoryCode;
 	
@@ -55,6 +58,9 @@ public class AmiruthamProducts extends BaseEntity {
 	@Column(name = "PROD_BEN_USE",columnDefinition="LONGTEXT")
 	private String productuses;
 	
+	@Column(name = "PROD_SPEC_DTLS",columnDefinition="LONGTEXT")
+	private String productspec;
+	
 	@ManyToOne
     @JoinColumn(name="cart_id", nullable=false)
     private AmiruthamCategory category;
@@ -64,6 +70,12 @@ public class AmiruthamProducts extends BaseEntity {
         })
 	@JoinColumn(name = "PROD_ID")
 	private List<ProductMediaGallary> prodImgs;
+    
+    @OneToMany(fetch = FetchType.LAZY, cascade = {
+   		 CascadeType.ALL
+       })
+	@JoinColumn(name = "PROD_ID")
+	private List<ProductVarient> prodVarient;
 
 	public AmiruthamProducts(Integer id, String productCode, String productNm, String productDesc, String productuses) {
 		super();
