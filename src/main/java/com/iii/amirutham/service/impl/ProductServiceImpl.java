@@ -138,24 +138,33 @@ public class ProductServiceImpl implements ProductService {
 		// TODO Auto-generated method stub
 		Optional<AmiruthamProducts> product = productRepo.findById(id);
 		ProductDto productdto = null;
+		
+		
 		if (product.isPresent()) {
 			AmiruthamProducts prod = product.get();
-			List<ProductMediaDto> mediaarray = new ArrayList<ProductMediaDto>();
+			List<ProductMediaDto> mediaarray = null;
+			List<ProductVarientDto> productVarient = null;
 			if (null != prod.getProdImgs() && prod.getProdImgs().size() > 0) {
-				for (ProductMediaGallary prodmed : prod.getProdImgs()) {
-					mediaarray.add(new ProductMediaDto(prodmed.getId(), prodmed.getProdImgNm(),
-							prodmed.getProdImgPath(), prodmed.getProdImgUrl(),prodmed.getProdImgType(),prodmed.getProdImgSize()));
-				}
-				// }
+				mediaarray = prod.getProdImgs().stream()
+						.map(prodmed -> new ProductMediaDto(prodmed.getId(), prodmed.getProdImgNm(),
+								prodmed.getProdImgPath(), prodmed.getProdImgUrl(), prodmed.getProdImgType(),
+								prodmed.getProdImgSize()))
+						.collect(Collectors.toList());
 
 			}
-			/*
-			 * productdto = (new ProductDto(prod.getId(), prod.getProductCode(),
-			 * prod.getProductNm(), prod.getProductDesc(), prod.getProductuses(),
-			 * mediaarray));
-			 */
-		}
+			if (null != prod.getProdVarient() && prod.getProdVarient().size() > 0) {
+				productVarient = prod.getProdVarient().stream()
+						.map(varient -> new ProductVarientDto(varient.getId(), varient.getMaximumRetailPrice(),
+								varient.getSellingPrice(), varient.getSavedPrice(), varient.getDiscount(),
+								varient.getUnit(), varient.getUnitType(), varient.getManufactureDate(),
+								varient.getBestBeforeDate(), prod.getId()))
+						.collect(Collectors.toList());
+			}
+			productdto =new ProductDto(prod.getId(), String.valueOf(prod.getCategory().getId()), prod.getProductCode(),
+							prod.getProductNm(), prod.getProductDesc(), prod.getProductuses(), mediaarray,productVarient);
 
+			}
+	
 		return productdto;
 
 	}
