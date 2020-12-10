@@ -159,11 +159,7 @@ public class UserServiceImpl implements UserService {
 		return null;
 	}
 
-	/*
-	 * @Override public void createPasswordResetTokenForUser(User user, String
-	 * token) { final PasswordResetToken myToken = new PasswordResetToken(token,
-	 * user); passwordTokenRepository.save(myToken); }
-	 */
+	
 	@Override
 	public String createPasswordResetTokenForUser(User user, String token) {
 		String otp = AmirthumUtills.generateOTP();

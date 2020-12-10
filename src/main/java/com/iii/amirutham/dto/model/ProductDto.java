@@ -32,6 +32,7 @@ public class ProductDto {
 	private String productuses;
 	
 	List<ProductMediaDto> prodMedias;
+	List<ProductVarientDto> prodVarient;
 	
    
 }

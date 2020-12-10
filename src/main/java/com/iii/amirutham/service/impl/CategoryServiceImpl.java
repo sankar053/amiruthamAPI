@@ -3,6 +3,7 @@ package com.iii.amirutham.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,12 +13,15 @@ import com.iii.amirutham.dto.base.CategoryRequest;
 import com.iii.amirutham.dto.model.CategoryDto;
 import com.iii.amirutham.dto.model.ProductDto;
 import com.iii.amirutham.dto.model.ProductMediaDto;
+import com.iii.amirutham.dto.model.ProductVarientDto;
 import com.iii.amirutham.dto.model.SequnceDto;
 import com.iii.amirutham.exception.AmirthumCommonException;
 import com.iii.amirutham.exception.UserNotFoundException;
+import com.iii.amirutham.model.UserAddress;
 import com.iii.amirutham.model.product.AmiruthamCategory;
 import com.iii.amirutham.model.product.AmiruthamProducts;
 import com.iii.amirutham.model.product.ProductMediaGallary;
+import com.iii.amirutham.model.product.ProductVarient;
 import com.iii.amirutham.repo.CategoryRepository;
 import com.iii.amirutham.service.CategoryService;
 import com.iii.amirutham.service.SequenceService;
@@ -28,11 +32,9 @@ public class CategoryServiceImpl implements CategoryService {
 
 	@Autowired
 	private CategoryRepository categryRepo;
-	
+
 	@Autowired
 	private SequenceService seqservice;
-	
-	
 
 	/*
 	 * @Autowired private ProductRepository productRepo;
@@ -40,11 +42,11 @@ public class CategoryServiceImpl implements CategoryService {
 	@Override
 	public List<AmiruthamCategory> createCategory(CategoryRequest categoryRequest) {
 		// TODO Auto-generated method stub
-		List<AmiruthamCategory> categoryList =new ArrayList<>();
-		for(CategoryDto categoryDto:categoryRequest.getCategories()) {
+		List<AmiruthamCategory> categoryList = new ArrayList<>();
+		for (CategoryDto categoryDto : categoryRequest.getCategories()) {
 			AmiruthamCategory category = new AmiruthamCategory();
-			SequnceDto sequence =seqservice.findMySeQuence("CATEGERY");
-			category.setCategoryCd(sequence.getSeqChar()+String.format("%05d", sequence.getSeqNxtVal()));
+			SequnceDto sequence = seqservice.findMySeQuence("CATEGERY");
+			category.setCategoryCd(sequence.getSeqChar() + String.format("%05d", sequence.getSeqNxtVal()));
 			seqservice.updateMySeQuence(sequence);
 			category.setCategoryDesc(categoryDto.getCategoryDesc());
 			category.setCategoryNm(categoryDto.getCategoryNm());
@@ -65,16 +67,27 @@ public class CategoryServiceImpl implements CategoryService {
 			catgryDto.setCategoryNm(cato.getCategoryNm());
 
 			for (AmiruthamProducts prod : cato.getProducts()) {
-				List<ProductMediaDto> mediaarray = new ArrayList<ProductMediaDto>();
+				List<ProductMediaDto> mediaarray = null;
+				List<ProductVarientDto> productVarient = null;
 				if (null != prod.getProdImgs() && prod.getProdImgs().size() > 0) {
-					for (ProductMediaGallary prodmed : prod.getProdImgs()) {
-						mediaarray.add(new ProductMediaDto(prodmed.getId(), prodmed.getProdImgNm(),
-								prodmed.getProdImgPath(), prodmed.getProdImgUrl(),prodmed.getProdImgType(),prodmed.getProdImgSize()));
-					}
-					
+					mediaarray = prod.getProdImgs().stream()
+							.map(prodmed -> new ProductMediaDto(prodmed.getId(), prodmed.getProdImgNm(),
+									prodmed.getProdImgPath(), prodmed.getProdImgUrl(), prodmed.getProdImgType(),
+									prodmed.getProdImgSize()))
+							.collect(Collectors.toList());
+
 				}
+				if (null != prod.getProdVarient() && prod.getProdVarient().size() > 0) {
+					productVarient = prod.getProdVarient().stream()
+							.map(varient -> new ProductVarientDto(varient.getId(), varient.getMaximumRetailPrice(),
+									varient.getSellingPrice(), varient.getSavedPrice(), varient.getDiscount(),
+									varient.getUnit(), varient.getUnitType(), varient.getManufactureDate(),
+									varient.getBestBeforeDate(), prod.getId()))
+							.collect(Collectors.toList());
+				}
+
 				catgryDto.getProducts().add(new ProductDto(prod.getId(), "", prod.getProductCode(), prod.getProductNm(),
-						prod.getProductDesc(), prod.getProductuses(), mediaarray));
+						prod.getProductDesc(), prod.getProductuses(), mediaarray, productVarient));
 			}
 			catoglistdto.add(catgryDto);
 
@@ -102,17 +115,27 @@ public class CategoryServiceImpl implements CategoryService {
 			 * products.size() > 0) {
 			 */
 			for (AmiruthamProducts prod : cato.getProducts()) {
-				List<ProductMediaDto> mediaarray = new ArrayList<ProductMediaDto>();
+				List<ProductMediaDto> mediaarray = null;
+				List<ProductVarientDto> productVarient = null;
 				if (null != prod.getProdImgs() && prod.getProdImgs().size() > 0) {
-					for (ProductMediaGallary prodmed : prod.getProdImgs()) {
-						mediaarray.add(new ProductMediaDto(prodmed.getId(), prodmed.getProdImgNm(),
-								prodmed.getProdImgPath(), prodmed.getProdImgUrl(),prodmed.getProdImgType(),prodmed.getProdImgSize()));
-					}
-					// }
+					mediaarray = prod.getProdImgs().stream()
+							.map(prodmed -> new ProductMediaDto(prodmed.getId(), prodmed.getProdImgNm(),
+									prodmed.getProdImgPath(), prodmed.getProdImgUrl(), prodmed.getProdImgType(),
+									prodmed.getProdImgSize()))
+							.collect(Collectors.toList());
 
 				}
+				if (null != prod.getProdVarient() && prod.getProdVarient().size() > 0) {
+					productVarient = prod.getProdVarient().stream()
+							.map(varient -> new ProductVarientDto(varient.getId(), varient.getMaximumRetailPrice(),
+									varient.getSellingPrice(), varient.getSavedPrice(), varient.getDiscount(),
+									varient.getUnit(), varient.getUnitType(), varient.getManufactureDate(),
+									varient.getBestBeforeDate(), prod.getId()))
+							.collect(Collectors.toList());
+				}
+
 				catgryDto.getProducts().add(new ProductDto(prod.getId(), "", prod.getProductCode(), prod.getProductNm(),
-						prod.getProductDesc(), prod.getProductuses(), mediaarray));
+						prod.getProductDesc(), prod.getProductuses(), mediaarray, productVarient));
 			}
 			return catgryDto;
 		}

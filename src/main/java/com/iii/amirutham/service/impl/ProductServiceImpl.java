@@ -9,6 +9,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -20,6 +21,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.iii.amirutham.dto.model.ProductDto;
 import com.iii.amirutham.dto.model.ProductMediaDto;
+import com.iii.amirutham.dto.model.ProductVarientDto;
 import com.iii.amirutham.dto.model.SequnceDto;
 import com.iii.amirutham.exception.FileStorageException;
 import com.iii.amirutham.exception.MyFileNotFoundException;
@@ -104,19 +106,27 @@ public class ProductServiceImpl implements ProductService {
 		List<ProductDto> productlistdto = new ArrayList<ProductDto>();
 
 		for (AmiruthamProducts prod : prodList) {
-			List<ProductMediaDto> mediaarray = new ArrayList<ProductMediaDto>();
+			List<ProductMediaDto> mediaarray = null;
+			List<ProductVarientDto> productVarient = null;
 			if (null != prod.getProdImgs() && prod.getProdImgs().size() > 0) {
-				for (ProductMediaGallary prodmed : prod.getProdImgs()) {
-					mediaarray.add(new ProductMediaDto(prodmed.getId(), prodmed.getProdImgNm(),
-							prodmed.getProdImgPath(), prodmed.getProdImgUrl(),prodmed.getProdImgType(),prodmed.getProdImgSize()));
-				}
-				// }
+				mediaarray = prod.getProdImgs().stream()
+						.map(prodmed -> new ProductMediaDto(prodmed.getId(), prodmed.getProdImgNm(),
+								prodmed.getProdImgPath(), prodmed.getProdImgUrl(), prodmed.getProdImgType(),
+								prodmed.getProdImgSize()))
+						.collect(Collectors.toList());
 
 			}
-
+			if (null != prod.getProdVarient() && prod.getProdVarient().size() > 0) {
+				productVarient = prod.getProdVarient().stream()
+						.map(varient -> new ProductVarientDto(varient.getId(), varient.getMaximumRetailPrice(),
+								varient.getSellingPrice(), varient.getSavedPrice(), varient.getDiscount(),
+								varient.getUnit(), varient.getUnitType(), varient.getManufactureDate(),
+								varient.getBestBeforeDate(), prod.getId()))
+						.collect(Collectors.toList());
+			}
 			productlistdto
 					.add(new ProductDto(prod.getId(), String.valueOf(prod.getCategory().getId()), prod.getProductCode(),
-							prod.getProductNm(), prod.getProductDesc(), prod.getProductuses(), mediaarray));
+							prod.getProductNm(), prod.getProductDesc(), prod.getProductuses(), mediaarray,productVarient));
 
 		}
 

@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -55,5 +57,25 @@ public class ProductVarient {
 	
 	@Column(name="PROD_USEBY_DATE")
 	private String bestBeforeDate;
+	
+	@ManyToOne
+    @JoinColumn(name="PROD_ID", nullable=false)
+    private AmiruthamProducts product;
+
+	public ProductVarient(Double maximumRetailPrice, Double sellingPrice, Double savedPrice, Integer discount,
+			Integer unit, String unitType, String manufactureDate, String bestBeforeDate, AmiruthamProducts product) {
+		super();
+		this.maximumRetailPrice = maximumRetailPrice;
+		this.sellingPrice = sellingPrice;
+		this.savedPrice = savedPrice;
+		this.discount = discount;
+		this.unit = unit;
+		this.unitType = unitType;
+		this.manufactureDate = manufactureDate;
+		this.bestBeforeDate = bestBeforeDate;
+		this.product = product;
+	}
+	
+	
 
 }

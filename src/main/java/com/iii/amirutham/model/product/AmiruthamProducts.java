@@ -3,7 +3,9 @@
  */
 package com.iii.amirutham.model.product;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -17,6 +19,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.iii.amirutham.model.BaseEntity;
 
 import lombok.AllArgsConstructor;
@@ -71,10 +74,8 @@ public class AmiruthamProducts extends BaseEntity {
 	@JoinColumn(name = "PROD_ID")
 	private List<ProductMediaGallary> prodImgs;
     
-    @OneToMany(fetch = FetchType.LAZY, cascade = {
-   		 CascadeType.ALL
-       })
-	@JoinColumn(name = "PROD_ID")
+   // @JsonIgnore 
+	@OneToMany(mappedBy="product")
 	private List<ProductVarient> prodVarient;
 
 	public AmiruthamProducts(Integer id, String productCode, String productNm, String productDesc, String productuses) {
