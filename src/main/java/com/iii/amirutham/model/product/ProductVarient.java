@@ -3,6 +3,8 @@
  */
 package com.iii.amirutham.model.product;
 
+import java.text.DecimalFormat;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -28,7 +30,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductVarient {
-	
+
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column
@@ -62,12 +64,12 @@ public class ProductVarient {
     @JoinColumn(name="PROD_ID", nullable=false)
     private AmiruthamProducts product;
 
-	public ProductVarient(Double maximumRetailPrice, Double sellingPrice, Double savedPrice, Integer discount,
+	public ProductVarient(Double maximumRetailPrice,Integer discount,
 			Integer unit, String unitType, String manufactureDate, String bestBeforeDate, AmiruthamProducts product) {
 		super();
 		this.maximumRetailPrice = maximumRetailPrice;
-		this.sellingPrice = sellingPrice;
-		this.savedPrice = savedPrice;
+		this.sellingPrice = (double) Math.round((((100-discount)*maximumRetailPrice)/100));
+		this.savedPrice = (this.maximumRetailPrice-this.sellingPrice);
 		this.discount = discount;
 		this.unit = unit;
 		this.unitType = unitType;
