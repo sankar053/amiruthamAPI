@@ -3,7 +3,7 @@
  */
 package com.iii.amirutham.service;
 
-import com.iii.amirutham.dto.model.ProductVarientDto;
+import com.iii.amirutham.dto.base.ProductsVarientRequest;
 
 /**
  * @author sanka
@@ -11,6 +11,6 @@ import com.iii.amirutham.dto.model.ProductVarientDto;
  */
 public interface ProductVarientService {
 	
-	public void addVarientInfo(ProductVarientDto productVarientDto);
+	public void addVarientInfo(ProductsVarientRequest productVarientDto);
 
 }

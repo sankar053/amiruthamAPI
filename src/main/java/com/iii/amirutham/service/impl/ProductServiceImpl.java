@@ -12,6 +12,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -40,7 +41,8 @@ public class ProductServiceImpl implements ProductService {
 
 	@Autowired
 	private ProductRepository productRepo;
-	private String Upload_Path = "C:\\Amirthum\\";
+	@Value( "${amirthum.file.upload-dir}" )
+	private String Upload_Path;
 
 	//private Path fileStorageLocation = Paths.get(Upload_Path).toAbsolutePath().normalize();
 

@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -37,9 +38,10 @@ public class BannerServiceImpl implements BannerService {
 
 	@Autowired
 	private BannerRepository bannerRepo;
-	private String Upload_Path = "C:\\catalogs\\";
+	@Value( "${amirthum.file.upload-dir}" )
+	private String Upload_Path;
 
-	private final Path fileStorageLocation = Paths.get(Upload_Path).toAbsolutePath().normalize();
+	private Path fileStorageLocation;
 
 
 	@Override
@@ -47,6 +49,7 @@ public class BannerServiceImpl implements BannerService {
 
 		BannerDto bannerdto = (BannerDto) AmirthumUtills.convertJsontoObject(BannerDto.class, payload);
 		HomeBanner bannerDao = new HomeBanner();
+		fileStorageLocation = Paths.get(Upload_Path+"Banner//").toAbsolutePath().normalize();
 		if (null != bannerdto) {
 			
 			bannerDao.setBannerName(bannerdto.getBannerName());
@@ -60,7 +63,7 @@ public class BannerServiceImpl implements BannerService {
 					if (fileName.contains("..")) {
 						throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
 					}
-					Path targetLocation = this.fileStorageLocation.resolve(fileName);
+					Path targetLocation = fileStorageLocation.resolve(fileName);
 					Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 					bannerDao.setBannerFileNm(fileName);
 					bannerDao.setBannerFilepth(targetLocation.toString());
@@ -100,7 +103,7 @@ public class BannerServiceImpl implements BannerService {
 	@Override
 	public Resource loadBannerAsResource(String fileName) {
 		try {
-            Path filePath = this.fileStorageLocation.resolve(fileName).normalize();
+            Path filePath = fileStorageLocation.resolve(fileName).normalize();
             Resource resource = new UrlResource(filePath.toUri());
             if(resource.exists()) {
                 return resource;

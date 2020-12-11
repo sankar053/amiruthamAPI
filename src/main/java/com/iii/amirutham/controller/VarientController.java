@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.iii.amirutham.dto.base.GenericResponse;
+import com.iii.amirutham.dto.base.ProductsVarientRequest;
 import com.iii.amirutham.dto.model.ProductVarientDto;
 import com.iii.amirutham.service.ProductVarientService;
 
@@ -31,7 +32,7 @@ public class VarientController {
 	private ProductVarientService productVarientService;
 	
 	@PostMapping("product/varient")
-	public ResponseEntity<Object> registerUserAccount(@Valid @RequestBody ProductVarientDto productVarientDto,
+	public ResponseEntity<Object> registerUserAccount(@Valid @RequestBody ProductsVarientRequest productVarientDto,
 			final HttpServletRequest request) {
 		LOGGER.debug("Adding Product Varient  information: {}", productVarientDto);
 
