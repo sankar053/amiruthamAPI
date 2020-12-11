@@ -37,7 +37,7 @@ public class ProductVarientServiceImpl implements ProductVarientService {
 			ProductVarient varientDao = new ProductVarient(productVarientDto.getMaximumRetailPrice(),
 					productVarientDto.getDiscount(),
 					productVarientDto.getUnit(),productVarientDto.getUnitType(),productVarientDto.getManufactureDate(),
-					productVarientDto.getBestBeforeDate(),product.get());
+					productVarientDto.getBestBeforeDate(),product.get(),product.get().getProductCode());
 					productVarientRepository.save(varientDao);
 		}
 		

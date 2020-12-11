@@ -3,8 +3,6 @@
  */
 package com.iii.amirutham.model.product;
 
-import java.text.DecimalFormat;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import com.iii.amirutham.model.BaseEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,7 +29,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductVarient {
+public class ProductVarient extends BaseEntity {
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,6 +54,9 @@ public class ProductVarient {
 	@Column(name="PROD_UNIT_TYPE")
 	private String unitType;
 	
+	@Column(name="PROD_CODE")
+	private String prodCode;
+	
 	@Column(name="PROD_MANUFACTURE_DATE")
 	private String manufactureDate;
 	
@@ -65,7 +68,7 @@ public class ProductVarient {
     private AmiruthamProducts product;
 
 	public ProductVarient(Double maximumRetailPrice,Integer discount,
-			Integer unit, String unitType, String manufactureDate, String bestBeforeDate, AmiruthamProducts product) {
+			Integer unit, String unitType, String manufactureDate, String bestBeforeDate, AmiruthamProducts product, String prodCode) {
 		super();
 		this.maximumRetailPrice = maximumRetailPrice;
 		this.sellingPrice = (double) Math.round((((100-discount)*maximumRetailPrice)/100));
@@ -76,6 +79,7 @@ public class ProductVarient {
 		this.manufactureDate = manufactureDate;
 		this.bestBeforeDate = bestBeforeDate;
 		this.product = product;
+		this.prodCode = prodCode;
 	}
 	
 	
