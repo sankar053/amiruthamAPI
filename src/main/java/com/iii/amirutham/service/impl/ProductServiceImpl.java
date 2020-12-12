@@ -41,14 +41,15 @@ public class ProductServiceImpl implements ProductService {
 
 	@Autowired
 	private ProductRepository productRepo;
-	@Value( "${amirthum.file.upload-dir}" )
+	@Value("${amirthum.file.upload-dir}")
 	private String Upload_Path;
 
-	//private Path fileStorageLocation = Paths.get(Upload_Path).toAbsolutePath().normalize();
+	// private Path fileStorageLocation =
+	// Paths.get(Upload_Path).toAbsolutePath().normalize();
 
 	@Autowired
 	private CategoryRepository categryRepo;
-	
+
 	@Autowired
 	private SequenceService seqservice;
 
@@ -57,12 +58,14 @@ public class ProductServiceImpl implements ProductService {
 
 		ProductDto productsDto = (ProductDto) AmirthumUtills.convertJsontoObject(ProductDto.class, productstr);
 		Optional<AmiruthamCategory> catogory = categryRepo.findById(Integer.valueOf(productsDto.getCategoryid()));
-		Path fileStorageLocation = Paths.get(Upload_Path+catogory.get().getCategoryCd()+"//").toAbsolutePath().normalize();
+		Path fileStorageLocation = Paths.get(Upload_Path + catogory.get().getCategoryCd() + "//").toAbsolutePath()
+				.normalize();
+		AmirthumUtills.makeaDirectory(fileStorageLocation);
 		if (catogory.isPresent()) {
 			AmiruthamProducts product = new AmiruthamProducts();
 			product.setCategory(catogory.get());
-			SequnceDto sequence =seqservice.findMySeQuence("PRODUCT");
-			product.setProductCode(sequence.getSeqChar()+String.format("%05d", sequence.getSeqNxtVal()));
+			SequnceDto sequence = seqservice.findMySeQuence("PRODUCT");
+			product.setProductCode(sequence.getSeqChar() + String.format("%05d", sequence.getSeqNxtVal()));
 			seqservice.updateMySeQuence(sequence);
 			product.setProductNm(productsDto.getProductNm());
 			product.setProductDesc(productsDto.getProductDesc());
@@ -74,27 +77,26 @@ public class ProductServiceImpl implements ProductService {
 					try {
 						String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 						if (fileName.contains("..")) {
-							throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
+							throw new FileStorageException(
+									"Sorry! Filename contains invalid path sequence " + fileName);
 						}
 						Path targetLocation = fileStorageLocation.resolve(fileName);
 						Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-						
+
 						String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-				                .path("/products/downloadFile/")
-				                .path(fileName)
-				                .toUriString();
+								.path("/products/downloadFile/").path(fileName).toUriString();
 
-						mediaArray.add(new ProductMediaGallary(fileName, targetLocation.toString(),
-								fileDownloadUri,file.getContentType(),file.getSize()));
+						mediaArray.add(new ProductMediaGallary(fileName, targetLocation.toString(), fileDownloadUri,
+								file.getContentType(), file.getSize()));
 					} catch (IOException e) { // TODO Auto-generated catch block e.printStackTrace(); }
-
+						e.printStackTrace();
 					}
 					// TODO Auto-generated method stub
 				}
 			}
 			product.setProdImgs(mediaArray);
 			return productRepo.save(product);
-		}else {
+		} else {
 			throw new UserNotFoundException("Category Not Found  " + productsDto.getCategoryid());
 		}
 
@@ -126,9 +128,9 @@ public class ProductServiceImpl implements ProductService {
 								varient.getBestBeforeDate(), prod.getId()))
 						.collect(Collectors.toList());
 			}
-			productlistdto
-					.add(new ProductDto(prod.getId(), String.valueOf(prod.getCategory().getId()), prod.getProductCode(),
-							prod.getProductNm(), prod.getProductDesc(), prod.getProductuses(), mediaarray,productVarient));
+			productlistdto.add(new ProductDto(prod.getId(), String.valueOf(prod.getCategory().getId()),
+					prod.getProductCode(), prod.getProductNm(), prod.getProductDesc(), prod.getProductuses(),
+					mediaarray, productVarient));
 
 		}
 
@@ -140,8 +142,7 @@ public class ProductServiceImpl implements ProductService {
 		// TODO Auto-generated method stub
 		Optional<AmiruthamProducts> product = productRepo.findById(id);
 		ProductDto productdto = null;
-		
-		
+
 		if (product.isPresent()) {
 			AmiruthamProducts prod = product.get();
 			List<ProductMediaDto> mediaarray = null;
@@ -162,11 +163,11 @@ public class ProductServiceImpl implements ProductService {
 								varient.getBestBeforeDate(), prod.getId()))
 						.collect(Collectors.toList());
 			}
-			productdto =new ProductDto(prod.getId(), String.valueOf(prod.getCategory().getId()), prod.getProductCode(),
-							prod.getProductNm(), prod.getProductDesc(), prod.getProductuses(), mediaarray,productVarient);
+			productdto = new ProductDto(prod.getId(), String.valueOf(prod.getCategory().getId()), prod.getProductCode(),
+					prod.getProductNm(), prod.getProductDesc(), prod.getProductuses(), mediaarray, productVarient);
 
-			}
-	
+		}
+
 		return productdto;
 
 	}
@@ -176,20 +177,20 @@ public class ProductServiceImpl implements ProductService {
 		// TODO Auto-generated method stub
 		productRepo.deleteById(id);
 	}
-	
-	 public Resource loadProductAsResource(String fileName,String catCode) {
-	        try {
-	        	Path fileStorageLocation = Paths.get(Upload_Path+catCode+"//").toAbsolutePath().normalize();
-	            Path filePath = fileStorageLocation.resolve(fileName).normalize();
-	            Resource resource = new UrlResource(filePath.toUri());
-	            if(resource.exists()) {
-	                return resource;
-	            } else {
-	                throw new MyFileNotFoundException("File not found " + fileName);
-	            }
-	        } catch (MalformedURLException ex) {
-	            throw new MyFileNotFoundException("File not found " + fileName, ex);
-	        }
-	    }
+
+	public Resource loadProductAsResource(String fileName, String catCode) {
+		try {
+			Path fileStorageLocation = Paths.get(Upload_Path + catCode + "//").toAbsolutePath().normalize();
+			Path filePath = fileStorageLocation.resolve(fileName).normalize();
+			Resource resource = new UrlResource(filePath.toUri());
+			if (resource.exists()) {
+				return resource;
+			} else {
+				throw new MyFileNotFoundException("File not found " + fileName);
+			}
+		} catch (MalformedURLException ex) {
+			throw new MyFileNotFoundException("File not found " + fileName, ex);
+		}
+	}
 
 }

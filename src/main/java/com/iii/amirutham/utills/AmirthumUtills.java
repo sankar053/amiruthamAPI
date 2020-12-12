@@ -3,6 +3,9 @@
  */
 package com.iii.amirutham.utills;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Random;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -13,10 +16,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *
  */
 public class AmirthumUtills {
-	
-	
 
-	public  static Object convertJsontoObject(Class c, String jsonStr) {
+	public static Object convertJsontoObject(Class c, String jsonStr) {
 
 		try {
 			ObjectMapper objMapper = new ObjectMapper();
@@ -28,13 +29,29 @@ public class AmirthumUtills {
 		return null;
 
 	}
-	
-	 public static String generateOTP(){
-		 
-		Random random = new Random();	
+
+	public static String generateOTP() {
+
+		Random random = new Random();
 		int otp = 100000 + random.nextInt(900000);
 		return String.valueOf(otp);
-	 }
-	
+	}
+
+	public static void makeaDirectory(Path path) {
+		
+		try {
+			if(!Files.exists(path))
+				Files.createDirectories(path);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		/*
+		 * File directory = new File(String.valueOf(path));
+		 * 
+		 * if (!directory.exists()) directory.mkdir();
+		 */
+	}
 
 }

@@ -38,51 +38,55 @@ public class BannerServiceImpl implements BannerService {
 
 	@Autowired
 	private BannerRepository bannerRepo;
-	@Value( "${amirthum.file.upload-dir}" )
+	@Value("${amirthum.file.upload-dir}")
 	private String Upload_Path;
 
 	private Path fileStorageLocation;
-
 
 	@Override
 	public HomeBanner addHomeBanner(String payload, MultipartFile file) {
 
 		BannerDto bannerdto = (BannerDto) AmirthumUtills.convertJsontoObject(BannerDto.class, payload);
 		HomeBanner bannerDao = new HomeBanner();
-		fileStorageLocation = Paths.get(Upload_Path+"Banner//").toAbsolutePath().normalize();
+		fileStorageLocation = Paths.get(Upload_Path + "Banner//").toAbsolutePath().normalize();
+		try {
+			Files.createDirectories(fileStorageLocation.getParent());
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		if (null != bannerdto) {
-			
+
 			bannerDao.setBannerName(bannerdto.getBannerName());
 			bannerDao.setBannerDesc(bannerdto.getBannerDesc());
 
 			if (null != file) {
 
 				try {
-
+					AmirthumUtills.makeaDirectory(fileStorageLocation);
 					String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 					if (fileName.contains("..")) {
 						throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
 					}
 					Path targetLocation = fileStorageLocation.resolve(fileName);
+
 					Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 					bannerDao.setBannerFileNm(fileName);
 					bannerDao.setBannerFilepth(targetLocation.toString());
 					bannerDao.setBannerImgSize(file.getSize());
 					bannerDao.setBannerImgType(file.getContentType());
 					String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-			                .path("/banner/downloadFile/")
-			                .path(fileName)
-			                .toUriString();
+							.path("/banner/downloadFile/").path(fileName).toUriString();
 
 					bannerDao.setBannerImgUrl(fileDownloadUri);
+					return bannerRepo.save(bannerDao);
 				} catch (IOException e) { // TODO Auto-generated catch block e.printStackTrace(); }
-
+					e.printStackTrace();
 				}
 				// TODO Auto-generated method stub
 
 			}
 
-			return bannerRepo.save(bannerDao);
 		}
 		return bannerDao;
 
@@ -103,17 +107,16 @@ public class BannerServiceImpl implements BannerService {
 	@Override
 	public Resource loadBannerAsResource(String fileName) {
 		try {
-            Path filePath = fileStorageLocation.resolve(fileName).normalize();
-            Resource resource = new UrlResource(filePath.toUri());
-            if(resource.exists()) {
-                return resource;
-            } else {
-                throw new MyFileNotFoundException("File not found " + fileName);
-            }
-        } catch (MalformedURLException ex) {
-            throw new MyFileNotFoundException("File not found " + fileName, ex);
-        }
-    }
-	
+			Path filePath = fileStorageLocation.resolve(fileName).normalize();
+			Resource resource = new UrlResource(filePath.toUri());
+			if (resource.exists()) {
+				return resource;
+			} else {
+				throw new MyFileNotFoundException("File not found " + fileName);
+			}
+		} catch (MalformedURLException ex) {
+			throw new MyFileNotFoundException("File not found " + fileName, ex);
+		}
+	}
 
 }
