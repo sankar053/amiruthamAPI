@@ -12,6 +12,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.iii.amirutham.model.User;
 
+import lombok.Getter;
+
+@Getter
 public class UserDetailsImpl implements UserDetails {
 	
 	
@@ -22,17 +25,20 @@ public class UserDetailsImpl implements UserDetails {
 	private String username;
 
 	private String email;
+	
+	private String phoneNumber;
 
 	@JsonIgnore
 	private String password;
 
 	private Collection<? extends GrantedAuthority> authorities;
 
-	public UserDetailsImpl(Integer id, String username, String email, String password,
+	public UserDetailsImpl(Integer id, String username, String email, String phoneNbr, String password,
 			Collection<? extends GrantedAuthority> authorities) {
 		this.id = id;
 		this.username = username;
 		this.email = email;
+		this.phoneNumber=phoneNbr;
 		this.password = password;
 		this.authorities = authorities;
 	}
@@ -44,8 +50,9 @@ public class UserDetailsImpl implements UserDetails {
 
 		return new UserDetailsImpl(
 				user.getId(), 
-				user.getPhoneNbr(), 
+				user.getEmailAddress(), 
 				user.getEmailAddress(),
+				user.getPhoneNbr(), 
 				user.getPassword(), 
 				authorities);
 	}
@@ -55,24 +62,7 @@ public class UserDetailsImpl implements UserDetails {
 		return authorities;
 	}
 
-	public Integer getId() {
-		return id;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	@Override
-	public String getPassword() {
-		return password;
-	}
-
-	@Override
-	public String getUsername() {
-		return username;
-	}
-
+	
 	@Override
 	public boolean isAccountNonExpired() {
 		return true;

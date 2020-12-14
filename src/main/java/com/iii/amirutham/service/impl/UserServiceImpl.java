@@ -10,9 +10,13 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.iii.amirutham.config.UserDetailsImpl;
 import com.iii.amirutham.dto.model.UserDto;
 import com.iii.amirutham.dto.model.ValidateOtpDto;
 import com.iii.amirutham.exception.UserAlreadyExistException;
@@ -76,6 +80,13 @@ public class UserServiceImpl implements UserService {
 		// TODO Auto-generated method stub
 		return userRepository.findById(id);
 	}
+	
+	@Override
+	public UserDetails getUserDetails() {
+		UserDetailsImpl userDetails = (UserDetailsImpl)SecurityContextHolder.getContext().
+		   getAuthentication().getPrincipal();
+		  return userDetails;
+		} 
 
 	@Override
 	public User registerNewUserAccount(UserDto accountDto) {

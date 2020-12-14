@@ -18,17 +18,20 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -70,21 +73,31 @@ public class UserController {
 	private ISecurityUserService securityUserService;
 
 	@GetMapping("/users")
-	public List<User> retriveAllUsers() {
-		return userService.findAllUsers();
+	public @ResponseBody ResponseEntity<Object> retriveAllUsers() {
+		List<User> userList = userService.findAllUsers();
+
+		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(userList);
 
 	}
 
 	@GetMapping("/users/{id}")
-	public User retriveUsersById(@PathVariable int id) {
+	public @ResponseBody ResponseEntity<User> retriveUsersById(@PathVariable int id) {
 		Optional<User> user = userService.findUserById(id);
-		return (user.get());
+		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(user.get());
+
+	}
+
+	@GetMapping("/user/profile")
+	public @ResponseBody ResponseEntity<UserDetails> getUserProfileInfo() {
+		UserDetails user = userService.getUserDetails();
+		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).
+				body(user);
 
 	}
 
 	// Registration
 	@PostMapping("/sign-up")
-	public ResponseEntity<Object> registerUserAccount(@Valid @RequestBody UserDto accountDto,
+	public @ResponseBody ResponseEntity<GenericResponse> registerUserAccount(@Valid @RequestBody UserDto accountDto,
 			final HttpServletRequest request) {
 		LOGGER.debug("Registering user account with information: {}", accountDto);
 
@@ -92,19 +105,22 @@ public class UserController {
 		userService.addUserLocation(registered, getClientIP(request));
 		eventPublisher
 				.publishEvent(new OnRegistrationCompleteEvent(registered, request.getLocale(), getAppUrl(request)));
-		return new ResponseEntity<Object>(new GenericResponse("success"), HttpStatus.OK);
+		
+		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).
+				body(new GenericResponse("success"));
 	}
 
 	@DeleteMapping("/users/{id}")
-	public ResponseEntity<Object> deleteUser(@PathVariable int id) {
+	public ResponseEntity<GenericResponse> deleteUser(@PathVariable int id) {
 
 		userService.deleteUserById(id);
-		return new ResponseEntity<>("User got Deleted Succesfully", HttpStatus.OK);
+		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).
+				body(new GenericResponse("User got Deleted Succesfully"));
 
 	}
 
 	@PostMapping("/user/forgetPassword")
-	public GenericResponse forgetPassword(HttpServletRequest request,
+	public @ResponseBody GenericResponse forgetPassword(HttpServletRequest request,
 			@RequestParam("username") String userEmailORPhone) {
 		Optional<User> user = userService.findUserByEmail(userEmailORPhone);
 		if (null == user) {
@@ -112,12 +128,12 @@ public class UserController {
 		}
 		String token = UUID.randomUUID().toString();
 		String otp = userService.createPasswordResetTokenForUser(user.get(), token);
-		 constructOTPEmail(user.get(),request.getLocale(),otp);
+		constructOTPEmail(user.get(), request.getLocale(), otp);
 		return new GenericResponse(messages.getMessage("message.otpEmail", null, request.getLocale()));
 	}
 
 	@PostMapping("/user/resetPassword")
-	public GenericResponse resetPassword(HttpServletRequest request,
+	public @ResponseBody ResponseEntity<GenericResponse> resetPassword(HttpServletRequest request,
 			@RequestParam("username") String userEmailORPhone) {
 		Optional<User> user = userService.findUserByEmail(userEmailORPhone);
 
@@ -127,7 +143,9 @@ public class UserController {
 		String token = UUID.randomUUID().toString();
 		userService.createPasswordResetTokenForUser(user.get(), token);
 		mailSender.send(constructResetTokenEmail(getAppUrl(request), request.getLocale(), token, user.get()));
-		return new GenericResponse(messages.getMessage("message.resetPasswordEmail", null, request.getLocale()));
+		
+		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).
+				body(new GenericResponse(messages.getMessage("message.resetPasswordEmail", null, request.getLocale())));
 	}
 
 	public void constructOTPEmail(User to, Locale locale, String otp) {
@@ -155,20 +173,24 @@ public class UserController {
 	}
 
 	@PostMapping("/user/validateOtp")
-	public @ResponseBody GenericResponse validateOtp(@Valid @RequestBody ValidateOtpDto otpDto,final HttpServletRequest request) {
+	public @ResponseBody ResponseEntity<GenericResponse> validateOtp(@Valid @RequestBody ValidateOtpDto otpDto,
+			final HttpServletRequest request) {
 
 		final String result = securityUserService.validateOneTimePassword(otpDto.getOneTimePassword());
 
 		if (result != null) {
-			return new GenericResponse(messages.getMessage("auth.message." + result, null, request.getLocale()));
+			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).
+					body(new GenericResponse(messages.getMessage("auth.message." + result, null, request.getLocale())));
 		}
 
 		boolean updated = userService.updatePassword(otpDto);
 		if (updated) {
 
-			return new GenericResponse(messages.getMessage("message.resetPasswordSuc", null, request.getLocale()));
+			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).
+					body(new GenericResponse(messages.getMessage("message.resetPasswordSuc", null, request.getLocale())));
 		} else {
-			return new GenericResponse(messages.getMessage("auth.message.invalid", null, request.getLocale()));
+			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).
+					body(new GenericResponse(messages.getMessage("auth.message.invalid", null, request.getLocale())));
 		}
 
 	}

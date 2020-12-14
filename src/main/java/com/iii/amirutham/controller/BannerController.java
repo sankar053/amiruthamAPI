@@ -48,7 +48,8 @@ public class BannerController {
 	public ResponseEntity<Object> retribeAllBanner() {
 		List<HomeBanner> bannerList = bannerService.retriveAllBanners();
 
-		return new ResponseEntity(bannerList, HttpStatus.OK);
+		return ResponseEntity.ok() .contentType(MediaType.APPLICATION_JSON)
+	               .body(bannerList);
 
 	}
 
@@ -56,7 +57,8 @@ public class BannerController {
 	public ResponseEntity<Object> retribeBannerByID(@PathVariable int id) {
 		Optional<HomeBanner> banner = bannerService.retribeBannerByID(id);
 
-		return new ResponseEntity(banner.get(), HttpStatus.OK);
+		return ResponseEntity.ok() .contentType(MediaType.APPLICATION_JSON)
+	               .body(banner.get());
 
 	}
 	
