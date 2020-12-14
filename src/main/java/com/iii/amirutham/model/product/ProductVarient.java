@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.iii.amirutham.model.BaseEntity;
 
 import lombok.AllArgsConstructor;
@@ -63,6 +64,7 @@ public class ProductVarient extends BaseEntity {
 	@Column(name="PROD_USEBY_DATE")
 	private String bestBeforeDate;
 	
+	@JsonIgnore
 	@ManyToOne
     @JoinColumn(name="PROD_ID", nullable=false)
     private AmiruthamProducts product;
@@ -82,6 +84,21 @@ public class ProductVarient extends BaseEntity {
 		this.prodCode = prodCode;
 	}
 	
+	public ProductVarient(Integer id,Double maximumRetailPrice,Integer discount,
+			Integer unit, String unitType, String manufactureDate, String bestBeforeDate, AmiruthamProducts product, String prodCode) {
+		super();
+		this.id = id;
+		this.maximumRetailPrice = maximumRetailPrice;
+		this.sellingPrice = (double) Math.round((((100-discount)*maximumRetailPrice)/100));
+		this.savedPrice = (this.maximumRetailPrice-this.sellingPrice);
+		this.discount = discount;
+		this.unit = unit;
+		this.unitType = unitType;
+		this.manufactureDate = manufactureDate;
+		this.bestBeforeDate = bestBeforeDate;
+		this.product = product;
+		this.prodCode = prodCode;
+	}
 	
 
 }

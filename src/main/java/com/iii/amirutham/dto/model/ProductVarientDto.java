@@ -36,10 +36,13 @@ public class ProductVarientDto {
 	@NotNull
 	private Integer unit;
 
+	@NotNull
 	private String unitType;
 
+	@NotNull
 	private String manufactureDate;
 
+	@NotNull
 	private String bestBeforeDate;
 
 	@NotNull

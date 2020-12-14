@@ -3,6 +3,7 @@
  */
 package com.iii.amirutham.service.impl;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -48,7 +49,7 @@ public class BannerServiceImpl implements BannerService {
 
 		BannerDto bannerdto = (BannerDto) AmirthumUtills.convertJsontoObject(BannerDto.class, payload);
 		HomeBanner bannerDao = new HomeBanner();
-		fileStorageLocation = Paths.get(Upload_Path + "Banner//").toAbsolutePath().normalize();
+		fileStorageLocation = Paths.get(Upload_Path + "Banner"+File.separator).toAbsolutePath().normalize();
 		try {
 			Files.createDirectories(fileStorageLocation.getParent());
 		} catch (IOException e1) {

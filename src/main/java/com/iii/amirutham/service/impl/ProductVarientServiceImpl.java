@@ -3,7 +3,10 @@
  */
 package com.iii.amirutham.service.impl;
 
+import java.util.List;
 import java.util.Optional;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,6 +49,50 @@ public class ProductVarientServiceImpl implements ProductVarientService {
 
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void updateVarientInfo(@Valid ProductsVarientRequest productVarientRequest) {
+		// TODO Auto-generated method stub
+
+		for (ProductVarientDto productVarientDto : productVarientRequest.getVarientList()) {
+			Optional<AmiruthamProducts> product = productRepository.findById(productVarientDto.getProdid());
+			if (product.isPresent() && productVarientDto.getId() != null) {
+
+				ProductVarient varientDao = new ProductVarient(productVarientDto.getId(),
+						productVarientDto.getMaximumRetailPrice(), productVarientDto.getDiscount(),
+						productVarientDto.getUnit(), productVarientDto.getUnitType(),
+						productVarientDto.getManufactureDate(), productVarientDto.getBestBeforeDate(), product.get(),
+						product.get().getProductCode());
+				productVarientRepository.save(varientDao);
+			}
+
+		}
+	}
+
+	@Override
+	public void deleteVarientInfoById(String id) {
+		// TODO Auto-generated method stub
+		productVarientRepository.deleteById(Integer.valueOf(id));
+
+	}
+
+	@Override
+	public void deleteVarientInfo() {
+		// TODO Auto-generated method stub
+		productVarientRepository.deleteAll();
+	}
+
+	@Override
+	public Optional<ProductVarient> getVarientInfoById(String id) {
+		// TODO Auto-generated method stub
+		return productVarientRepository.findById(Integer.valueOf(id));
+	}
+
+	@Override
+	public List<ProductVarient> getAllVarientInfo() {
+		// TODO Auto-generated method stub
+		return productVarientRepository.findAll();
 	}
 
 }

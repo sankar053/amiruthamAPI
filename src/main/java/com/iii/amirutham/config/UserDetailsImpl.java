@@ -22,9 +22,14 @@ public class UserDetailsImpl implements UserDetails {
 
 	private Integer id;
 
-	private String username;
+	private String firstName;
+	
+	private String lastName;
 
 	private String email;
+	
+	@JsonIgnore
+	private String username;
 	
 	private String phoneNumber;
 
@@ -33,10 +38,11 @@ public class UserDetailsImpl implements UserDetails {
 
 	private Collection<? extends GrantedAuthority> authorities;
 
-	public UserDetailsImpl(Integer id, String username, String email, String phoneNbr, String password,
+	public UserDetailsImpl(Integer id, String firstName,String lastName, String email, String phoneNbr, String password,
 			Collection<? extends GrantedAuthority> authorities) {
 		this.id = id;
-		this.username = username;
+		this.firstName = firstName;
+		this.lastName = lastName;
 		this.email = email;
 		this.phoneNumber=phoneNbr;
 		this.password = password;
@@ -50,7 +56,8 @@ public class UserDetailsImpl implements UserDetails {
 
 		return new UserDetailsImpl(
 				user.getId(), 
-				user.getEmailAddress(), 
+				user.getFirstName(), 
+				user.getLastName(),
 				user.getEmailAddress(),
 				user.getPhoneNbr(), 
 				user.getPassword(), 
@@ -93,4 +100,5 @@ public class UserDetailsImpl implements UserDetails {
 		return Objects.equals(id, user.id);
 	}
 
+	
 }
