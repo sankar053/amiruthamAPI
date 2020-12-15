@@ -18,20 +18,18 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
-import com.iii.amirutham.model.BaseEntity;
 import com.iii.amirutham.model.Address;
+import com.iii.amirutham.model.BaseEntity;
 
 import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @ApiModel(description = "All Details about User")
-@Entity(name = "User")
-@Table(name = "AMIR_USER")
+@Entity(name = "user")
+@Table(name = "user")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -44,33 +42,34 @@ public class User extends BaseEntity {
 	private Integer id;
 
 	@Size(min = 2, message = "FirstName Should have Atleast two character")
-	@Column(name = "AMIR_USER_FST_NM")
+	@Column(name = "firstName")
 	private String firstName;
 
 	@Size(min = 2, message = "LastName Should have Atleast two character")
-	@Column(name = "AMIR_USER_LST_NM")
+	@Column(name = "lastName")
 	private String lastName;
 
 	@Size(min = 10, message = "LastName Should have Atleast two character")
-	@Column(name = "AMIR_USER_PHN_NBR")
+	@Column(name = "phoneNumber")
 	private String phoneNbr;
 
 	@Size(min = 2, message = "LastName Should have Atleast two character")
-	@Column(name = "AMIR_USER_MAIL_ADDR")
+	@Column(name = "emailAddress")
 	private String emailAddress;
 
 	@Size(min = 2, message = "LastName Should have Atleast two character")
-	@Column(name = "AMIR_USER_PWD",length = 60)
+	@Column(name = "password",length = 60)
 	private String password;
 
+	
 	@OneToMany( cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-	@JoinColumn(name = "AMIR_USER_ID")
+	@JoinColumn(name = "userId")
 	private List<Address> address;
 	
 	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(	name = "user_roles", 
-				joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), 
-				inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+	@JoinTable(	name = "userrole", 
+				joinColumns = @JoinColumn(name = "userId", referencedColumnName = "id"), 
+				inverseJoinColumns = @JoinColumn(name = "roleId", referencedColumnName = "id"))
 	private Set<Role> roles = new HashSet<>();
 
 	/*

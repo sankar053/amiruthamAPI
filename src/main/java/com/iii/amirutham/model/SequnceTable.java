@@ -14,40 +14,41 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
+/*INSERT INTO `` (`id`,`creation_ts`,`update_ts`,`active_yn`,`deleted_yn`,`sequenceCharacter`,`sequenceCurrentValue`,`sequenceLimitValue`,`sequenceName`,`sequenceNextValue`,`created_by`,`updated_by`) VALUES (1,'2020-12-06 16:10:54','2020-12-06 17:31:41','Y','N','PROD',15,999999,'PRODUCT',16,NULL,NULL);
+INSERT INTO `` (`id`,`creation_ts`,`update_ts`,`active_yn`,`deleted_yn`,`sequenceCharacter`,`sequenceCurrentValue`,`sequenceLimitValue`,`sequenceName`,`sequenceNextValue`,`created_by`,`updated_by`) VALUES (2,'2020-12-06 16:10:54','2020-12-06 16:57:50','Y','N','CATE',6,999999,'CATEGERY',7,NULL,NULL);
+*/
 @Entity(name = "sequnce")
-@Table(name = "AMIR_SEQUNCE")
+@Table(name = "sequnce")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SequnceTable extends BaseEntity{
-	
+public class SequnceTable extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	
+
 	@Size(min = 2, message = "FirstName Should have Atleast two character")
 	@ApiModelProperty(notes = "FirstName Should have Atleast two character")
-	@Column(name = "AMIR_SEQ_NM")
+	@Column(name = "sequenceName")
 	private String seqName;
-	
+
 	@Size(min = 2, message = "FirstName Should have Atleast two character")
 	@ApiModelProperty(notes = "FirstName Should have Atleast two character")
-	@Column(name = "AMIR_SEQ_CHAR")
+	@Column(name = "sequenceCharacter")
 	private String seqChar;
 
 	@ApiModelProperty(notes = "LastName Should have Atleast two character")
-	@Column(name = "AMIR_SEQ_CUR_VAL")
+	@Column(name = "sequenceCurrentValue")
 	private Integer seqCurVal;
 
 	@ApiModelProperty(notes = "LastName Should have Atleast two character")
-	@Column(name = "AMIR_SEQ_NXT_VAL")
+	@Column(name = "sequenceNextValue")
 	private Integer seqNxtVal;
 
 	@ApiModelProperty(notes = "LastName Should have Atleast two character")
-	@Column(name = "AMIR_SEQ_LIM_VAL")
+	@Column(name = "sequenceLimitValue")
 	private Integer seqLimVal;
 
 }

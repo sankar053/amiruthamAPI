@@ -135,7 +135,7 @@ public class UserServiceImpl implements UserService {
 		}
 		if (null != accountDto.getAddress() && accountDto.getAddress().size() > 0) {
 			List<Address> addressDao = accountDto
-					.getAddress().stream().map(addr -> new Address(null, addr.getAddress1(), addr.getAddress2(),
+					.getAddress().stream().map(addr -> new Address(addr.getAddress1(), addr.getAddress2(),
 							addr.getAddressType(), addr.getCity(), addr.getState(), addr.getPostalCopde()))
 					.collect(Collectors.toList());
 			user.setAddress(addressDao);
