@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.iii.amirutham.config.UserDetailsImpl;
-import com.iii.amirutham.model.User;
+import com.iii.amirutham.model.user.User;
 import com.iii.amirutham.repo.UserRepository;
 
 @Service

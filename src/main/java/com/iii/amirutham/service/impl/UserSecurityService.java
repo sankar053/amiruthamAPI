@@ -7,7 +7,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.iii.amirutham.model.PasswordResetToken;
+import com.iii.amirutham.model.user.PasswordResetToken;
 import com.iii.amirutham.repo.PasswordResetTokenRepository;
 import com.iii.amirutham.service.ISecurityUserService;
 

@@ -5,7 +5,7 @@
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.iii.amirutham.model.User;
+import com.iii.amirutham.model.user.User;
  
  
  

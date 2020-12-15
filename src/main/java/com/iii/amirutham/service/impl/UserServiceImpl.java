@@ -20,13 +20,13 @@ import com.iii.amirutham.dto.model.UserDto;
 import com.iii.amirutham.dto.model.ValidateOtpDto;
 import com.iii.amirutham.exception.UserAlreadyExistException;
 import com.iii.amirutham.exception.UserNotFoundException;
-import com.iii.amirutham.model.ERole;
-import com.iii.amirutham.model.PasswordResetToken;
-import com.iii.amirutham.model.Role;
-import com.iii.amirutham.model.User;
-import com.iii.amirutham.model.UserAddress;
-import com.iii.amirutham.model.UserLocation;
-import com.iii.amirutham.model.VerificationToken;
+import com.iii.amirutham.model.Address;
+import com.iii.amirutham.model.user.ERole;
+import com.iii.amirutham.model.user.PasswordResetToken;
+import com.iii.amirutham.model.user.Role;
+import com.iii.amirutham.model.user.User;
+import com.iii.amirutham.model.user.UserLocation;
+import com.iii.amirutham.model.user.VerificationToken;
 import com.iii.amirutham.repo.PasswordResetTokenRepository;
 import com.iii.amirutham.repo.RoleRepository;
 import com.iii.amirutham.repo.UserLocationRepository;
@@ -134,8 +134,8 @@ public class UserServiceImpl implements UserService {
 			});
 		}
 		if (null != accountDto.getAddress() && accountDto.getAddress().size() > 0) {
-			List<UserAddress> addressDao = accountDto
-					.getAddress().stream().map(addr -> new UserAddress(null, addr.getAddress1(), addr.getAddress2(),
+			List<Address> addressDao = accountDto
+					.getAddress().stream().map(addr -> new Address(null, addr.getAddress1(), addr.getAddress2(),
 							addr.getAddressType(), addr.getCity(), addr.getState(), addr.getPostalCopde()))
 					.collect(Collectors.toList());
 			user.setAddress(addressDao);

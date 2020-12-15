@@ -1,4 +1,4 @@
-package com.iii.amirutham.model;
+package com.iii.amirutham.model.user;
 
 import java.util.HashSet;
 import java.util.List;
@@ -17,6 +17,9 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
+
+import com.iii.amirutham.model.BaseEntity;
+import com.iii.amirutham.model.Address;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -62,7 +65,7 @@ public class User extends BaseEntity {
 
 	@OneToMany( cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	@JoinColumn(name = "AMIR_USER_ID")
-	private List<UserAddress> address;
+	private List<Address> address;
 	
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(	name = "user_roles", 

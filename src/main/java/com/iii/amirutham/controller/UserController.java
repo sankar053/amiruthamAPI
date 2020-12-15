@@ -42,7 +42,7 @@ import com.iii.amirutham.dto.base.OnRegistrationCompleteEvent;
 import com.iii.amirutham.dto.model.UserDto;
 import com.iii.amirutham.dto.model.ValidateOtpDto;
 import com.iii.amirutham.exception.UserNotFoundException;
-import com.iii.amirutham.model.User;
+import com.iii.amirutham.model.user.User;
 import com.iii.amirutham.service.ISecurityUserService;
 import com.iii.amirutham.service.UserService;
 

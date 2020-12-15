@@ -7,8 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-import com.iii.amirutham.model.User;
-import com.iii.amirutham.model.VerificationToken;
+import com.iii.amirutham.model.user.User;
+import com.iii.amirutham.model.user.VerificationToken;
 
 public interface VerificationTokenRepository extends JpaRepository<VerificationToken, Long> {
 

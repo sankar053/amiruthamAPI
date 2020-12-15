@@ -1,4 +1,4 @@
-package com.iii.amirutham.model;
+package com.iii.amirutham.model.user;
 
 public enum ERole {
 	ROLE_USER,

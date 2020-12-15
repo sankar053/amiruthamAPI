@@ -1,4 +1,4 @@
-package com.iii.amirutham.model;
+package com.iii.amirutham.model.user;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;

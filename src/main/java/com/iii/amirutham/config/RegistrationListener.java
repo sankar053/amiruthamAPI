@@ -11,7 +11,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
 import com.iii.amirutham.dto.base.OnRegistrationCompleteEvent;
-import com.iii.amirutham.model.User;
+import com.iii.amirutham.model.user.User;
 import com.iii.amirutham.service.UserService;
 
 @Component
