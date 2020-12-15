@@ -102,7 +102,7 @@ public class UserServiceImpl implements UserService {
 
 		// Create new user's account
 		User user = new User(null, accountDto.getFirstName(), accountDto.getLastName(), accountDto.getPhoneNbr(),
-				accountDto.getEmailAddress(), passwordEncoder.encode(accountDto.getPassword()), null, null);
+				accountDto.getEmailAddress(), passwordEncoder.encode(accountDto.getPassword()), null);
 
 		Set<String> strRoles = accountDto.getRole();
 		Set<Role> roles = new HashSet<>();
@@ -132,16 +132,10 @@ public class UserServiceImpl implements UserService {
 					roles.add(userRole);
 				}
 			});
+			user.setRoles(roles);
 		}
-		if (null != accountDto.getAddress() && accountDto.getAddress().size() > 0) {
-			List<Address> addressDao = accountDto
-					.getAddress().stream().map(addr -> new Address(addr.getAddress1(), addr.getAddress2(),
-							addr.getAddressType(), addr.getCity(), addr.getState(), addr.getPostalCopde()))
-					.collect(Collectors.toList());
-			user.setAddress(addressDao);
-		}
-
-		user.setRoles(roles);
+		
+	
 
 		return userRepository.save(user);
 

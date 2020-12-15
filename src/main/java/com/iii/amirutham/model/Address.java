@@ -2,10 +2,19 @@ package com.iii.amirutham.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.iii.amirutham.model.user.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -42,12 +51,22 @@ public class Address extends BaseEntity {
 	@Column(name = "postalCopde")
 	private String postalCopde;
 
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "userId", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
+    private User user;
+	
 	/*
-	 * @ManyToOne(fetch = FetchType.LAZY)
+	 * @ManyToOne(fetch = FetchType.LAZY, optional = false)
 	 * 
-	 * @JoinColumn(name = "userId", nullable = false) private User user;
+	 * @JoinColumn(name = "orderId", nullable = false)
+	 * 
+	 * @OnDelete(action = OnDeleteAction.CASCADE)
+	 * 
+	 * @JsonIgnore private Order orders;
 	 */
-
+	
 	public Address(String address1, String address2, String addressType, String city, String state,
 			String postalCopde) {
 		super();
