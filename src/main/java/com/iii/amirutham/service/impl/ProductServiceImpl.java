@@ -69,7 +69,8 @@ public class ProductServiceImpl implements ProductService {
 			seqservice.updateMySeQuence(sequence);
 			product.setProductNm(productsDto.getProductNm());
 			product.setProductDesc(productsDto.getProductDesc());
-
+			product.setProductincredience(productsDto.getIncrediances());
+			product.setStock(productsDto.getStock());
 			List<ProductMediaGallary> mediaArray = new ArrayList<ProductMediaGallary>();
 			if (null != files) {
 				for (MultipartFile file : files) {
@@ -130,7 +131,7 @@ public class ProductServiceImpl implements ProductService {
 			}
 			productlistdto.add(new ProductDto(prod.getId(), String.valueOf(prod.getCategory().getId()),
 					prod.getProductCode(), prod.getProductNm(), prod.getProductDesc(), prod.getProductuses(),
-					mediaarray, productVarient));
+					prod.getProductincredience(),prod.getStock(),mediaarray, productVarient));
 
 		}
 
@@ -164,7 +165,7 @@ public class ProductServiceImpl implements ProductService {
 						.collect(Collectors.toList());
 			}
 			productdto = new ProductDto(prod.getId(), String.valueOf(prod.getCategory().getId()), prod.getProductCode(),
-					prod.getProductNm(), prod.getProductDesc(), prod.getProductuses(), mediaarray, productVarient);
+					prod.getProductNm(), prod.getProductDesc(), prod.getProductuses(), prod.getProductincredience(),prod.getStock(),mediaarray, productVarient);
 
 		}
 

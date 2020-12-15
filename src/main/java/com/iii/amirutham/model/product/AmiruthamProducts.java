@@ -3,9 +3,7 @@
  */
 package com.iii.amirutham.model.product;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -19,7 +17,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.iii.amirutham.model.BaseEntity;
 
 import lombok.AllArgsConstructor;
@@ -49,7 +46,7 @@ public class AmiruthamProducts extends BaseEntity {
 	@Column(name = "PROD_BRAND")
 	private String productBrand;
 	
-	@Column(name = "PROD_CAT_CODE")
+	@Column(name = "PROD_CAT_CODE",unique=true, nullable=false)
 	private String productCategoryCode;
 	
 	@Column(name = "PROD_NME")
@@ -63,6 +60,12 @@ public class AmiruthamProducts extends BaseEntity {
 	
 	@Column(name = "PROD_SPEC_DTLS",columnDefinition="LONGTEXT")
 	private String productspec;
+	
+	@Column(name = "PROD_incredience_DTLS",columnDefinition="LONGTEXT")
+	private String productincredience;
+	
+	@Column(name = "PROD_STOCK",columnDefinition="LONGTEXT")
+	private Integer stock;
 	
 	@ManyToOne
     @JoinColumn(name="cart_id", nullable=false)
@@ -78,13 +81,15 @@ public class AmiruthamProducts extends BaseEntity {
 	@OneToMany(mappedBy="product")
 	private List<ProductVarient> prodVarient;
 
-	public AmiruthamProducts(Integer id, String productCode, String productNm, String productDesc, String productuses) {
+	public AmiruthamProducts(Integer id, String productCode, String productNm, String productDesc, String productuses,Integer stock,String productincredience) {
 		super();
 		this.id = id;
 		this.productCode = productCode;
 		this.productNm = productNm;
 		this.productDesc = productDesc;
 		this.productuses = productuses;
+		this.stock = stock;
+		this.productincredience=productincredience;
 	}
 
 

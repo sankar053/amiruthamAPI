@@ -39,7 +39,7 @@ public class AmiruthamCategory extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
-	@Column(name = "CATE_CODE")
+	@Column(name = "CATE_CODE",unique=true, nullable=false)
 	private String categoryCd;
 	
 	@Column(name = "CATE_NME")

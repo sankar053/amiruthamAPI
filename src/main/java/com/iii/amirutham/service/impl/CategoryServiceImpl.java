@@ -84,7 +84,7 @@ public class CategoryServiceImpl implements CategoryService {
 				}
 
 				catgryDto.getProducts().add(new ProductDto(prod.getId(), "", prod.getProductCode(), prod.getProductNm(),
-						prod.getProductDesc(), prod.getProductuses(), mediaarray, productVarient));
+						prod.getProductDesc(), prod.getProductuses(),prod.getProductincredience(),prod.getStock(), mediaarray, productVarient));
 			}
 			catoglistdto.add(catgryDto);
 
@@ -132,7 +132,7 @@ public class CategoryServiceImpl implements CategoryService {
 				}
 
 				catgryDto.getProducts().add(new ProductDto(prod.getId(), "", prod.getProductCode(), prod.getProductNm(),
-						prod.getProductDesc(), prod.getProductuses(), mediaarray, productVarient));
+						prod.getProductDesc(), prod.getProductuses(),prod.getProductincredience(),prod.getStock(), mediaarray, productVarient));
 			}
 			return catgryDto;
 		}
