@@ -13,8 +13,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.iii.amirutham.model.user.User;
 
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class UserDetailsImpl implements UserDetails {
 	
 	
@@ -41,6 +43,7 @@ public class UserDetailsImpl implements UserDetails {
 	public UserDetailsImpl(Integer id, String firstName,String lastName, String email, String phoneNbr, String password,
 			Collection<? extends GrantedAuthority> authorities) {
 		this.id = id;
+		this.username=email;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
@@ -99,6 +102,7 @@ public class UserDetailsImpl implements UserDetails {
 		UserDetailsImpl user = (UserDetailsImpl) o;
 		return Objects.equals(id, user.id);
 	}
+
 
 	
 }

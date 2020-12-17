@@ -14,6 +14,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.iii.amirutham.model.order.Order;
 import com.iii.amirutham.model.user.User;
 
 import lombok.AllArgsConstructor;
@@ -57,15 +58,11 @@ public class Address extends BaseEntity {
     @JsonIgnore
     private User user;
 	
-	/*
-	 * @ManyToOne(fetch = FetchType.LAZY, optional = false)
-	 * 
-	 * @JoinColumn(name = "orderId", nullable = false)
-	 * 
-	 * @OnDelete(action = OnDeleteAction.CASCADE)
-	 * 
-	 * @JsonIgnore private Order orders;
-	 */
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "orderId", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
+    private Order orders;
 	
 	public Address(String address1, String address2, String addressType, String city, String state,
 			String postalCopde) {

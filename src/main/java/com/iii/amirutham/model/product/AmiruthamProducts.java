@@ -64,8 +64,14 @@ public class AmiruthamProducts extends BaseEntity {
 	@Column(name = "PROD_incredience_DTLS",columnDefinition="LONGTEXT")
 	private String productincredience;
 	
+	@Column(name = "PROD_HIGHLIGHT")
+	private String productHighlight;
+	
 	@Column(name = "PROD_STOCK",columnDefinition="LONGTEXT")
 	private Integer stock;
+	
+	@Column(name = "PROD_AVAILABLE")
+	private boolean available = true;
 	
 	@ManyToOne
     @JoinColumn(name="cart_id", nullable=false)

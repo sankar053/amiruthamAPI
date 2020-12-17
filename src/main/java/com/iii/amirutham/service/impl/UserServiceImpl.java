@@ -81,7 +81,7 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public UserDetails getUserDetails() {
+	public UserDetailsImpl getUserDetails() {
 		UserDetailsImpl userDetails = (UserDetailsImpl)SecurityContextHolder.getContext().
 		   getAuthentication().getPrincipal();
 		  return userDetails;

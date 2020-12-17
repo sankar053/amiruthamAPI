@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.iii.amirutham.config.UserDetailsImpl;
 import com.iii.amirutham.dto.base.EmailTemplate;
 import com.iii.amirutham.dto.base.GenericResponse;
 import com.iii.amirutham.dto.base.OnRegistrationCompleteEvent;
@@ -86,8 +87,8 @@ public class UserController {
 	}
 
 	@GetMapping("/user/profile")
-	public @ResponseBody ResponseEntity<UserDetails> getUserProfileInfo() {
-		UserDetails user = userService.getUserDetails();
+	public @ResponseBody ResponseEntity<UserDetailsImpl> getUserProfileInfo() {
+		UserDetailsImpl user = userService.getUserDetails();
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).
 				body(user);
 

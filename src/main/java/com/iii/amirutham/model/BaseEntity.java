@@ -8,6 +8,7 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Getter;
@@ -22,21 +23,27 @@ public class BaseEntity {
 	/**
 	 * Update date
 	 */
+	@JsonIgnore
 	@Column(name = "UPDATE_TS", insertable = false, updatable = true)
 	private Timestamp dateMajTech;
 
+	@JsonIgnore
 	@Column(name = "CREATION_TS", insertable = true, updatable = false)
 	private Timestamp dateCreaTech;
 
+	@JsonIgnore
 	@Column(name = "CREATED_BY", insertable = true, updatable = false)
 	private String createdBy;
 
+	@JsonIgnore
 	@Column(name = "UPDATED_BY", insertable = true, updatable = false)
 	private String updatedBy;
 
+	@JsonIgnore
 	@Column(name = "ACTIVE_YN", insertable = true, updatable = false)
 	private String isActive;
 
+	@JsonIgnore
 	@Column(name = "DELETED_YN", insertable = true, updatable = false)
 	private String isDeleted;
 

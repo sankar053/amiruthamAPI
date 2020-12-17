@@ -6,8 +6,7 @@ package com.iii.amirutham.service;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.security.core.userdetails.UserDetails;
-
+import com.iii.amirutham.config.UserDetailsImpl;
 import com.iii.amirutham.dto.model.UserDto;
 import com.iii.amirutham.dto.model.ValidateOtpDto;
 import com.iii.amirutham.model.user.User;
@@ -34,7 +33,7 @@ public interface UserService {
 
 	public void createVerificationTokenForUser(User user, String token);
 	
-	public UserDetails getUserDetails();
+	public UserDetailsImpl getUserDetails();
 
 	String createPasswordResetTokenForUser(User user, String token);
 }
