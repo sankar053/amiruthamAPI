@@ -44,7 +44,7 @@ public class ShoppingCart extends BaseEntity {
 	@Column(name = "SHP_CART_CODE", unique = true, nullable = false)
 	private String shoppingCartCode;
 
-	@OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
+	@OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
 	@JoinColumn(name = "cartid")
 	private Set<ShoppingCartItem> lineItems = new HashSet<ShoppingCartItem>();
 	

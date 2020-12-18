@@ -34,6 +34,10 @@ public class UserDetailsImpl implements UserDetails {
 	private String username;
 	
 	private String phoneNumber;
+	
+	private String isPendingCartAvailable;
+	
+	private Integer cartItemCount;
 
 	@JsonIgnore
 	private String password;
@@ -41,7 +45,7 @@ public class UserDetailsImpl implements UserDetails {
 	private Collection<? extends GrantedAuthority> authorities;
 
 	public UserDetailsImpl(Integer id, String firstName,String lastName, String email, String phoneNbr, String password,
-			Collection<? extends GrantedAuthority> authorities) {
+		Integer availitemCount,String ispendingCart,Collection<? extends GrantedAuthority> authorities) {
 		this.id = id;
 		this.username=email;
 		this.firstName = firstName;
@@ -49,10 +53,12 @@ public class UserDetailsImpl implements UserDetails {
 		this.email = email;
 		this.phoneNumber=phoneNbr;
 		this.password = password;
+		this.cartItemCount = availitemCount;
+		this.isPendingCartAvailable = ispendingCart;
 		this.authorities = authorities;
 	}
 
-	public static UserDetailsImpl build(User user) {
+	public static UserDetailsImpl build(User user,Integer availitemCount,String ispendingCart) {
 		List<GrantedAuthority> authorities = user.getRoles().stream()
 				.map(role -> new SimpleGrantedAuthority(role.getName().name()))
 				.collect(Collectors.toList());
@@ -64,6 +70,8 @@ public class UserDetailsImpl implements UserDetails {
 				user.getEmailAddress(),
 				user.getPhoneNbr(), 
 				user.getPassword(), 
+				availitemCount,
+				ispendingCart,
 				authorities);
 	}
 

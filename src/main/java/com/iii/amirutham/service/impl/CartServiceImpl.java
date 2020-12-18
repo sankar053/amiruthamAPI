@@ -5,6 +5,7 @@ package com.iii.amirutham.service.impl;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -89,6 +90,16 @@ public class CartServiceImpl implements CartService {
 		myCart.setCharges(new AddOnCharges());
 		//myCart.setShoppingCartStatus("Temp");
 		return cartRepository.save(myCart);
+	}
+	
+	@Override
+	public ShoppingCart getMyCart(Integer ConsumerId) {
+		
+		
+		List<ShoppingCart> mycartlist = cartRepository.findByCustomerId(ConsumerId);
+		ShoppingCart mycart =mycartlist.stream().filter(v -> "Pending".equals(v.getShoppingCartStatus())).findAny()
+				.orElse(null);
+		return mycart;
 	}
 
 }

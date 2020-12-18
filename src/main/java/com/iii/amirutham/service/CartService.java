@@ -14,4 +14,6 @@ public interface CartService {
 
 	public ShoppingCart addMyLocalCart(CartRequest cartRequest);
 
+	public ShoppingCart getMyCart(Integer customerId);
+
 }
