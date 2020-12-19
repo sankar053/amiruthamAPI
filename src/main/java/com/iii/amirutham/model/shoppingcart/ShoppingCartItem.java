@@ -47,6 +47,15 @@ public class ShoppingCartItem extends BaseEntity {
 
 	@Column(name = "PRODUCT_ID", nullable = false) // TODO CODE
 	private Integer productId;
+	
+	@Column(name = "ITEM_NAME", nullable = false) // TODO CODE
+	private String itemName;
+	
+	@Column(name = "ITEM_IMGURL", nullable = false) // TODO CODE
+	private String ItemImgURL;
+	
+	@Column(name = "ITEM_SELLER", nullable = false) // TODO CODE
+	private String sellerName="Amirum & Oil .co";
 
 	@Column(name = "PRODUCT_CODE", nullable = false) // TODO CODE
 	private String productCode;
@@ -76,7 +85,7 @@ public class ShoppingCartItem extends BaseEntity {
 	 * @Transient private FinalPrice finalPrice;//contains price details (raw
 	 * prices)
 	 */
-	@JsonIgnore
+	//@JsonIgnore
 	@Transient
 	private AmiruthamProducts product;
 

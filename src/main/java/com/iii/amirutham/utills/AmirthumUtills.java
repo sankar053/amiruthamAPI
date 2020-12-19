@@ -8,6 +8,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Random;
 
+import org.modelmapper.ModelMapper;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -16,6 +18,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *
  */
 public class AmirthumUtills {
+
+	
 
 	public static Object convertJsontoObject(Class c, String jsonStr) {
 
@@ -30,6 +34,12 @@ public class AmirthumUtills {
 
 	}
 
+	@SuppressWarnings("unused")
+	public static Object convertToDto(Object conversionObject,Class c,ModelMapper modelMapper) {
+		return modelMapper.map(conversionObject, c);
+	
+	}
+
 	public static String generateOTP() {
 
 		Random random = new Random();
@@ -38,9 +48,9 @@ public class AmirthumUtills {
 	}
 
 	public static void makeaDirectory(Path path) {
-		
+
 		try {
-			if(!Files.exists(path))
+			if (!Files.exists(path))
 				Files.createDirectories(path);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

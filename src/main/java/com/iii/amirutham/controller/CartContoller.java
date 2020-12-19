@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.iii.amirutham.config.UserDetailsImpl;
 import com.iii.amirutham.dto.base.CartRequest;
+import com.iii.amirutham.dto.model.CartDto;
 import com.iii.amirutham.model.shoppingcart.ShoppingCart;
 import com.iii.amirutham.service.CartService;
 import com.iii.amirutham.service.UserService;
@@ -44,11 +45,11 @@ public class CartContoller {
 	}
 
 	@GetMapping("/user/cart")
-	public ResponseEntity<Object> savelgetMyCart() {
+	public ResponseEntity<CartDto> savelgetMyCart() {
 
 		UserDetailsImpl user = userService.getUserDetails();
 
-		ShoppingCart cart = cartService.getMyCart(user.getId());
+		CartDto cart = cartService.getMyCart(user.getId());
 
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(cart);
 

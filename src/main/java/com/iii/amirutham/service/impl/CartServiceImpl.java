@@ -9,14 +9,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.iii.amirutham.config.UserDetailsImpl;
 import com.iii.amirutham.dto.base.CartRequest;
+import com.iii.amirutham.dto.model.CartDto;
 import com.iii.amirutham.dto.model.CartItemDto;
 import com.iii.amirutham.dto.model.SequnceDto;
 import com.iii.amirutham.model.product.AmiruthamProducts;
+import com.iii.amirutham.model.product.ProductMediaGallary;
 import com.iii.amirutham.model.product.ProductVarient;
 import com.iii.amirutham.model.shoppingcart.AddOnCharges;
 import com.iii.amirutham.model.shoppingcart.ShoppingCart;
@@ -27,6 +30,7 @@ import com.iii.amirutham.repo.ProductRepository;
 import com.iii.amirutham.service.CartService;
 import com.iii.amirutham.service.SequenceService;
 import com.iii.amirutham.service.UserService;
+import com.iii.amirutham.utills.AmirthumUtills;
 
 /**
  * @author sanka
@@ -37,6 +41,9 @@ public class CartServiceImpl implements CartService {
 
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private ModelMapper modelMapper;
 
 	@Autowired
 	private CartRepository cartRepository;
@@ -63,8 +70,12 @@ public class CartServiceImpl implements CartService {
 				ProductVarient varient = product.get().getProdVarient().stream().filter(v -> v.getId()==mycartItem.getVarientId()).findAny()
 						.orElse(null);
 				
+				List<ProductMediaGallary> media = product.get().getProdImgs();
+				
 				ShoppingCartItem item = new ShoppingCartItem();
 				item.setProduct(product.get());
+				item.setItemImgURL(null!=media?media.get(0).getProdImgUrl():null);
+				item.setItemName(product.get().getProductNm());
 				item.setProductCode(product.get().getProductCode());
 				item.setProductId(product.get().getId());
 				item.setQuantity(mycartItem.getQuantity());
@@ -88,18 +99,23 @@ public class CartServiceImpl implements CartService {
 		myCart.setCustomerId(user.getId());
 		myCart.setLineItems(cartItems);
 		myCart.setCharges(new AddOnCharges());
-		//myCart.setShoppingCartStatus("Temp");
 		return cartRepository.save(myCart);
 	}
 	
 	@Override
-	public ShoppingCart getMyCart(Integer ConsumerId) {
+	public CartDto getMyCart(Integer ConsumerId) {
 		
 		
 		List<ShoppingCart> mycartlist = cartRepository.findByCustomerId(ConsumerId);
 		ShoppingCart mycart =mycartlist.stream().filter(v -> "Pending".equals(v.getShoppingCartStatus())).findAny()
 				.orElse(null);
-		return mycart;
+		return null!=mycart?((CartDto) AmirthumUtills.convertToDto(mycart, CartDto.class,modelMapper)) :null;
+		
+		//return cartDto;
 	}
 
+	/*
+	 * List<Post> posts = postService.getPostsList(page, size, sortDir, sort);
+	 * return posts.stream() .map(this::convertToDto) .collect(Collectors.toList());
+	 */
 }

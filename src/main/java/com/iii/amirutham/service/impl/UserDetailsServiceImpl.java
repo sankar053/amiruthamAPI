@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.iii.amirutham.config.UserDetailsImpl;
-import com.iii.amirutham.model.shoppingcart.ShoppingCart;
+import com.iii.amirutham.dto.model.CartDto;
 import com.iii.amirutham.model.user.User;
 import com.iii.amirutham.repo.UserRepository;
 import com.iii.amirutham.service.CartService;
@@ -39,7 +39,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		int cartItemCount = 0;
 		String isPendingCart = "false";
 		if (user.isPresent()) {
-			ShoppingCart myCart = cartService.getMyCart(user.get().getId());
+			CartDto myCart = cartService.getMyCart(user.get().getId());
 			if (null != myCart) {
 				isPendingCart="true";
 				cartItemCount = myCart.getLineItems() != null ? myCart.getLineItems().size() : 0;}
@@ -47,7 +47,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			return UserDetailsImpl.build(user.get(), cartItemCount, isPendingCart);
 		} else {
 			user = userRepository.findByEmailAddress(username);
-			ShoppingCart myCart = cartService.getMyCart(user.get().getId());
+			CartDto myCart = cartService.getMyCart(user.get().getId());
 			if (null != myCart) {
 				isPendingCart="true";
 				cartItemCount = myCart.getLineItems() != null ? myCart.getLineItems().size() : 0;}
