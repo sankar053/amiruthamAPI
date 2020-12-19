@@ -30,6 +30,8 @@ public class CartItemDto {
 	
 	private String ItemImgURL;
 	
+	private String ItemUpdateStatus;
+	
 	private String sellerName="Amirum & Oil .co";
 
 	private CartAttributeItemDto attributes;

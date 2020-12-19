@@ -14,6 +14,8 @@ import com.iii.amirutham.model.shoppingcart.ShoppingCart;
 public interface CartService {
 
 	public ShoppingCart addMyLocalCart(CartRequest cartRequest);
+	
+	public ShoppingCart updateMyLocalCart(CartRequest cartRequest);
 
 	public CartDto getMyCart(Integer customerId);
 

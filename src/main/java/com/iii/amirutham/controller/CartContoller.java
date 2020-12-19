@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,7 +27,7 @@ import com.iii.amirutham.service.UserService;
  *
  */
 @RestController
-@RequestMapping
+@RequestMapping("/cart")
 public class CartContoller {
 
 	@Autowired
@@ -35,7 +36,7 @@ public class CartContoller {
 	@Autowired
 	private UserService userService;
 
-	@PostMapping("/user/cart")
+	@PostMapping
 	public ResponseEntity<Object> savelocalCart(@Valid @RequestBody CartRequest cartRequest) {
 
 		ShoppingCart cart = cartService.addMyLocalCart(cartRequest);
@@ -43,8 +44,17 @@ public class CartContoller {
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(cart);
 
 	}
+	
+	@PutMapping
+	public ResponseEntity<Object> updatelocalCart(@Valid @RequestBody CartRequest cartRequest) {
 
-	@GetMapping("/user/cart")
+		ShoppingCart cart = cartService.updateMyLocalCart(cartRequest);
+
+		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(cart);
+
+	}
+
+	@GetMapping
 	public ResponseEntity<CartDto> savelgetMyCart() {
 
 		UserDetailsImpl user = userService.getUserDetails();
