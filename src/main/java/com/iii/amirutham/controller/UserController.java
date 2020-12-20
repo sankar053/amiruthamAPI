@@ -23,7 +23,6 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -166,8 +165,7 @@ public class UserController {
 	}
 
 	public void sendOtpMessage(User to, String subject, String body, final Locale locale) {
-		final String message = messages.getMessage("message.resetPassword", null, locale);
-		mailSender.send(constructEmail(subject, body, to));
+			mailSender.send(constructEmail(subject, body, to));
 
 	}
 

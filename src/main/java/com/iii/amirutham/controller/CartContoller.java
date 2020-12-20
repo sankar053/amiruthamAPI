@@ -3,9 +3,11 @@
  */
 package com.iii.amirutham.controller;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.iii.amirutham.config.UserDetailsImpl;
 import com.iii.amirutham.dto.base.CartRequest;
 import com.iii.amirutham.dto.model.CartDto;
+import com.iii.amirutham.exception.UserNotFoundException;
 import com.iii.amirutham.model.shoppingcart.ShoppingCart;
 import com.iii.amirutham.service.CartService;
 import com.iii.amirutham.service.UserService;
@@ -35,20 +38,29 @@ public class CartContoller {
 
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private MessageSource messages;
 
 	@PostMapping
-	public ResponseEntity<Object> savelocalCart(@Valid @RequestBody CartRequest cartRequest) {
+	public ResponseEntity<CartDto> savelocalCart(HttpServletRequest request,@Valid @RequestBody CartRequest cartRequest) {
 
-		ShoppingCart cart = cartService.addMyLocalCart(cartRequest);
+		UserDetailsImpl user = userService.getUserDetails();
+		CartDto cart = null;
+		CartDto prndingcart = cartService.getMyCart(user.getId());
+		if(null==prndingcart)
+			cart = cartService.addMyLocalCart(cartRequest);
+		else
+			throw new UserNotFoundException(messages.getMessage("cart.message.AlreadyExists", null, request.getLocale()));
 
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(cart);
 
 	}
-	
-	@PutMapping
-	public ResponseEntity<Object> updatelocalCart(@Valid @RequestBody CartRequest cartRequest) {
 
-		ShoppingCart cart = cartService.updateMyLocalCart(cartRequest);
+	@PutMapping
+	public ResponseEntity<CartDto> updatelocalCart(@Valid @RequestBody CartRequest cartRequest) {
+
+		CartDto cart = cartService.updateMyLocalCart(cartRequest);
 
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(cart);
 

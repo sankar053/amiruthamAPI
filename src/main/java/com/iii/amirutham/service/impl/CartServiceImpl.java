@@ -63,7 +63,7 @@ public class CartServiceImpl implements CartService {
 	 */
 
 	@Override
-	public ShoppingCart addMyLocalCart(CartRequest cartRequest) {
+	public CartDto addMyLocalCart(CartRequest cartRequest) {
 		UserDetailsImpl user = userService.getUserDetails();
 		// Optional<MerchantStore> seller = sellerRepository.findById(1);
 		// TODO Auto-generated method stub
@@ -104,7 +104,10 @@ public class CartServiceImpl implements CartService {
 		myCart.setCustomerId(user.getId());
 		myCart.setLineItems(cartItems);
 		myCart.setCharges(new AddOnCharges());
-		return cartRepository.save(myCart);
+		ShoppingCart savedCart = cartRepository.save(myCart);
+		return null != savedCart ? ((CartDto) AmirthumUtills.convertToDto(savedCart, CartDto.class, modelMapper))
+				: null;
+
 	}
 
 	@Override
@@ -119,7 +122,7 @@ public class CartServiceImpl implements CartService {
 	}
 
 	@Override
-	public ShoppingCart updateMyLocalCart(CartRequest cartRequest) {
+	public CartDto updateMyLocalCart(CartRequest cartRequest) {
 		// TODO Auto-generated method stub
 
 		Optional<ShoppingCart> cart = cartRepository.findById(cartRequest.getCartid());
@@ -138,7 +141,9 @@ public class CartServiceImpl implements CartService {
 
 		}
 		Optional<ShoppingCart> updatedcart = cartRepository.findById(cartRequest.getCartid());
-		return updatedcart.get();
+		return updatedcart.isPresent()
+				? ((CartDto) AmirthumUtills.convertToDto(updatedcart.get(), CartDto.class, modelMapper))
+				: null;
 
 	}
 

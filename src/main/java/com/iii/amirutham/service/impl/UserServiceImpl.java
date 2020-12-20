@@ -5,13 +5,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +18,6 @@ import com.iii.amirutham.dto.model.UserDto;
 import com.iii.amirutham.dto.model.ValidateOtpDto;
 import com.iii.amirutham.exception.UserAlreadyExistException;
 import com.iii.amirutham.exception.UserNotFoundException;
-import com.iii.amirutham.model.Address;
 import com.iii.amirutham.model.user.ERole;
 import com.iii.amirutham.model.user.PasswordResetToken;
 import com.iii.amirutham.model.user.Role;
@@ -79,13 +76,17 @@ public class UserServiceImpl implements UserService {
 		// TODO Auto-generated method stub
 		return userRepository.findById(id);
 	}
-	
+
 	@Override
 	public UserDetailsImpl getUserDetails() {
-		UserDetailsImpl userDetails = (UserDetailsImpl)SecurityContextHolder.getContext().
-		   getAuthentication().getPrincipal();
-		  return userDetails;
-		} 
+		UserDetailsImpl userDetails = null;
+		try {
+			userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		} catch (Exception w) {
+			throw new UserNotFoundException("Token Got Expired");
+		}
+		return userDetails;
+	}
 
 	@Override
 	public User registerNewUserAccount(UserDto accountDto) {
@@ -134,8 +135,6 @@ public class UserServiceImpl implements UserService {
 			});
 			user.setRoles(roles);
 		}
-		
-	
 
 		return userRepository.save(user);
 
@@ -163,7 +162,6 @@ public class UserServiceImpl implements UserService {
 		return null;
 	}
 
-	
 	@Override
 	public String createPasswordResetTokenForUser(User user, String token) {
 		String otp = AmirthumUtills.generateOTP();
