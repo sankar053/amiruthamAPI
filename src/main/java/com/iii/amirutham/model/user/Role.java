@@ -6,8 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/*INSERT INTO ROLE (id, roleDesc, role) VALUES (4, 'Admin role', 'ROLE_ADMIN');
-INSERT INTO ROLE (id, roleDesc, role) VALUES (5, 'User role', 'ROLE_USER');*/
+/*INSERT INTO ROLE (id, role_Desc, role) VALUES (4, 'Admin role', 'ROLE_ADMIN');
+INSERT INTO ROLE (id, role_Desc, role) VALUES (5, 'User role', 'ROLE_USER');*/
 
 @Entity(name = "role")
 @Table(name = "role")

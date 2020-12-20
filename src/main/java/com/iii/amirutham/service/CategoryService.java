@@ -10,7 +10,7 @@ import com.iii.amirutham.model.product.AmiruthamCategory;
 
 public interface CategoryService {
 
-	List<AmiruthamCategory> createCategory(CategoryRequest categoryRequest);
+	public void createCategory(CategoryRequest categoryRequest);
 
 	public void createCategory(String products, List<MultipartFile> files);
 

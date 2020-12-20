@@ -37,7 +37,7 @@ public class CategoryServiceImpl implements CategoryService {
 	 * @Autowired private ProductRepository productRepo;
 	 */
 	@Override
-	public List<AmiruthamCategory> createCategory(CategoryRequest categoryRequest) {
+	public void createCategory(CategoryRequest categoryRequest) {
 		// TODO Auto-generated method stub
 		List<AmiruthamCategory> categoryList = new ArrayList<>();
 		for (CategoryDto categoryDto : categoryRequest.getCategories()) {
@@ -49,7 +49,7 @@ public class CategoryServiceImpl implements CategoryService {
 			category.setCategoryNm(categoryDto.getCategoryNm());
 			categoryList.add(category);
 		}
-		return categryRepo.saveAll(categoryList);
+		categryRepo.saveAll(categoryList);
 	}
 
 	@Override

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.iii.amirutham.dto.base.CategoryRequest;
+import com.iii.amirutham.dto.base.GenericResponse;
 import com.iii.amirutham.dto.model.CategoryDto;
 import com.iii.amirutham.model.product.AmiruthamCategory;
 import com.iii.amirutham.service.CategoryService;
@@ -31,12 +32,12 @@ public class CategoryController {
 	private CategoryService categoryService;
 
 	@PostMapping
-	public ResponseEntity<Object> saveCategory(@Valid @RequestBody CategoryRequest categoryRequest) {
+	public ResponseEntity<GenericResponse> saveCategory(@Valid @RequestBody CategoryRequest categoryRequest) {
 
-		List<AmiruthamCategory> createdCategoryList =categoryService.createCategory(categoryRequest);
+		categoryService.createCategory(categoryRequest);
 		return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON)
-               .body(createdCategoryList) ;
+               .body(new GenericResponse("success")) ;
 
 	}
 	
@@ -44,7 +45,9 @@ public class CategoryController {
 	public ResponseEntity<Object> updateCategory(@Valid @RequestBody CategoryDto categories) {
 
 		AmiruthamCategory updatedCategory =categoryService.updateCategory(categories);
-		return new ResponseEntity(updatedCategory, HttpStatus.OK);
+		return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+               .body(updatedCategory);
 
 	}
 	
@@ -52,7 +55,9 @@ public class CategoryController {
 	public ResponseEntity<Object> updateCategoryPatch(@Valid @RequestBody CategoryDto categories) {
 
 		AmiruthamCategory updatedCategory = categoryService.updateCategory(categories);
-		return new ResponseEntity(updatedCategory, HttpStatus.OK);
+		return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+               .body(updatedCategory);
 
 	}
 
@@ -60,7 +65,9 @@ public class CategoryController {
 	public ResponseEntity<Object> getAllCatogry() {
 		List<CategoryDto> catogList = categoryService.findAllCatogry();
 		System.out.println(catogList.size());
-		return new ResponseEntity(catogList, HttpStatus.OK);
+		return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+               .body(catogList);
 
 	}
 
@@ -68,7 +75,9 @@ public class CategoryController {
 	public ResponseEntity<Object> getCatogryById(@PathVariable int id) {
 		CategoryDto category = categoryService.findCatogryById(id);
 
-		return new ResponseEntity(category, HttpStatus.OK);
+		return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+               .body(category);
 
 	}
 	
@@ -76,7 +85,9 @@ public class CategoryController {
 	public ResponseEntity<Object> deleteCatogryById(@PathVariable int id) {
 		categoryService.deleteCatogry(id);
 
-		return new ResponseEntity("Category Deleted Successfully", HttpStatus.OK);
+		return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+               .body(new GenericResponse("Category Deleted Successfully"));
 
 	}
 
