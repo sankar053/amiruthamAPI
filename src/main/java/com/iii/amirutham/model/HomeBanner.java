@@ -54,5 +54,17 @@ public class HomeBanner extends BaseEntity {
 	
 	@Column(name = "bannerFileSize")
 	private Long bannerImgSize;
+	
+	@Column(name = "home_insta_link")
+	private String instaLink;
+	
+	@Column(name = "home_youtube_link")
+	private String youtubeLink;
+	
+	@Column(name = "home_facebook_link")
+	private String facebookLink;
+	
+	@Column(name = "home_twitter_link")
+	private String twitterLink;
 
 }

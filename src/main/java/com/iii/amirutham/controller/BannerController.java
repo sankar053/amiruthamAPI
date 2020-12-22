@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.iii.amirutham.dto.model.BannerDto;
 import com.iii.amirutham.model.HomeBanner;
 import com.iii.amirutham.service.BannerService;
 
@@ -33,9 +34,9 @@ public class BannerController {
 	private BannerService bannerService;
 
 	@PostMapping
-	public ResponseEntity<Object> createHomeBanner(@RequestPart("payload") String payload,
+	public ResponseEntity<BannerDto> createHomeBanner(@RequestPart("payload") String payload,
 			@RequestPart("file") @Valid @NotNull @NotBlank MultipartFile file) {
-		HomeBanner bannerDao=bannerService.addHomeBanner(payload, file);
+		BannerDto bannerDao=bannerService.addHomeBanner(payload, file);
 
 		return  ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON)
