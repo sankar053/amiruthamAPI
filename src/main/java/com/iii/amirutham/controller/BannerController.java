@@ -36,29 +36,29 @@ public class BannerController {
 	@PostMapping
 	public ResponseEntity<BannerDto> createHomeBanner(@RequestPart("payload") String payload,
 			@RequestPart("file") @Valid @NotNull @NotBlank MultipartFile file) {
-		BannerDto bannerDao=bannerService.addHomeBanner(payload, file);
+		BannerDto homeBanner=bannerService.addHomeBanner(payload, file);
 
 		return  ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON)
-               .body(bannerDao);
+               .body(homeBanner);
 
 	}
 
 	@GetMapping
 	public ResponseEntity<Object> retribeAllBanner() {
-		List<HomeBanner> bannerList = bannerService.retriveAllBanners();
+		BannerDto homeBanner = bannerService.retriveAllBanners();
 
 		return ResponseEntity.ok() .contentType(MediaType.APPLICATION_JSON)
-	               .body(bannerList);
+	               .body(homeBanner);
 
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Object> retribeBannerByID(@PathVariable int id) {
-		Optional<HomeBanner> banner = bannerService.retribeBannerByID(id);
+		BannerDto homeBanner = bannerService.retribeBannerByID(id);
 
 		return ResponseEntity.ok() .contentType(MediaType.APPLICATION_JSON)
-	               .body(banner.get());
+	               .body(homeBanner);
 
 	}
 	
