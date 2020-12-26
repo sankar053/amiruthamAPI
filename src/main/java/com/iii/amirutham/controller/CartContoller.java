@@ -21,7 +21,6 @@ import com.iii.amirutham.config.UserDetailsImpl;
 import com.iii.amirutham.dto.base.CartRequest;
 import com.iii.amirutham.dto.model.CartDto;
 import com.iii.amirutham.exception.UserNotFoundException;
-import com.iii.amirutham.model.shoppingcart.ShoppingCart;
 import com.iii.amirutham.service.CartService;
 import com.iii.amirutham.service.UserService;
 
