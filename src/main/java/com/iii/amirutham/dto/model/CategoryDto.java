@@ -30,7 +30,7 @@ public class CategoryDto {
 	
 	private Integer categoryOrder;
 	
-   @JsonIgnore
+   //@JsonIgnore
    private List<ProductDto> products = new ArrayList();
 	
 
