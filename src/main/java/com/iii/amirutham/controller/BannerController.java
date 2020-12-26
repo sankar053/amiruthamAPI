@@ -1,8 +1,6 @@
 package com.iii.amirutham.controller;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -23,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.iii.amirutham.dto.model.BannerDto;
-import com.iii.amirutham.model.HomeBanner;
 import com.iii.amirutham.service.BannerService;
 
 @RestController

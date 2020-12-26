@@ -6,13 +6,17 @@ package com.iii.amirutham.dto.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author sanka
  *
  */
-@Data
+@Getter
+@Setter
 public class CategoryDto {
 	
 
@@ -24,6 +28,9 @@ public class CategoryDto {
 	
 	private String categoryDesc;
 	
+	private Integer categoryOrder;
+	
+   @JsonIgnore
    private List<ProductDto> products = new ArrayList();
 	
 

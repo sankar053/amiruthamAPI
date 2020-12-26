@@ -48,17 +48,21 @@ public class AmiruthamCategory extends BaseEntity {
 	@Column(name = "CATE_DESC")
 	private String categoryDesc;
 	
+	@Column(name = "CATE_ORDER",unique=true, nullable=false)
+	private Integer categoryOrder;
+	
 	@JsonIgnore 
 	@OneToMany(mappedBy="category")
 	private Set<AmiruthamProducts> products =new HashSet<AmiruthamProducts>();
 
 	
-	  public AmiruthamCategory(Integer id, String categoryCd, String categoryNm, String categoryDesc) {
+	  public AmiruthamCategory(Integer id, String categoryCd, String categoryNm, String categoryDesc, Integer categoryOrder) {
 			super();
 			this.id = id;
 			this.categoryCd = categoryCd;
 			this.categoryNm = categoryNm;
 			this.categoryDesc = categoryDesc;
+			this.categoryOrder = categoryOrder;
 		}
 
 	

@@ -1,5 +1,6 @@
 package com.iii.amirutham.service;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -10,9 +11,9 @@ import com.iii.amirutham.model.product.AmiruthamCategory;
 
 public interface CategoryService {
 
-	public void createCategory(CategoryRequest categoryRequest);
+	public void createCategory(CategoryRequest categoryRequest) ;
 
-	public void createCategory(String products, List<MultipartFile> files);
+	public void createCategory(String products, List<MultipartFile> files); 
 
 	public List<CategoryDto> findAllCatogry();
 
@@ -22,6 +23,6 @@ public interface CategoryService {
 
 	public void deleteCatogry(int id);
 
-	AmiruthamCategory updateCategory( CategoryDto categories);
+	AmiruthamCategory updateCategory( CategoryDto categories) ;
 
 }

@@ -1,5 +1,6 @@
 package com.iii.amirutham.exception;
 
+import java.sql.SQLException;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,7 @@ public class AmirthumExceptuinHandler extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<Object>(exceptionResponse, HttpStatus.NOT_FOUND);
 
 	}
+	
 
 	// 409
 	@ExceptionHandler({ UserAlreadyExistException.class })

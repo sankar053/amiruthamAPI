@@ -34,22 +34,27 @@ public class CategoryServiceImpl implements CategoryService {
 	private SequenceService seqservice;
 
 	/*
+	 * @Autowired private ModelMapper modelMapper;
+	 */
+	/*
 	 * @Autowired private ProductRepository productRepo;
 	 */
 	@Override
 	public void createCategory(CategoryRequest categoryRequest) {
 		// TODO Auto-generated method stub
 		List<AmiruthamCategory> categoryList = new ArrayList<>();
-		for (CategoryDto categoryDto : categoryRequest.getCategories()) {
-			AmiruthamCategory category = new AmiruthamCategory();
-			SequnceDto sequence = seqservice.findMySeQuence("CATEGERY");
-			category.setCategoryCd(sequence.getSeqChar() + String.format("%05d", sequence.getSeqNxtVal()));
-			seqservice.updateMySeQuence(sequence);
-			category.setCategoryDesc(categoryDto.getCategoryDesc());
-			category.setCategoryNm(categoryDto.getCategoryNm());
-			categoryList.add(category);
-		}
-		categryRepo.saveAll(categoryList);
+			for (CategoryDto categoryDto : categoryRequest.getCategories()) {
+				AmiruthamCategory category = new AmiruthamCategory();
+				SequnceDto sequence = seqservice.findMySeQuence("CATEGERY");
+				category.setCategoryCd(sequence.getSeqChar() + String.format("%05d", sequence.getSeqNxtVal()));
+				seqservice.updateMySeQuence(sequence);
+				category.setCategoryDesc(categoryDto.getCategoryDesc());
+				category.setCategoryNm(categoryDto.getCategoryNm());
+				category.setCategoryOrder(categoryDto.getCategoryOrder());
+				categoryList.add(category);
+			}
+			categryRepo.saveAll(categoryList);
+		
 	}
 
 	@Override
@@ -62,7 +67,7 @@ public class CategoryServiceImpl implements CategoryService {
 			catgryDto.setCategoryCd(cato.getCategoryCd());
 			catgryDto.setCategoryDesc(cato.getCategoryDesc());
 			catgryDto.setCategoryNm(cato.getCategoryNm());
-
+			catgryDto.setCategoryOrder(cato.getCategoryOrder());
 			for (AmiruthamProducts prod : cato.getProducts()) {
 				List<ProductMediaDto> mediaarray = null;
 				List<ProductVarientDto> productVarient = null;
@@ -83,8 +88,10 @@ public class CategoryServiceImpl implements CategoryService {
 							.collect(Collectors.toList());
 				}
 
-				catgryDto.getProducts().add(new ProductDto(prod.getId(), "", prod.getProductCode(), prod.getProductNm(),
-						prod.getProductDesc(), prod.getProductuses(),prod.getProductincredience(),prod.getStock(), mediaarray, productVarient));
+				catgryDto.getProducts()
+						.add(new ProductDto(prod.getId(), "", prod.getProductCode(), prod.getProductNm(),
+								prod.getProductDesc(), prod.getProductuses(), prod.getProductincredience(),
+								prod.getStock(), mediaarray, productVarient));
 			}
 			catoglistdto.add(catgryDto);
 
@@ -106,7 +113,7 @@ public class CategoryServiceImpl implements CategoryService {
 			catgryDto.setCategoryCd(cato.getCategoryCd());
 			catgryDto.setCategoryDesc(cato.getCategoryDesc());
 			catgryDto.setCategoryNm(cato.getCategoryNm());
-
+			catgryDto.setCategoryOrder(cato.getCategoryOrder());
 			/*
 			 * Set<AmiruthamProducts> products = cato.getProducts(); if (products != null &&
 			 * products.size() > 0) {
@@ -131,8 +138,10 @@ public class CategoryServiceImpl implements CategoryService {
 							.collect(Collectors.toList());
 				}
 
-				catgryDto.getProducts().add(new ProductDto(prod.getId(), "", prod.getProductCode(), prod.getProductNm(),
-						prod.getProductDesc(), prod.getProductuses(),prod.getProductincredience(),prod.getStock(), mediaarray, productVarient));
+				catgryDto.getProducts()
+						.add(new ProductDto(prod.getId(), "", prod.getProductCode(), prod.getProductNm(),
+								prod.getProductDesc(), prod.getProductuses(), prod.getProductincredience(),
+								prod.getStock(), mediaarray, productVarient));
 			}
 			return catgryDto;
 		}
@@ -148,7 +157,7 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public void createCategory(String catogryStr, List<MultipartFile> files) {
+	public void createCategory(String catogryStr, List<MultipartFile> files)  {
 
 		CategoryDto categoryDto = (CategoryDto) AmirthumUtills.convertJsontoObject(CategoryDto.class, catogryStr);
 
@@ -156,7 +165,7 @@ public class CategoryServiceImpl implements CategoryService {
 		category.setCategoryCd(categoryDto.getCategoryCd());
 		category.setCategoryDesc(categoryDto.getCategoryDesc());
 		category.setCategoryNm(categoryDto.getCategoryNm());
-
+		category.setCategoryOrder(categoryDto.getCategoryOrder());
 		categryRepo.save(category);
 
 	}
@@ -169,7 +178,7 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public AmiruthamCategory updateCategory(CategoryDto categoryDto) {
+	public AmiruthamCategory updateCategory(CategoryDto categoryDto)  {
 		// TODO Auto-generated method stub
 
 		if (null != categoryDto.getId()) {
