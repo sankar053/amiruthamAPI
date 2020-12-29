@@ -68,6 +68,8 @@ public class CategoryServiceImpl implements CategoryService {
 			catgryDto.setCategoryDesc(cato.getCategoryDesc());
 			catgryDto.setCategoryNm(cato.getCategoryNm());
 			catgryDto.setCategoryOrder(cato.getCategoryOrder());
+			catgryDto.setCreatedTs(cato.getCreatedTs());
+			catgryDto.setUpdatedTs(cato.getUpdatedTs());
 			for (AmiruthamProducts prod : cato.getProducts()) {
 				List<ProductMediaDto> mediaarray = null;
 				List<ProductVarientDto> productVarient = null;
@@ -114,10 +116,8 @@ public class CategoryServiceImpl implements CategoryService {
 			catgryDto.setCategoryDesc(cato.getCategoryDesc());
 			catgryDto.setCategoryNm(cato.getCategoryNm());
 			catgryDto.setCategoryOrder(cato.getCategoryOrder());
-			/*
-			 * Set<AmiruthamProducts> products = cato.getProducts(); if (products != null &&
-			 * products.size() > 0) {
-			 */
+			catgryDto.setCreatedTs(cato.getCreatedTs());
+			catgryDto.setUpdatedTs(cato.getUpdatedTs());
 			for (AmiruthamProducts prod : cato.getProducts()) {
 				List<ProductMediaDto> mediaarray = null;
 				List<ProductVarientDto> productVarient = null;

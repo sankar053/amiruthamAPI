@@ -6,7 +6,7 @@ package com.iii.amirutham.dto.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -17,7 +17,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class CategoryDto {
+public class CategoryDto extends BaseEntityDto{
 	
 
 	private Integer id;
@@ -28,6 +28,7 @@ public class CategoryDto {
 	
 	private String categoryDesc;
 	
+	@NotNull
 	private Integer categoryOrder;
 	
    //@JsonIgnore

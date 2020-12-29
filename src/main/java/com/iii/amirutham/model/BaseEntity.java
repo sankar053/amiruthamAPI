@@ -17,7 +17,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @MappedSuperclass
-@JsonIgnoreProperties(value = { "dateMajTech", "dateCreaTech" })
+@JsonIgnoreProperties(value = { "createdTs", "updatedTs" })
 public class BaseEntity {
 
 	/**
@@ -25,11 +25,11 @@ public class BaseEntity {
 	 */
 	@JsonIgnore
 	@Column(name = "UPDATE_TS", insertable = false, updatable = true)
-	private Timestamp dateMajTech;
+	private Timestamp updatedTs;
 
 	@JsonIgnore
 	@Column(name = "CREATION_TS", insertable = true, updatable = false)
-	private Timestamp dateCreaTech;
+	private Timestamp createdTs;
 
 	@JsonIgnore
 	@Column(name = "CREATED_BY", insertable = true, updatable = false)
@@ -49,16 +49,17 @@ public class BaseEntity {
 
 	@PrePersist
 	void onCreate() {
-		this.setDateCreaTech(new Timestamp((new Date()).getTime()));
+		this.setCreatedTs(new Timestamp((new Date()).getTime()));
 		this.setIsActive("Y");
 		this.setIsDeleted("N");
 		this.setCreatedBy("Amirthum");
-		this.setUpdatedBy("Amirthum");
+	
 	}
 
 	@PreUpdate
 	void onPersist() {
-		this.setDateMajTech(new Timestamp((new Date()).getTime()));
+		this.setUpdatedTs(new Timestamp((new Date()).getTime()));
+		this.setUpdatedBy("Amirthum");
 	}
 
 }

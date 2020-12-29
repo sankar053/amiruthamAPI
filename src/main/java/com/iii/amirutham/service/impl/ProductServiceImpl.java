@@ -129,9 +129,12 @@ public class ProductServiceImpl implements ProductService {
 								varient.getBestBeforeDate(), prod.getId()))
 						.collect(Collectors.toList());
 			}
-			productlistdto.add(new ProductDto(prod.getId(), String.valueOf(prod.getCategory().getId()),
+			ProductDto prodDto=	new ProductDto(prod.getId(), String.valueOf(prod.getCategory().getId()),
 					prod.getProductCode(), prod.getProductNm(), prod.getProductDesc(), prod.getProductuses(),
-					prod.getProductincredience(),prod.getStock(),mediaarray, productVarient));
+					prod.getProductincredience(),prod.getStock(),mediaarray, productVarient);
+			prodDto.setUpdatedBy(prod.getUpdatedBy());
+			prodDto.setCreatedTs(prod.getCreatedTs());
+			productlistdto.add(prodDto);
 
 		}
 
@@ -166,7 +169,8 @@ public class ProductServiceImpl implements ProductService {
 			}
 			productdto = new ProductDto(prod.getId(), String.valueOf(prod.getCategory().getId()), prod.getProductCode(),
 					prod.getProductNm(), prod.getProductDesc(), prod.getProductuses(), prod.getProductincredience(),prod.getStock(),mediaarray, productVarient);
-
+			productdto.setUpdatedBy(prod.getUpdatedBy());
+			productdto.setCreatedTs(prod.getCreatedTs());
 		}
 
 		return productdto;

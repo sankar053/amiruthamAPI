@@ -9,6 +9,8 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.iii.amirutham.config.UserDetailsImpl;
@@ -37,6 +39,9 @@ public class ProductReviewServiceImpl implements ProductReviewService {
 
 	@Autowired
 	private UserRepository userRepository;
+	
+	//@Autowired
+	
 
 	@Autowired
 	private ProductRepository prodRepo;
@@ -60,12 +65,13 @@ public class ProductReviewServiceImpl implements ProductReviewService {
 	}
 
 	@Override
-	public List<ProductReviews> getReviewsByProduct(Integer productId) {
+	public List<ProductReviews> getReviewsByProduct(Integer productId,Integer pageNo, Integer pageSize,Pageable pageable) {
 		// TODO Auto-generated method stub
-		System.out.println("done");
+		if(pageNo!=null && pageSize!=null)
+			pageable = PageRequest.of(pageNo, pageSize);
 		Optional<AmiruthamProducts> prodct = prodRepo.findById(productId);
 		if (prodct.isPresent())
-			return reviewRepo.findByProduct(prodct.get());
+			return reviewRepo.findByProduct(prodct.get(),pageable);
 		return null;
 		
 	}

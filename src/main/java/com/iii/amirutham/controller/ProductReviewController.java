@@ -9,13 +9,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -24,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.iii.amirutham.dto.base.GenericResponse;
 import com.iii.amirutham.dto.model.ProductReviewDto;
 import com.iii.amirutham.model.product.ProductReviews;
+import com.iii.amirutham.repo.ProductReviewRepository;
 import com.iii.amirutham.service.ProductReviewService;
 
 /**
@@ -39,6 +46,9 @@ public class ProductReviewController {
 	private MessageSource messages;
 	
 	@Autowired
+	private ProductReviewRepository reviewRepo;
+	
+	@Autowired
 	private ProductReviewService revivewService;
 	
 	@PostMapping
@@ -50,27 +60,36 @@ public class ProductReviewController {
 		
 	}
 	
-	@GetMapping("/{productId}")
-	public  @ResponseBody ResponseEntity<List<ProductReviews>> getReviewsByProduct(HttpServletRequest request,@PathVariable Integer productId) {
+	@GetMapping(value = {"/{productId}", "/{productId}/{pageNo}/{pageSize}"})
+	public  @ResponseBody ResponseEntity<List<ProductReviews>> getReviewsByProduct(HttpServletRequest request,@PathVariable Integer productId,@PathVariable(required = false) Integer pageNo, 
+	        @PathVariable(required = false) Integer pageSize,@Qualifier("my") Pageable pageable) {
 		
-		List<ProductReviews> reviews = revivewService.getReviewsByProduct(productId);
+		List<ProductReviews> reviews = revivewService.getReviewsByProduct(productId,pageNo, pageSize,pageable);
 		
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(reviews);
 		
 	}
 	
-	/*
-	 * @PutMapping public @ResponseBody ResponseEntity<GenericResponse>
-	 * updateReviews(HttpServletRequest request,@Valid @RequestBody ProductReviewDto
-	 * reviewRequest) {
-	 * 
-	 * revivewService.addReviewsToProduct(reviewRequest);
-	 * 
-	 * return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(new
-	 * GenericResponse(messages.getMessage("message.product.review.success", null,
-	 * request.getLocale())));
-	 * 
-	 * }
-	 */
+	@GetMapping(path = "/page")
+	List<ProductReviews> loadCharactersPage(
+			@PageableDefault(page = 0, size = 5)
+			@SortDefault.SortDefaults({
+					@SortDefault(sort = "createdTs", direction = Sort.Direction.ASC),
+					@SortDefault(sort = "id", direction = Sort.Direction.ASC)
+			})
+		Pageable pageable) {
+		return reviewRepo.findAllPage(pageable).toList();
+	}
+
+	
+	@GetMapping(path = "/sorted")
+	List<ProductReviews> loadCharactersSorted(Sort sort) {
+		return reviewRepo.findAllSorted(sort);
+	}
+
+	@GetMapping(path = "/slice")
+	Slice<ProductReviews> loadCharactersSlice(Pageable pageable) {
+		return reviewRepo.findAllSlice(pageable);
+	}
 
 }

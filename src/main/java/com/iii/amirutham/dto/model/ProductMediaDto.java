@@ -1,14 +1,16 @@
 package com.iii.amirutham.dto.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductMediaDto  {
+public class ProductMediaDto  extends BaseEntityDto{
 	
 	
 

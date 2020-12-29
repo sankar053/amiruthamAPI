@@ -2,6 +2,8 @@ package com.iii.amirutham.config;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,6 +17,8 @@ public class JwtResponse {
 	private String email;
 	private Integer myCartItemCount;
 	private String ispendingCartAvailable;
+	
+	@JsonIgnore
 	private List<String> roles;
 
 	public JwtResponse(String accessToken, Integer id, String username, String email, List<String> roles,Integer myCartItemCount,String ispendingCartAvailable) {
