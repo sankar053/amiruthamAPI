@@ -41,9 +41,6 @@ public class ProductDto extends BaseEntityDto {
 	
 	private String incrediances;
 	
-	@NotNull
-	private Integer stock;
-	
 	List<ProductMediaDto> prodMedias;
 	List<ProductVarientDto> prodVarient;
 	

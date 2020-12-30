@@ -67,6 +67,7 @@ public class CartServiceImpl implements CartService {
 		UserDetailsImpl user = userService.getUserDetails();
 		// Optional<MerchantStore> seller = sellerRepository.findById(1);
 		// TODO Auto-generated method stub
+		BigDecimal finalPrice=new BigDecimal(0);
 		Set<ShoppingCartItem> cartItems = new HashSet<ShoppingCartItem>();
 		for (CategoryRequestItems mycartItem : cartRequest.getCartItems()) {
 			Optional<AmiruthamProducts> product = productRepository.findById(mycartItem.getProductId());
@@ -86,6 +87,7 @@ public class CartServiceImpl implements CartService {
 				item.setItemPrice(new BigDecimal(varient.getSellingPrice()));
 				BigDecimal st = item.getItemPrice().multiply(new BigDecimal(item.getQuantity()));
 				item.setSubTotal(st);
+				finalPrice.add(item.getSubTotal());
 				item.setAttributes(new ShoppingCartAttributeItem(varient.getMaximumRetailPrice(),
 						varient.getSellingPrice(), varient.getSavedPrice(), varient.getDiscount(), varient.getUnit(),
 						varient.getUnitType(), varient.getProdCode(), varient.getManufactureDate(),
@@ -104,6 +106,8 @@ public class CartServiceImpl implements CartService {
 		myCart.setCustomerId(user.getId());
 		myCart.setLineItems(cartItems);
 		myCart.setCharges(new AddOnCharges());
+		myCart.setFinalpriceWithoutCharges(finalPrice);
+		myCart.setFinalpriceWithCharges(finalPrice.add(myCart.getCharges().getChargeAmount()));
 		ShoppingCart savedCart = cartRepository.save(myCart);
 		return null != savedCart ? ((CartDto) AmirthumUtills.convertToDto(savedCart, CartDto.class, modelMapper))
 				: null;

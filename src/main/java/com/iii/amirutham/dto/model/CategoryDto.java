@@ -28,6 +28,8 @@ public class CategoryDto extends BaseEntityDto{
 	
 	private String categoryDesc;
 	
+	private String categoryBannerImgURL;
+	
 	@NotNull
 	private Integer categoryOrder;
 	

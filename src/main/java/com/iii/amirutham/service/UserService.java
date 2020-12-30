@@ -9,6 +9,7 @@ import java.util.Optional;
 import com.iii.amirutham.config.UserDetailsImpl;
 import com.iii.amirutham.dto.model.UserDto;
 import com.iii.amirutham.dto.model.ValidateOtpDto;
+import com.iii.amirutham.model.order.Order;
 import com.iii.amirutham.model.user.User;
 
 /**
@@ -36,4 +37,6 @@ public interface UserService {
 	public UserDetailsImpl getUserDetails();
 
 	String createPasswordResetTokenForUser(User user, String token);
+
+	public List<Order> myorders();
 }

@@ -39,7 +39,7 @@ public class ProductVarientServiceImpl implements ProductVarientService {
 			Optional<AmiruthamProducts> product = productRepository.findById(productVarientDto.getProdid());
 			if (product.isPresent()) {
 
-				ProductVarient varientDao = new ProductVarient(productVarientDto.getMaximumRetailPrice(),
+				ProductVarient varientDao = new ProductVarient(productVarientDto.getMaximumRetailPrice(),productVarientDto.getStock(),
 						productVarientDto.getDiscount(), productVarientDto.getUnit(), productVarientDto.getUnitType(),
 						productVarientDto.getManufactureDate(), productVarientDto.getBestBeforeDate(), product.get(),
 						product.get().getProductCode());
@@ -60,7 +60,7 @@ public class ProductVarientServiceImpl implements ProductVarientService {
 			if (product.isPresent() && productVarientDto.getId() != null) {
 
 				ProductVarient varientDao = new ProductVarient(productVarientDto.getId(),
-						productVarientDto.getMaximumRetailPrice(), productVarientDto.getDiscount(),
+						productVarientDto.getMaximumRetailPrice(),productVarientDto.getStock(), productVarientDto.getDiscount(),
 						productVarientDto.getUnit(), productVarientDto.getUnitType(),
 						productVarientDto.getManufactureDate(), productVarientDto.getBestBeforeDate(), product.get(),
 						product.get().getProductCode());

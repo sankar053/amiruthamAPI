@@ -59,6 +59,8 @@ public class ShoppingCartItem extends BaseEntity {
 
 	@Column(name = "PRODUCT_CODE", nullable = false) // TODO CODE
 	private String productCode;
+	
+	
 
 	@OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "cart_item_id",referencedColumnName = "id")

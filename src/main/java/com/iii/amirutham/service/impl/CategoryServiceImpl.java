@@ -51,6 +51,7 @@ public class CategoryServiceImpl implements CategoryService {
 				category.setCategoryDesc(categoryDto.getCategoryDesc());
 				category.setCategoryNm(categoryDto.getCategoryNm());
 				category.setCategoryOrder(categoryDto.getCategoryOrder());
+				category.setCategoryBannerImgURL(categoryDto.getCategoryBannerImgURL());
 				categoryList.add(category);
 			}
 			categryRepo.saveAll(categoryList);
@@ -68,6 +69,7 @@ public class CategoryServiceImpl implements CategoryService {
 			catgryDto.setCategoryDesc(cato.getCategoryDesc());
 			catgryDto.setCategoryNm(cato.getCategoryNm());
 			catgryDto.setCategoryOrder(cato.getCategoryOrder());
+			catgryDto.setCategoryBannerImgURL(cato.getCategoryBannerImgURL());
 			catgryDto.setCreatedTs(cato.getCreatedTs());
 			catgryDto.setUpdatedTs(cato.getUpdatedTs());
 			for (AmiruthamProducts prod : cato.getProducts()) {
@@ -86,14 +88,14 @@ public class CategoryServiceImpl implements CategoryService {
 							.map(varient -> new ProductVarientDto(varient.getId(), varient.getMaximumRetailPrice(),
 									varient.getSellingPrice(), varient.getSavedPrice(), varient.getDiscount(),
 									varient.getUnit(), varient.getUnitType(), varient.getManufactureDate(),
-									varient.getBestBeforeDate(), prod.getId()))
+									varient.getBestBeforeDate(), prod.getId(),varient.getStock()))
 							.collect(Collectors.toList());
 				}
 
 				catgryDto.getProducts()
 						.add(new ProductDto(prod.getId(), "", prod.getProductCode(), prod.getProductNm(),
 								prod.getProductDesc(), prod.getProductuses(), prod.getProductincredience(),
-								prod.getStock(), mediaarray, productVarient));
+								mediaarray, productVarient));
 			}
 			catoglistdto.add(catgryDto);
 
@@ -117,6 +119,7 @@ public class CategoryServiceImpl implements CategoryService {
 			catgryDto.setCategoryNm(cato.getCategoryNm());
 			catgryDto.setCategoryOrder(cato.getCategoryOrder());
 			catgryDto.setCreatedTs(cato.getCreatedTs());
+			catgryDto.setCategoryBannerImgURL(cato.getCategoryBannerImgURL());
 			catgryDto.setUpdatedTs(cato.getUpdatedTs());
 			for (AmiruthamProducts prod : cato.getProducts()) {
 				List<ProductMediaDto> mediaarray = null;
@@ -134,14 +137,14 @@ public class CategoryServiceImpl implements CategoryService {
 							.map(varient -> new ProductVarientDto(varient.getId(), varient.getMaximumRetailPrice(),
 									varient.getSellingPrice(), varient.getSavedPrice(), varient.getDiscount(),
 									varient.getUnit(), varient.getUnitType(), varient.getManufactureDate(),
-									varient.getBestBeforeDate(), prod.getId()))
+									varient.getBestBeforeDate(), prod.getId(),varient.getStock()))
 							.collect(Collectors.toList());
 				}
 
 				catgryDto.getProducts()
 						.add(new ProductDto(prod.getId(), "", prod.getProductCode(), prod.getProductNm(),
 								prod.getProductDesc(), prod.getProductuses(), prod.getProductincredience(),
-								prod.getStock(), mediaarray, productVarient));
+								mediaarray, productVarient));
 			}
 			return catgryDto;
 		}
@@ -166,6 +169,7 @@ public class CategoryServiceImpl implements CategoryService {
 		category.setCategoryDesc(categoryDto.getCategoryDesc());
 		category.setCategoryNm(categoryDto.getCategoryNm());
 		category.setCategoryOrder(categoryDto.getCategoryOrder());
+		category.setCategoryBannerImgURL(categoryDto.getCategoryBannerImgURL());
 		categryRepo.save(category);
 
 	}
@@ -188,6 +192,7 @@ public class CategoryServiceImpl implements CategoryService {
 				categoryDao.setCategoryCd(categoryDto.getCategoryCd());
 				categoryDao.setCategoryDesc(categoryDto.getCategoryDesc());
 				categoryDao.setCategoryNm(categoryDto.getCategoryNm());
+				categoryDao.setCategoryBannerImgURL(categoryDto.getCategoryBannerImgURL());
 				return categryRepo.save(categoryDao);
 			} else {
 				throw new UserNotFoundException("Category Not Found  " + categoryDto.getId());

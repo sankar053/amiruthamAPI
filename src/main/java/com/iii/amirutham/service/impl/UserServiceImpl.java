@@ -18,12 +18,14 @@ import com.iii.amirutham.dto.model.UserDto;
 import com.iii.amirutham.dto.model.ValidateOtpDto;
 import com.iii.amirutham.exception.UserAlreadyExistException;
 import com.iii.amirutham.exception.UserNotFoundException;
+import com.iii.amirutham.model.order.Order;
 import com.iii.amirutham.model.user.ERole;
 import com.iii.amirutham.model.user.PasswordResetToken;
 import com.iii.amirutham.model.user.Role;
 import com.iii.amirutham.model.user.User;
 import com.iii.amirutham.model.user.UserLocation;
 import com.iii.amirutham.model.user.VerificationToken;
+import com.iii.amirutham.repo.OrderRepository;
 import com.iii.amirutham.repo.PasswordResetTokenRepository;
 import com.iii.amirutham.repo.RoleRepository;
 import com.iii.amirutham.repo.UserLocationRepository;
@@ -61,6 +63,9 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	@Qualifier("GeoIPCountry")
 	private DatabaseReader databaseReader;
+	
+	@Autowired
+	private OrderRepository orderRepository;
 
 	@Autowired
 	private UserLocationRepository userLocationRepository;
@@ -216,6 +221,16 @@ public class UserServiceImpl implements UserService {
 			throw new UserNotFoundException("");
 		}
 
+	}
+
+	@Override
+	public List<Order> myorders() {
+		// TODO Auto-generated method stub
+		UserDetailsImpl userDetails = getUserDetails();
+		Optional<User> user = userRepository.findById(userDetails.getId());
+				if(user.isPresent())
+					return orderRepository.findByUser(user.get());
+		return null;
 	}
 
 }

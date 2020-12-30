@@ -51,6 +51,9 @@ public class AmiruthamCategory extends BaseEntity {
 	@Column(name = "CATE_ORDER",unique=true, nullable=false)
 	private Integer categoryOrder;
 	
+	@Column(name = "CATE_BANNER_URL")
+	private String categoryBannerImgURL;
+	
 	@JsonIgnore 
 	@OneToMany(mappedBy="category")
 	private Set<AmiruthamProducts> products =new HashSet<AmiruthamProducts>();

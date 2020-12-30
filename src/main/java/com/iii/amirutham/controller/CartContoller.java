@@ -46,8 +46,8 @@ public class CartContoller {
 
 		UserDetailsImpl user = userService.getUserDetails();
 		CartDto cart = null;
-		CartDto prndingcart = cartService.getMyCart(user.getId());
-		if(null==prndingcart)
+		CartDto pendingcart = cartService.getMyCart(user.getId());
+		if(null==pendingcart)
 			cart = cartService.addMyLocalCart(cartRequest);
 		else
 			throw new UserNotFoundException(messages.getMessage("cart.message.AlreadyExists", null, request.getLocale()));

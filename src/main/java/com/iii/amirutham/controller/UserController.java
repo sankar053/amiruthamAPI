@@ -42,6 +42,7 @@ import com.iii.amirutham.dto.base.OnRegistrationCompleteEvent;
 import com.iii.amirutham.dto.model.UserDto;
 import com.iii.amirutham.dto.model.ValidateOtpDto;
 import com.iii.amirutham.exception.UserNotFoundException;
+import com.iii.amirutham.model.order.Order;
 import com.iii.amirutham.model.user.User;
 import com.iii.amirutham.service.ISecurityUserService;
 import com.iii.amirutham.service.UserService;
@@ -249,4 +250,10 @@ public class UserController {
 		return xfHeader.split(",")[0];
 	}
 
+	@GetMapping("/users/myorders")
+	public @ResponseBody ResponseEntity<List<Order>> myorders() {
+		List<Order> orderList = userService.myorders();
+		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(orderList);
+
+	}
 }

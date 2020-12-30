@@ -70,7 +70,6 @@ public class ProductServiceImpl implements ProductService {
 			product.setProductNm(productsDto.getProductNm());
 			product.setProductDesc(productsDto.getProductDesc());
 			product.setProductincredience(productsDto.getIncrediances());
-			product.setStock(productsDto.getStock());
 			List<ProductMediaGallary> mediaArray = new ArrayList<ProductMediaGallary>();
 			if (null != files) {
 				for (MultipartFile file : files) {
@@ -126,12 +125,12 @@ public class ProductServiceImpl implements ProductService {
 						.map(varient -> new ProductVarientDto(varient.getId(), varient.getMaximumRetailPrice(),
 								varient.getSellingPrice(), varient.getSavedPrice(), varient.getDiscount(),
 								varient.getUnit(), varient.getUnitType(), varient.getManufactureDate(),
-								varient.getBestBeforeDate(), prod.getId()))
+								varient.getBestBeforeDate(), prod.getId(),varient.getStock()))
 						.collect(Collectors.toList());
 			}
 			ProductDto prodDto=	new ProductDto(prod.getId(), String.valueOf(prod.getCategory().getId()),
 					prod.getProductCode(), prod.getProductNm(), prod.getProductDesc(), prod.getProductuses(),
-					prod.getProductincredience(),prod.getStock(),mediaarray, productVarient);
+					prod.getProductincredience(),mediaarray, productVarient);
 			prodDto.setUpdatedBy(prod.getUpdatedBy());
 			prodDto.setCreatedTs(prod.getCreatedTs());
 			productlistdto.add(prodDto);
@@ -164,11 +163,11 @@ public class ProductServiceImpl implements ProductService {
 						.map(varient -> new ProductVarientDto(varient.getId(), varient.getMaximumRetailPrice(),
 								varient.getSellingPrice(), varient.getSavedPrice(), varient.getDiscount(),
 								varient.getUnit(), varient.getUnitType(), varient.getManufactureDate(),
-								varient.getBestBeforeDate(), prod.getId()))
+								varient.getBestBeforeDate(), prod.getId(),varient.getStock()))
 						.collect(Collectors.toList());
 			}
 			productdto = new ProductDto(prod.getId(), String.valueOf(prod.getCategory().getId()), prod.getProductCode(),
-					prod.getProductNm(), prod.getProductDesc(), prod.getProductuses(), prod.getProductincredience(),prod.getStock(),mediaarray, productVarient);
+					prod.getProductNm(), prod.getProductDesc(), prod.getProductuses(), prod.getProductincredience(),mediaarray, productVarient);
 			productdto.setUpdatedBy(prod.getUpdatedBy());
 			productdto.setCreatedTs(prod.getCreatedTs());
 		}

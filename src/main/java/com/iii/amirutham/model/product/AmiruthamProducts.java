@@ -70,8 +70,6 @@ public class AmiruthamProducts extends BaseEntity {
 	@Column(name = "PROD_BEST_SELLING_YN")
 	private String productBestSellingYN="N";
 	
-	@Column(name = "PROD_STOCK",columnDefinition="LONGTEXT")
-	private Integer stock;
 	
 	@Column(name = "PROD_AVAILABLE")
 	private boolean available = true;
@@ -97,7 +95,6 @@ public class AmiruthamProducts extends BaseEntity {
 		this.productNm = productNm;
 		this.productDesc = productDesc;
 		this.productuses = productuses;
-		this.stock = stock;
 		this.productincredience=productincredience;
 	}
 

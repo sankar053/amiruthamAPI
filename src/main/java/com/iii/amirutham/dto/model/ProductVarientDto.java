@@ -46,6 +46,9 @@ public class ProductVarientDto {
 	private String bestBeforeDate;
 
 	@NotNull
-	private int prodid;
+	private Integer prodid;
+	
+	@NotNull
+	private Integer stock;
 
 }

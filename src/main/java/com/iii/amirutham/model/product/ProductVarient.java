@@ -64,12 +64,15 @@ public class ProductVarient extends BaseEntity {
 	@Column(name="PROD_USEBY_DATE")
 	private String bestBeforeDate;
 	
+	@Column(name = "PROD_STOCK",nullable = false)
+	private Integer stock;
+	
 	@JsonIgnore
 	@ManyToOne
     @JoinColumn(name="PROD_ID", nullable=false)
     private AmiruthamProducts product;
 
-	public ProductVarient(Double maximumRetailPrice,Integer discount,
+	public ProductVarient(Double maximumRetailPrice,Integer stock,Integer discount,
 			Integer unit, String unitType, String manufactureDate, String bestBeforeDate, AmiruthamProducts product, String prodCode) {
 		super();
 		this.maximumRetailPrice = maximumRetailPrice;
@@ -81,10 +84,11 @@ public class ProductVarient extends BaseEntity {
 		this.manufactureDate = manufactureDate;
 		this.bestBeforeDate = bestBeforeDate;
 		this.product = product;
+		this.stock =stock;
 		this.prodCode = prodCode;
 	}
 	
-	public ProductVarient(Integer id,Double maximumRetailPrice,Integer discount,
+	public ProductVarient(Integer id,Double maximumRetailPrice,Integer stock,Integer discount,
 			Integer unit, String unitType, String manufactureDate, String bestBeforeDate, AmiruthamProducts product, String prodCode) {
 		super();
 		this.id = id;
@@ -97,6 +101,7 @@ public class ProductVarient extends BaseEntity {
 		this.manufactureDate = manufactureDate;
 		this.bestBeforeDate = bestBeforeDate;
 		this.product = product;
+		this.stock =stock;
 		this.prodCode = prodCode;
 	}
 	

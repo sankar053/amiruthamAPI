@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.iii.amirutham.model.shoppingcart;
+package com.iii.amirutham.model.order;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,7 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.iii.amirutham.model.BaseEntity;
+import com.iii.amirutham.model.shoppingcart.ShoppingCartItem;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,14 +21,14 @@ import lombok.Setter;
  * @author sanka
  *
  */
-@Entity(name = "cartitemattribute")
-@Table(name = "cartitemattribute")
+@Entity(name ="orderproductattribute")
+@Table(name = "orderproductattribute")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ShoppingCartAttributeItem extends BaseEntity {
-
+public class OrderAttribute {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column
@@ -60,14 +60,10 @@ public class ShoppingCartAttributeItem extends BaseEntity {
 
 	@Column(name = "PROD_USEBY_DATE")
 	private String bestBeforeDate;
-
-	/*
-	 * @OneToOne(mappedBy = "attributes") private ShoppingCartItem shoppingCartItem;
-	 */
-
-	public ShoppingCartAttributeItem(Double maximumRetailPrice, Double sellingPrice, Double savedPrice,
+	
+	public OrderAttribute(Double maximumRetailPrice, Double sellingPrice, Double savedPrice,
 			Integer discount, Integer unit, String unitType, String prodCode, String manufactureDate,
-			String bestBeforeDate,ShoppingCartItem item) {
+			String bestBeforeDate,OrderProduct item) {
 		super();
 		this.maximumRetailPrice = maximumRetailPrice;
 		this.sellingPrice = sellingPrice;
@@ -81,13 +77,5 @@ public class ShoppingCartAttributeItem extends BaseEntity {
 		//this.shoppingCartItem=item;
 	}
 
-	/*
-	 * @JsonIgnore
-	 * 
-	 * @ManyToOne
-	 * 
-	 * @JoinColumn(name = "CART_ITEM_ID", nullable = false) private ShoppingCartItem
-	 * shoppingCartItem;
-	 */
 
 }

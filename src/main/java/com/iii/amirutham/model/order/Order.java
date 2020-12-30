@@ -25,6 +25,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.iii.amirutham.model.Address;
 import com.iii.amirutham.model.BaseEntity;
 import com.iii.amirutham.model.user.User;
 
@@ -47,15 +48,15 @@ public class Order extends BaseEntity {
 
 	@Column (name ="ORDER_STATUS")
 	@Enumerated(value = EnumType.STRING)
-	private OrderStatus orderStatus;
+	private OrderStatus orderStatus = OrderStatus.PROCESSED;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column (name ="LAST_MODIFIED")
 	private Date lastModified;
 	
-	//the customer object can be detached. An order can exist and the customer deleted
-	@Column (name ="CUSTOMER_ID")
-	private Long customerId;
+	/*
+	 * @Column (name ="CUSTOMER_ID") private Integer customerId;
+	 */
 	
 	@Temporal(TemporalType.DATE)
 	@Column (name ="DATE_PURCHASED")
@@ -64,15 +65,15 @@ public class Order extends BaseEntity {
 	@Column (name ="ORDER_TOTAL")
 	private BigDecimal total;
 	
-	@Column (name ="IP_ADDRESS")
-	private String ipAddress;
+	@Column(name = "ORDER_CODE", nullable=true)
+	private String orderCode;
 	
 	@Column(name = "CART_CODE", nullable=true)
 	private String shoppingCartCode;
 
 	@Column (name ="CHANNEL")
 	@Enumerated(value = EnumType.STRING)
-	private OrderChannel channel;
+	private OrderChannel channel = OrderChannel.OFFLINE;
 	
 	@Column (name ="ORDER_TYPE")
 	@Enumerated(value = EnumType.STRING)
@@ -80,7 +81,7 @@ public class Order extends BaseEntity {
 
 	@Column (name ="PAYMENT_TYPE")
 	@Enumerated(value = EnumType.STRING)
-	private PaymentType paymentType;
+	private PaymentType paymentType =PaymentType.COD;
 
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
 	private Set<OrderProduct> orderProducts = new LinkedHashSet<OrderProduct>();
@@ -90,5 +91,11 @@ public class Order extends BaseEntity {
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JsonIgnore
 	private User user;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "addressId")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
+    private Address address;
 
 }

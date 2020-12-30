@@ -3,6 +3,7 @@
  */
 package com.iii.amirutham.model.shoppingcart;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -52,6 +53,11 @@ public class ShoppingCart extends BaseEntity {
     @JoinColumn(name = "cart_id",referencedColumnName = "id")
 	private AddOnCharges charges;
 
+	@Column(name = "FINAL_PRICE_WITHOUT_ADDONS", nullable = false) // TODO CODE
+	private BigDecimal finalpriceWithoutCharges;
+	
+	@Column(name = "FINAL_PRICE_WITH_ADDONS", nullable = false) // TODO CODE
+	private BigDecimal finalpriceWithCharges;
 	/*
 	 * @ManyToOne(fetch = FetchType.LAZY)
 	 * 
