@@ -11,6 +11,7 @@ import java.util.Set;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 import com.iii.amirutham.config.UserDetailsImpl;
@@ -18,6 +19,7 @@ import com.iii.amirutham.dto.base.CartRequest;
 import com.iii.amirutham.dto.model.CartDto;
 import com.iii.amirutham.dto.model.CategoryRequestItems;
 import com.iii.amirutham.dto.model.SequnceDto;
+import com.iii.amirutham.exception.UserNotFoundException;
 import com.iii.amirutham.model.product.AmiruthamProducts;
 import com.iii.amirutham.model.product.ProductMediaGallary;
 import com.iii.amirutham.model.product.ProductVarient;
@@ -42,6 +44,9 @@ public class CartServiceImpl implements CartService {
 
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private MessageSource messages;
 
 	@Autowired
 	private ModelMapper modelMapper;
@@ -67,7 +72,7 @@ public class CartServiceImpl implements CartService {
 		UserDetailsImpl user = userService.getUserDetails();
 		// Optional<MerchantStore> seller = sellerRepository.findById(1);
 		// TODO Auto-generated method stub
-		BigDecimal finalPrice=new BigDecimal(0);
+		BigDecimal finalPrice = new BigDecimal(0);
 		Set<ShoppingCartItem> cartItems = new HashSet<ShoppingCartItem>();
 		for (CategoryRequestItems mycartItem : cartRequest.getCartItems()) {
 			Optional<AmiruthamProducts> product = productRepository.findById(mycartItem.getProductId());
@@ -87,7 +92,7 @@ public class CartServiceImpl implements CartService {
 				item.setItemPrice(new BigDecimal(varient.getSellingPrice()));
 				BigDecimal st = item.getItemPrice().multiply(new BigDecimal(item.getQuantity()));
 				item.setSubTotal(st);
-				finalPrice.add(item.getSubTotal());
+				finalPrice = finalPrice.add(item.getSubTotal());
 				item.setAttributes(new ShoppingCartAttributeItem(varient.getMaximumRetailPrice(),
 						varient.getSellingPrice(), varient.getSavedPrice(), varient.getDiscount(), varient.getUnit(),
 						varient.getUnitType(), varient.getProdCode(), varient.getManufactureDate(),
@@ -108,7 +113,9 @@ public class CartServiceImpl implements CartService {
 		myCart.setCharges(new AddOnCharges());
 		myCart.setFinalpriceWithoutCharges(finalPrice);
 		myCart.setFinalpriceWithCharges(finalPrice.add(myCart.getCharges().getChargeAmount()));
-		ShoppingCart savedCart = cartRepository.save(myCart);
+		myCart= calculateCartTotal(myCart);
+				
+		ShoppingCart savedCart= cartRepository.save(myCart);
 		return null != savedCart ? ((CartDto) AmirthumUtills.convertToDto(savedCart, CartDto.class, modelMapper))
 				: null;
 
@@ -126,7 +133,7 @@ public class CartServiceImpl implements CartService {
 	}
 
 	@Override
-	public CartDto updateMyLocalCart(CartRequest cartRequest) {
+	public CartDto updateMyLocalCart(CartRequest cartRequest) throws UserNotFoundException{
 		// TODO Auto-generated method stub
 
 		Optional<ShoppingCart> cart = cartRepository.findById(cartRequest.getCartid());
@@ -138,11 +145,11 @@ public class CartServiceImpl implements CartService {
 				if ("U".equalsIgnoreCase(mycartItem.getItemUpdateStatus()))
 					updateitemtoCart(mycartItem, cart.get());
 				if ("D".equalsIgnoreCase(mycartItem.getItemUpdateStatus()))
-					deleteitemfromCart(mycartItem, cart.get());
+					ShoppingCart updateCart = deleteitemfromCart(mycartItem, cart.get());
 
 			}
 		} else {
-
+         throw new UserNotFoundException(messages.getMessage("cart.message.NotExists", null, null));
 		}
 		Optional<ShoppingCart> updatedcart = cartRepository.findById(cartRequest.getCartid());
 		return updatedcart.isPresent()
@@ -175,9 +182,25 @@ public class CartServiceImpl implements CartService {
 					varient.getProdCode(), varient.getManufactureDate(), varient.getBestBeforeDate(), item));
 			// item.set
 			updateCart.getLineItems().add(item);
+			updateCart.getFinalpriceWithCharges().add(st);
 		}
-		cartRepository.save(updateCart);
+		updateCart= calculateCartTotal(updateCart);
+		updateCart = cartRepository.save(updateCart);
 		return updateCart;
+	}
+
+	public ShoppingCart calculateCartTotal(ShoppingCart cartDao) {
+
+		BigDecimal finalPrcWthoutCharge = new BigDecimal(0);
+
+		finalPrcWthoutCharge = cartDao.getLineItems().stream().filter(v -> "N".equals(v.getIsDeleted())).map(ci -> ci.getSubTotal()) // map
+				.reduce(BigDecimal.ZERO, BigDecimal::add); // reduce
+
+		cartDao.setFinalpriceWithoutCharges(finalPrcWthoutCharge);
+		cartDao.setFinalpriceWithCharges(
+				cartDao.getFinalpriceWithoutCharges().add(cartDao.getCharges().getChargeAmount()));
+		return cartRepository.save(cartDao);
+		
 	}
 
 	public void updateitemtoCart(CategoryRequestItems mycartItem, ShoppingCart updateCart) {
@@ -191,18 +214,25 @@ public class CartServiceImpl implements CartService {
 			lineitem.setItemPrice(new BigDecimal(varient.getSellingPrice()));
 			BigDecimal st = lineitem.getItemPrice().multiply(new BigDecimal(lineitem.getQuantity()));
 			lineitem.setSubTotal(st);
-
-			cartItemRepository.save(lineitem);
+			updateCart.getLineItems().add(lineitem);
+			// cartItemRepository.save(lineitem);
+			updateCart.setFinalpriceWithoutCharges(updateCart.getFinalpriceWithoutCharges().add(st));
+			updateCart.setFinalpriceWithCharges(
+					updateCart.getFinalpriceWithoutCharges().add(updateCart.getCharges().getChargeAmount()));
+			updateCart= calculateCartTotal(updateCart);
+			cartRepository.save(updateCart);
+		}else {
+			 throw new UserNotFoundException(messages.getMessage("cart.item.message.NotExists", null, null));
 		}
 
 	}
 
-	void deleteitemfromCart(CategoryRequestItems mycartItem, ShoppingCart updateCart) {
+	public ShoppingCart deleteitemfromCart(CategoryRequestItems mycartItem, ShoppingCart updateCart) {
 		ShoppingCartItem lineitem = updateCart.getLineItems().stream().filter(v -> v.getId() == mycartItem.getItemId())
 				.findAny().orElse(null);
 		lineitem.setIsDeleted("Y");
-		cartItemRepository.save(lineitem);
-		cartItemRepository.delete(lineitem);
-		cartItemRepository.deleteById(mycartItem.getItemId());
+		cartItemRepository.updateIsDeletedStatus(mycartItem.getItemId(),"Y");
+		return updateCart;
+	
 	}
 }

@@ -3,7 +3,7 @@
  */
 package com.iii.amirutham.dto.model;
 
-import java.util.HashSet;
+import java.math.BigDecimal;
 import java.util.Set;
 
 import com.iii.amirutham.model.BaseEntity;
@@ -37,5 +37,9 @@ public class CartDto extends BaseEntity {
 	private Integer orderId;
 
 	private String shoppingCartStatus;
+	
+	private BigDecimal finalpriceWithoutCharges;
+	
+	private BigDecimal finalpriceWithCharges;
 
 }
