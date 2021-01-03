@@ -18,6 +18,7 @@ import com.iii.amirutham.exception.UserNotFoundException;
 import com.iii.amirutham.model.Address;
 import com.iii.amirutham.model.order.OrderAttribute;
 import com.iii.amirutham.model.order.OrderProduct;
+import com.iii.amirutham.model.order.OrderStatus;
 import com.iii.amirutham.model.order.Orders;
 import com.iii.amirutham.model.product.AmiruthamProducts;
 import com.iii.amirutham.model.shoppingcart.ShoppingCart;
@@ -125,6 +126,13 @@ public class OrderServiceImpl implements OrderService {
 	public List<Orders> getAllOrders() {
 		// TODO Auto-generated method stub
 		return (List<Orders>) orderRepository.findAll();
+	}
+
+	@Override
+	public void updateOrderprocess(Integer id, OrderStatus status) {
+				// TODO Auto-generated method stub
+		orderRepository.updateOrderStatus(id,status);
+		
 	}
 
 }

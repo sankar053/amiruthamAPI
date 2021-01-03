@@ -48,7 +48,7 @@ public class Orders extends BaseEntity {
 
 	@Column (name ="ORDER_STATUS")
 	@Enumerated(value = EnumType.STRING)
-	private OrderStatus orderStatus = OrderStatus.PROCESSED;
+	private OrderStatus orderStatus = OrderStatus.ORDERED;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column (name ="LAST_MODIFIED")
