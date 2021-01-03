@@ -21,7 +21,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CartAttributeItemDto extends BaseEntity {
 
-	private Integer cartAttributeId;
+	private Integer id;
 
 	private Double maximumRetailPrice;
 
