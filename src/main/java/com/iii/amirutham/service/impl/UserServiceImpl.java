@@ -9,6 +9,10 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,7 +22,7 @@ import com.iii.amirutham.dto.model.UserDto;
 import com.iii.amirutham.dto.model.ValidateOtpDto;
 import com.iii.amirutham.exception.UserAlreadyExistException;
 import com.iii.amirutham.exception.UserNotFoundException;
-import com.iii.amirutham.model.order.Order;
+import com.iii.amirutham.model.order.Orders;
 import com.iii.amirutham.model.user.ERole;
 import com.iii.amirutham.model.user.PasswordResetToken;
 import com.iii.amirutham.model.user.Role;
@@ -224,12 +228,16 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<Order> myorders() {
+	public List<Orders> myorders(Integer pageNo, Integer pageSize,Pageable pageable) {
 		// TODO Auto-generated method stub
+		if(pageNo!=null && pageSize!=null)
+			pageable = PageRequest.of(pageNo, pageSize,Sort.by(
+				    Order.desc("createdTs"),
+				    Order.desc("id")));
 		UserDetailsImpl userDetails = getUserDetails();
 		Optional<User> user = userRepository.findById(userDetails.getId());
 				if(user.isPresent())
-					return orderRepository.findByUser(user.get());
+					return orderRepository.findByUser(user.get(),pageable);
 		return null;
 	}
 

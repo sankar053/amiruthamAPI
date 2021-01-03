@@ -14,9 +14,13 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.core.env.Environment;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
@@ -42,7 +46,8 @@ import com.iii.amirutham.dto.base.OnRegistrationCompleteEvent;
 import com.iii.amirutham.dto.model.UserDto;
 import com.iii.amirutham.dto.model.ValidateOtpDto;
 import com.iii.amirutham.exception.UserNotFoundException;
-import com.iii.amirutham.model.order.Order;
+import com.iii.amirutham.model.order.Orders;
+import com.iii.amirutham.model.product.ProductReviews;
 import com.iii.amirutham.model.user.User;
 import com.iii.amirutham.service.ISecurityUserService;
 import com.iii.amirutham.service.UserService;
@@ -250,9 +255,15 @@ public class UserController {
 		return xfHeader.split(",")[0];
 	}
 
-	@GetMapping("/users/myorders")
-	public @ResponseBody ResponseEntity<List<Order>> myorders() {
-		List<Order> orderList = userService.myorders();
+
+	
+	@GetMapping(value = {"/users/myorders", "/users/myorders/{pageNo}/{pageSize}"})
+	public @ResponseBody ResponseEntity<List<Orders>> myorders(HttpServletRequest request,@PathVariable(required = false) Integer pageNo, 
+	        @PathVariable(required = false) Integer pageSize,@SortDefault.SortDefaults({
+	    		@SortDefault(sort = "createdTs", direction = Sort.Direction.DESC),
+	    		@SortDefault(sort = "id", direction = Sort.Direction.DESC)
+	    })@Qualifier("my") Pageable pageable) {
+		List<Orders> orderList = userService.myorders(pageNo,pageSize,pageable);
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(orderList);
 
 	}

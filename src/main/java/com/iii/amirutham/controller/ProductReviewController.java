@@ -62,7 +62,7 @@ public class ProductReviewController {
 	
 	@GetMapping(value = {"/{productId}", "/{productId}/{pageNo}/{pageSize}"})
 	public  @ResponseBody ResponseEntity<List<ProductReviews>> getReviewsByProduct(HttpServletRequest request,@PathVariable Integer productId,@PathVariable(required = false) Integer pageNo, 
-	        @PathVariable(required = false) Integer pageSize,@Qualifier("my") Pageable pageable) {
+	        @PathVariable(required = false) Integer pageSize,@Qualifier("amirthum") Pageable pageable) {
 		
 		List<ProductReviews> reviews = revivewService.getReviewsByProduct(productId,pageNo, pageSize,pageable);
 		

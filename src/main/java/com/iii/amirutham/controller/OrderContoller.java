@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.iii.amirutham.dto.base.GenericResponse;
-import com.iii.amirutham.model.order.Order;
+import com.iii.amirutham.model.order.Orders;
 import com.iii.amirutham.service.OrderService;
 
 /**
@@ -43,18 +43,18 @@ public class OrderContoller {
 	}
 	
 	@GetMapping
-	public ResponseEntity<List<Order>> getAllOrders() {
+	public ResponseEntity<List<Orders>> getAllOrders() {
 
-		List<Order> orderDaoList =orderService.getAllOrders();
+		List<Orders> orderDaoList =orderService.getAllOrders();
 		
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(orderDaoList);
 		
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<Order> getOrdersById(@PathVariable(required = true) Integer id) {
+	public ResponseEntity<Orders> getOrdersById(@PathVariable(required = true) Integer id) {
 
-		Order orderDao = orderService.getOrdersById(id);
+		Orders orderDao = orderService.getOrdersById(id);
 		
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(orderDao);
 

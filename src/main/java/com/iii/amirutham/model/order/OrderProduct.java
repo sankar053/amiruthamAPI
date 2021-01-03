@@ -77,9 +77,9 @@ public class OrderProduct extends BaseEntity {
 	private OrderAttribute attributes;
 
 	@JsonIgnore
-	@ManyToOne(targetEntity = Order.class)
+	@ManyToOne(targetEntity = Orders.class)
 	@JoinColumn(name = "ORDER_ID", nullable = true)
-	private Order order;
+	private Orders order;
 	
 
 }

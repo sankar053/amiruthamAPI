@@ -16,9 +16,9 @@ import com.iii.amirutham.config.UserDetailsImpl;
 import com.iii.amirutham.dto.model.SequnceDto;
 import com.iii.amirutham.exception.UserNotFoundException;
 import com.iii.amirutham.model.Address;
-import com.iii.amirutham.model.order.Order;
 import com.iii.amirutham.model.order.OrderAttribute;
 import com.iii.amirutham.model.order.OrderProduct;
+import com.iii.amirutham.model.order.Orders;
 import com.iii.amirutham.model.product.AmiruthamProducts;
 import com.iii.amirutham.model.shoppingcart.ShoppingCart;
 import com.iii.amirutham.model.shoppingcart.ShoppingCartItem;
@@ -66,7 +66,7 @@ public class OrderServiceImpl implements OrderService {
 		Optional<ShoppingCart> mycart = cartRepository.findById(cartId);
 		if (mycart.isPresent() && "Pending".equals(mycart.get().getShoppingCartStatus())) {
 			ShoppingCart mypendingCart = mycart.get();
-			Order order = new Order();
+			Orders order = new Orders();
 			// order.setCustomerId(user.getId());
 			SequnceDto sequence = seqservice.findMySeQuence("ORDER");
 			order.setOrderCode(sequence.getSeqChar() + String.format("%05d", sequence.getSeqNxtVal()));
@@ -112,9 +112,9 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public Order getOrdersById(Integer id) {
+	public Orders getOrdersById(Integer id) {
 		// TODO Auto-generated method stub
-		Optional<Order> order = orderRepository.findById(id);
+		Optional<Orders> order = orderRepository.findById(id);
 		if(order.isPresent())
 				return order.get();
 		else
@@ -122,9 +122,9 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public List<Order> getAllOrders() {
+	public List<Orders> getAllOrders() {
 		// TODO Auto-generated method stub
-		return orderRepository.findAll();
+		return (List<Orders>) orderRepository.findAll();
 	}
 
 }

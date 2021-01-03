@@ -145,7 +145,7 @@ public class CartServiceImpl implements CartService {
 				if ("U".equalsIgnoreCase(mycartItem.getItemUpdateStatus()))
 					updateitemtoCart(mycartItem, cart.get());
 				if ("D".equalsIgnoreCase(mycartItem.getItemUpdateStatus()))
-					ShoppingCart updateCart = deleteitemfromCart(mycartItem, cart.get());
+						deleteitemfromCart(mycartItem, cart.get());
 
 			}
 		} else {
