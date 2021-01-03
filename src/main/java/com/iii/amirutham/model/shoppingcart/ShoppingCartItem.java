@@ -48,6 +48,9 @@ public class ShoppingCartItem extends BaseEntity {
 	@Column(name = "PRODUCT_ID", nullable = false) // TODO CODE
 	private Integer productId;
 	
+	@Column(name = "PRODUCT_VARIENT_ID", nullable = false) // TODO CODE
+	private Integer varientId;
+	
 	@Column(name = "ITEM_NAME", nullable = false) // TODO CODE
 	private String itemName;
 	

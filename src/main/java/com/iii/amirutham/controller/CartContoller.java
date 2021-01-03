@@ -57,21 +57,24 @@ public class CartContoller {
 	}
 
 	@PutMapping
-	public ResponseEntity<CartDto> updatelocalCart(@Valid @RequestBody CartRequest cartRequest) {
+	public ResponseEntity<CartDto> updatelocalCart(HttpServletRequest request,@Valid @RequestBody CartRequest cartRequest) {
 
 		CartDto cart = cartService.updateMyLocalCart(cartRequest);
+		if(null == cart)
+				throw new UserNotFoundException(messages.getMessage("cart.message.NotExists", null, request.getLocale()));
 
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(cart);
 
 	}
 
 	@GetMapping
-	public ResponseEntity<CartDto> savelgetMyCart() {
+	public ResponseEntity<CartDto> savelgetMyCart(HttpServletRequest request) {
 
 		UserDetailsImpl user = userService.getUserDetails();
 
 		CartDto cart = cartService.getMyCart(user.getId());
-
+		if(null == cart)
+			throw new UserNotFoundException(messages.getMessage("cart.message.NotExists", null, request.getLocale()));
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(cart);
 
 	}

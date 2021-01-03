@@ -88,6 +88,7 @@ public class CartServiceImpl implements CartService {
 				item.setItemName(product.get().getProductNm());
 				item.setProductCode(product.get().getProductCode());
 				item.setProductId(product.get().getId());
+				item.setVarientId(varient.getId());
 				item.setQuantity(mycartItem.getQuantity());
 				item.setItemPrice(new BigDecimal(varient.getSellingPrice()));
 				BigDecimal st = item.getItemPrice().multiply(new BigDecimal(item.getQuantity()));

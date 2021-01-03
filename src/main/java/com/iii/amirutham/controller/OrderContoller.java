@@ -26,7 +26,7 @@ import com.iii.amirutham.service.OrderService;
  *
  */
 @RestController
-@RequestMapping("/placeorder")
+@RequestMapping("/order")
 public class OrderContoller {
 
 	@Autowired
@@ -35,7 +35,7 @@ public class OrderContoller {
 	@Autowired
 	private MessageSource messages;
 
-	@PostMapping("/{cartId}")
+	@PostMapping("/placeorder/{cartId}")
 	public ResponseEntity<GenericResponse> placeOrder(HttpServletRequest request,@PathVariable(required = true) Integer cartId) {
 
 		orderService.placeOrder(cartId);
@@ -51,7 +51,7 @@ public class OrderContoller {
 		
 	}
 	
-	@GetMapping("/{id}")
+	@GetMapping("/placeorder/{id}")
 	public ResponseEntity<Orders> getOrdersById(@PathVariable(required = true) Integer id) {
 
 		Orders orderDao = orderService.getOrdersById(id);
@@ -59,5 +59,12 @@ public class OrderContoller {
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(orderDao);
 
 	}
+	@GetMapping("/{id}/{status}")
+	public ResponseEntity<Orders> getOrdersById1(@PathVariable(required = true) Integer id) {
 
+		Orders orderDao = orderService.getOrdersById(id);
+		
+		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(orderDao);
+
+	}
 }

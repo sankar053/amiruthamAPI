@@ -1,6 +1,5 @@
 package com.iii.amirutham.service;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;

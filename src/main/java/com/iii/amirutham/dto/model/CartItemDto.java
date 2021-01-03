@@ -23,7 +23,7 @@ public class CartItemDto {
 
 	private Integer varientId;
 
-	private Integer cartItemid;
+	//private Integer cartItemid;
 
 	private String productCode;
 	
