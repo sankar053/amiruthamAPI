@@ -2,6 +2,10 @@ package com.iii.amirutham.service;
 
 import java.util.List;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import com.iii.amirutham.dto.base.CategoryRequest;
@@ -23,5 +27,7 @@ public interface CategoryService {
 	public void deleteCatogry(int id);
 
 	AmiruthamCategory updateCategory( CategoryDto categories) ;
+
+	public void createBulkCategory(@Valid @NotNull @NotBlank MultipartFile files);
 
 }

@@ -3,6 +3,8 @@ package com.iii.amirutham.controller;
 import java.util.List;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -15,7 +17,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.iii.amirutham.dto.base.CategoryRequest;
 import com.iii.amirutham.dto.base.GenericResponse;
@@ -89,5 +93,16 @@ public class CategoryController {
                .body(new GenericResponse("Category Deleted Successfully"));
 
 	}
+	
+	@PostMapping("/bulk")
+	public ResponseEntity<GenericResponse> saveBulkCategory(@RequestPart("file") @Valid @NotNull @NotBlank MultipartFile files) {
+
+		categoryService.createBulkCategory(files);
+		return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+               .body(new GenericResponse("success")) ;
+
+	}
+	
 
 }

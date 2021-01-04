@@ -50,7 +50,7 @@ public class ShoppingCart extends BaseEntity {
 	private Set<ShoppingCartItem> lineItems = new HashSet<ShoppingCartItem>();
 	
 	@OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "cart_id",referencedColumnName = "id")
+    @JoinColumn(name = "chargeCartId",referencedColumnName = "id")
 	private AddOnCharges charges;
 
 	@Column(name = "FINAL_PRICE_WITHOUT_ADDONS", nullable = false) // TODO CODE

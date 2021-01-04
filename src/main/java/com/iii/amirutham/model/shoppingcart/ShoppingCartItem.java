@@ -12,12 +12,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.iii.amirutham.model.BaseEntity;
+import com.iii.amirutham.model.order.Orders;
 import com.iii.amirutham.model.product.AmiruthamProducts;
 
 import lombok.AllArgsConstructor;
@@ -63,13 +65,17 @@ public class ShoppingCartItem extends BaseEntity {
 	@Column(name = "PRODUCT_CODE", nullable = false) // TODO CODE
 	private String productCode;
 	
-	
+	@Column(name = "CART_CODE", nullable = false) // TODO CODE
+	private String cartCode;
 
 	@OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "cart_item_id",referencedColumnName = "id")
 	private ShoppingCartAttributeItem attributes;
 	
-	
+//	@JsonIgnore
+//	@ManyToOne(targetEntity = ShoppingCart.class)
+//	@JoinColumn(name = "mycartId", nullable = true)
+//	private ShoppingCart myCart;
 	
 	/*
 	 * @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy

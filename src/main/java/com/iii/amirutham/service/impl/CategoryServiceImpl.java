@@ -1,10 +1,22 @@
 package com.iii.amirutham.service.impl;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
+import org.apache.poi.EncryptedDocumentException;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -43,19 +55,19 @@ public class CategoryServiceImpl implements CategoryService {
 	public void createCategory(CategoryRequest categoryRequest) {
 		// TODO Auto-generated method stub
 		List<AmiruthamCategory> categoryList = new ArrayList<>();
-			for (CategoryDto categoryDto : categoryRequest.getCategories()) {
-				AmiruthamCategory category = new AmiruthamCategory();
-				SequnceDto sequence = seqservice.findMySeQuence("CATEGERY");
-				category.setCategoryCd(sequence.getSeqChar() + String.format("%05d", sequence.getSeqNxtVal()));
-				seqservice.updateMySeQuence(sequence);
-				category.setCategoryDesc(categoryDto.getCategoryDesc());
-				category.setCategoryNm(categoryDto.getCategoryNm());
-				category.setCategoryOrder(categoryDto.getCategoryOrder());
-				category.setCategoryBannerImgURL(categoryDto.getCategoryBannerImgURL());
-				categoryList.add(category);
-			}
-			categryRepo.saveAll(categoryList);
-		
+		for (CategoryDto categoryDto : categoryRequest.getCategories()) {
+			AmiruthamCategory category = new AmiruthamCategory();
+			SequnceDto sequence = seqservice.findMySeQuence("CATEGERY");
+			category.setCategoryCd(sequence.getSeqChar() + String.format("%05d", sequence.getSeqNxtVal()));
+			seqservice.updateMySeQuence(sequence);
+			category.setCategoryDesc(categoryDto.getCategoryDesc());
+			category.setCategoryNm(categoryDto.getCategoryNm());
+			category.setCategoryOrder(categoryDto.getCategoryOrder());
+			category.setCategoryBannerImgURL(categoryDto.getCategoryBannerImgURL());
+			categoryList.add(category);
+		}
+		categryRepo.saveAll(categoryList);
+
 	}
 
 	@Override
@@ -88,14 +100,14 @@ public class CategoryServiceImpl implements CategoryService {
 							.map(varient -> new ProductVarientDto(varient.getId(), varient.getMaximumRetailPrice(),
 									varient.getSellingPrice(), varient.getSavedPrice(), varient.getDiscount(),
 									varient.getUnit(), varient.getUnitType(), varient.getManufactureDate(),
-									varient.getBestBeforeDate(), prod.getId(),varient.getStock()))
+									varient.getBestBeforeDate(), prod.getId(), varient.getStock()))
 							.collect(Collectors.toList());
 				}
 
 				catgryDto.getProducts()
 						.add(new ProductDto(prod.getId(), "", prod.getProductCode(), prod.getProductNm(),
-								prod.getProductDesc(), prod.getProductuses(), prod.getProductincredience(),
-								mediaarray, productVarient));
+								prod.getProductDesc(), prod.getProductuses(), prod.getProductincredience(), mediaarray,
+								productVarient));
 			}
 			catoglistdto.add(catgryDto);
 
@@ -137,14 +149,14 @@ public class CategoryServiceImpl implements CategoryService {
 							.map(varient -> new ProductVarientDto(varient.getId(), varient.getMaximumRetailPrice(),
 									varient.getSellingPrice(), varient.getSavedPrice(), varient.getDiscount(),
 									varient.getUnit(), varient.getUnitType(), varient.getManufactureDate(),
-									varient.getBestBeforeDate(), prod.getId(),varient.getStock()))
+									varient.getBestBeforeDate(), prod.getId(), varient.getStock()))
 							.collect(Collectors.toList());
 				}
 
 				catgryDto.getProducts()
 						.add(new ProductDto(prod.getId(), "", prod.getProductCode(), prod.getProductNm(),
-								prod.getProductDesc(), prod.getProductuses(), prod.getProductincredience(),
-								mediaarray, productVarient));
+								prod.getProductDesc(), prod.getProductuses(), prod.getProductincredience(), mediaarray,
+								productVarient));
 			}
 			return catgryDto;
 		}
@@ -160,7 +172,7 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public void createCategory(String catogryStr, List<MultipartFile> files)  {
+	public void createCategory(String catogryStr, List<MultipartFile> files) {
 
 		CategoryDto categoryDto = (CategoryDto) AmirthumUtills.convertJsontoObject(CategoryDto.class, catogryStr);
 
@@ -182,7 +194,7 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public AmiruthamCategory updateCategory(CategoryDto categoryDto)  {
+	public AmiruthamCategory updateCategory(CategoryDto categoryDto) {
 		// TODO Auto-generated method stub
 
 		if (null != categoryDto.getId()) {
@@ -202,6 +214,100 @@ public class CategoryServiceImpl implements CategoryService {
 			throw new AmirthumCommonException("Category id shoud Not be Empty");
 		}
 
+	}
+
+	@Override
+	public void createBulkCategory(@Valid @NotNull @NotBlank MultipartFile files) {
+		// TODO Auto-generated method stub
+
+		// Creating a Workbook from an Excel file (.xls or .xlsx)
+		Workbook workbook;
+		try {
+			workbook = WorkbookFactory.create(files.getInputStream());
+			System.out.println("Workbook has " + workbook.getNumberOfSheets() + " Sheets : ");
+			System.out.println("Retrieving Sheets using Java 8 forEach with lambda");
+			DataFormatter dataFormatter = new DataFormatter();
+			workbook.forEach(sheet -> {
+				System.out.println("=> " + sheet.getSheetName());
+				if ("CAT".equals(sheet.getSheetName())) {
+					List<AmiruthamCategory> categoryList = new ArrayList<>();
+					sheet.forEach(row -> {
+						AmiruthamCategory category = new AmiruthamCategory();
+						if (0 != row.getRowNum()) {
+
+							SequnceDto sequence = seqservice.findMySeQuence("CATEGERY");
+							category.setCategoryCd(
+									sequence.getSeqChar() + String.format("%05d", sequence.getSeqNxtVal()));
+							seqservice.updateMySeQuence(sequence);
+							int cellcount = 0;
+							for (Cell cell : row) {
+								category = printCellValue(cell, cellcount, category);
+								cellcount++;
+							}
+							categoryList.add(category);
+						}
+						
+					});
+					categryRepo.saveAll(categoryList);
+				} else {
+					System.out.println("=> " + sheet.getSheetName());
+				}
+			});
+
+		} catch (EncryptedDocumentException | InvalidFormatException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+//		List<AmiruthamCategory> categoryList = new ArrayList<>();
+//		if (null !=files) {
+//			CategoryDto categoryDto =null;
+//			AmiruthamCategory category = new AmiruthamCategory();
+//			SequnceDto sequence = seqservice.findMySeQuence("CATEGERY");
+//			category.setCategoryCd(sequence.getSeqChar() + String.format("%05d", sequence.getSeqNxtVal()));
+//			seqservice.updateMySeQuence(sequence);
+//			category.setCategoryDesc(categoryDto.getCategoryDesc());
+//			category.setCategoryNm(categoryDto.getCategoryNm());
+//			category.setCategoryOrder(categoryDto.getCategoryOrder());
+//			category.setCategoryBannerImgURL(categoryDto.getCategoryBannerImgURL());
+//			categoryList.add(category);
+//		}
+//		categryRepo.saveAll(categoryList);
+
+	}
+
+	private AmiruthamCategory printCellValue(Cell cell, int cellcount, AmiruthamCategory category) {
+		switch (cell.getCellTypeEnum()) {
+		case BOOLEAN:
+			System.out.print(cell.getBooleanCellValue());
+			break;
+		case STRING:
+			if (1 == cellcount)
+				category.setCategoryNm(cell.getRichStringCellValue().getString());
+			else if (2 == cellcount)
+				category.setCategoryDesc(cell.getRichStringCellValue().getString());
+			break;
+		case NUMERIC:
+			if (DateUtil.isCellDateFormatted(cell)) {
+				System.out.print(cell.getDateCellValue());
+			} else {
+				System.out.print(cell.getNumericCellValue());
+				if (3 == cellcount)
+					category.setCategoryOrder((int) cell.getNumericCellValue());
+			}
+			break;
+		case FORMULA:
+			System.out.print(cell.getCellFormula());
+			break;
+		case BLANK:
+			System.out.print("");
+			break;
+		default:
+			System.out.print("");
+		}
+
+		System.out.print("\t");
+		return category;
 	}
 
 }

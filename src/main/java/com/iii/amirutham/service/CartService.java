@@ -13,7 +13,7 @@ import com.iii.amirutham.exception.UserNotFoundException;
  */
 public interface CartService {
 
-	public CartDto addMyLocalCart(CartRequest cartRequest);
+	public CartDto addORUpdateMyLocalCart(CartRequest cartRequest);
 	
 	public CartDto updateMyLocalCart(CartRequest cartRequest) throws UserNotFoundException;
 

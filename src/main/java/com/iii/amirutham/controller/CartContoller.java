@@ -43,14 +43,11 @@ public class CartContoller {
 
 	@PostMapping
 	public ResponseEntity<CartDto> savelocalCart(HttpServletRequest request,@Valid @RequestBody CartRequest cartRequest) {
-
-		UserDetailsImpl user = userService.getUserDetails();
 		CartDto cart = null;
-		CartDto pendingcart = cartService.getMyCart(user.getId());
-		if(null==pendingcart)
-			cart = cartService.addMyLocalCart(cartRequest);
-		else
-			throw new UserNotFoundException(messages.getMessage("cart.message.AlreadyExists", null, request.getLocale()));
+		
+			cart = cartService.addORUpdateMyLocalCart(cartRequest);
+//		else
+//			throw new UserNotFoundException(messages.getMessage("cart.message.AlreadyExists", null, request.getLocale()));
 
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(cart);
 

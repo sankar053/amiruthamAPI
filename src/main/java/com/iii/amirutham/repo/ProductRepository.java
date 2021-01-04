@@ -12,5 +12,7 @@ import com.iii.amirutham.model.product.AmiruthamProducts;
  *
  */
 public interface ProductRepository extends JpaRepository<AmiruthamProducts, Integer> {
+	
+	
 
 }

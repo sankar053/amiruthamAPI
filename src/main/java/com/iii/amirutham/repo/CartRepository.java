@@ -22,6 +22,8 @@ public interface CartRepository extends JpaRepository<ShoppingCart, Integer> {
 	
 	  List<ShoppingCart> findByCustomerId(Integer consumerId);
 	  
+	  ShoppingCart findByCustomerIdAndShoppingCartStatus(Integer consumerId,String status);
+	  
 	
 	  @Modifying
 	  @Transactional
