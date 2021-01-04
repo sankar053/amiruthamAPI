@@ -3,10 +3,9 @@
  */
 package com.iii.amirutham.repo;
 
-import java.util.List;
-
 import javax.transaction.Transactional;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -23,7 +22,7 @@ import com.iii.amirutham.model.user.User;
  */
 public interface OrderRepository extends PagingAndSortingRepository<Orders, Integer> {
 
-	List<Orders> findByUser(User user,Pageable pageable);
+	Page<Orders> findByUser(User user,Pageable pageable);
 	
 	  @Modifying
 	  @Transactional

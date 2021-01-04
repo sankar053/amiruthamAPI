@@ -9,6 +9,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -228,7 +229,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<Orders> myorders(Integer pageNo, Integer pageSize,Pageable pageable) {
+	public Page<Orders> myorders(Integer pageNo, Integer pageSize,Pageable pageable) {
 		// TODO Auto-generated method stub
 		if(pageNo!=null && pageSize!=null)
 			pageable = PageRequest.of(pageNo, pageSize,Sort.by(

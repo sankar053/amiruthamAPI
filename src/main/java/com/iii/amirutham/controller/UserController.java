@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.core.env.Environment;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.SortDefault;
@@ -25,6 +26,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.ModelMap;
@@ -47,7 +49,6 @@ import com.iii.amirutham.dto.model.UserDto;
 import com.iii.amirutham.dto.model.ValidateOtpDto;
 import com.iii.amirutham.exception.UserNotFoundException;
 import com.iii.amirutham.model.order.Orders;
-import com.iii.amirutham.model.product.ProductReviews;
 import com.iii.amirutham.model.user.User;
 import com.iii.amirutham.service.ISecurityUserService;
 import com.iii.amirutham.service.UserService;
@@ -256,14 +257,14 @@ public class UserController {
 	}
 
 
-	
-	@GetMapping(value = {"/users/myorders", "/users/myorders/{pageNo}/{pageSize}"})
-	public @ResponseBody ResponseEntity<List<Orders>> myorders(HttpServletRequest request,@PathVariable(required = false) Integer pageNo, 
-	        @PathVariable(required = false) Integer pageSize,@SortDefault.SortDefaults({
+	@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+	@GetMapping(value = {"/users/myorders"})
+	public @ResponseBody ResponseEntity<Page<Orders>> myorders(HttpServletRequest request,@RequestParam(name = "page",required = false) Integer pageNo, 
+			@RequestParam(name = "size",required = false) Integer pageSize,@SortDefault.SortDefaults({
 	    		@SortDefault(sort = "createdTs", direction = Sort.Direction.DESC),
 	    		@SortDefault(sort = "id", direction = Sort.Direction.DESC)
 	    })@Qualifier("my") Pageable pageable) {
-		List<Orders> orderList = userService.myorders(pageNo,pageSize,pageable);
+		Page<Orders> orderList = userService.myorders(pageNo,pageSize,pageable);
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(orderList);
 
 	}

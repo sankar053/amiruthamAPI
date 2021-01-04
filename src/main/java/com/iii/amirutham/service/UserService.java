@@ -6,6 +6,7 @@ package com.iii.amirutham.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.iii.amirutham.config.UserDetailsImpl;
@@ -40,5 +41,5 @@ public interface UserService {
 
 	String createPasswordResetTokenForUser(User user, String token);
 
-	public List<Orders> myorders(Integer pageNo, Integer pageSize,Pageable pageable);
+	public Page<Orders> myorders(Integer pageNo, Integer pageSize,Pageable pageable);
 }
