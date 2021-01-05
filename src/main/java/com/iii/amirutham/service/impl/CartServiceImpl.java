@@ -291,7 +291,7 @@ public class CartServiceImpl implements CartService {
 
 			lineitem.setQuantity(quantity);
 			lineitem.setItemPrice(new BigDecimal(varient.getSellingPrice()));
-			BigDecimal st = lineitem.getItemPrice().multiply(new BigDecimal(lineitem.getQuantity()));
+			BigDecimal st = lineitem.getItemPrice().multiply(new BigDecimal(quantity));
 			lineitem.setSubTotal(st);
 			updateCart.getLineItems().add(lineitem);
 			// cartItemRepository.save(lineitem);

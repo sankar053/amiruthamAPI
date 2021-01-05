@@ -7,8 +7,8 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
@@ -23,7 +23,7 @@ import com.iii.amirutham.model.user.User;
  */
 public interface ProductReviewRepository extends PagingAndSortingRepository<ProductReviews, Integer> {
 
-	List<ProductReviews> findByProduct(AmiruthamProducts product, Pageable pageable);
+	Page<ProductReviews> findByProduct(AmiruthamProducts product, Pageable pageable);
 
 	
 	@Query("select c from ProductReviews c")

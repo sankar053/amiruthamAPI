@@ -3,12 +3,12 @@
  */
 package com.iii.amirutham.service.impl;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -65,7 +65,7 @@ public class ProductReviewServiceImpl implements ProductReviewService {
 	}
 
 	@Override
-	public List<ProductReviews> getReviewsByProduct(Integer productId,Integer pageNo, Integer pageSize,Pageable pageable) {
+	public Page<ProductReviews> getReviewsByProduct(Integer productId,Integer pageNo, Integer pageSize,Pageable pageable) {
 		// TODO Auto-generated method stub
 		if(pageNo!=null && pageSize!=null)
 			pageable = PageRequest.of(pageNo, pageSize);

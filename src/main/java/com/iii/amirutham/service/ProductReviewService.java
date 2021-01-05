@@ -3,10 +3,9 @@
  */
 package com.iii.amirutham.service;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.iii.amirutham.dto.model.ProductReviewDto;
@@ -20,6 +19,6 @@ public interface ProductReviewService {
 
 	void addReviewsToProduct(@Valid ProductReviewDto reviewRequest);
 
-	List<ProductReviews> getReviewsByProduct(Integer productId,Integer pageNo, Integer pageSize,Pageable pageable);
+	Page<ProductReviews> getReviewsByProduct(Integer productId,Integer pageNo, Integer pageSize,Pageable pageable);
 
 }

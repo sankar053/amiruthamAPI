@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -60,11 +61,11 @@ public class ProductReviewController {
 		
 	}
 	
-	@GetMapping(value = {"/{productId}", "/{productId}/{pageNo}/{pageSize}"})
-	public  @ResponseBody ResponseEntity<List<ProductReviews>> getReviewsByProduct(HttpServletRequest request,@PathVariable Integer productId,@PathVariable(required = false) Integer pageNo, 
-	        @PathVariable(required = false) Integer pageSize,@Qualifier("amirthum") Pageable pageable) {
+	@GetMapping(value = {"/{productId}"})
+	public  @ResponseBody ResponseEntity<Page<ProductReviews>> getReviewsByProduct(HttpServletRequest request,@PathVariable Integer productId,@RequestParam(name = "page",required = false) Integer pageNo, 
+			@RequestParam(name = "size",required = false) Integer pageSize,@Qualifier("amirthum") Pageable pageable) {
 		
-		List<ProductReviews> reviews = revivewService.getReviewsByProduct(productId,pageNo, pageSize,pageable);
+		Page<ProductReviews> reviews = revivewService.getReviewsByProduct(productId,pageNo, pageSize,pageable);
 		
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(reviews);
 		
