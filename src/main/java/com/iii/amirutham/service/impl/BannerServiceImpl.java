@@ -146,6 +146,7 @@ public class BannerServiceImpl implements BannerService {
 	@Override
 	public Resource loadBannerAsResource(String fileName) {
 		try {
+			fileStorageLocation = Paths.get(Upload_Path + "Banner" + File.separator).toAbsolutePath().normalize();
 			Path filePath = fileStorageLocation.resolve(fileName).normalize();
 			Resource resource = new UrlResource(filePath.toUri());
 			if (resource.exists()) {

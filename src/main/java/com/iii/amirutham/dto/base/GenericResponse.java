@@ -15,6 +15,7 @@ public class GenericResponse {
     private String message;
     private String error;
     private Date timestamp;
+    private Object responseObject;
 
     public GenericResponse(final String message) {
         super();
@@ -26,6 +27,13 @@ public class GenericResponse {
         super();
         this.message = message;
         this.error = error;
+        this.timestamp = new Date();
+    }
+    
+    public GenericResponse(final String message, final Object responseObj) {
+        super();
+        this.message = message;
+        this.responseObject = responseObj;
         this.timestamp = new Date();
     }
 

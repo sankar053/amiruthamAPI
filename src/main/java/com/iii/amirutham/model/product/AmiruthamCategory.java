@@ -13,10 +13,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.iii.amirutham.model.BaseEntity;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -52,7 +54,23 @@ public class AmiruthamCategory extends BaseEntity {
 	private Integer categoryOrder;
 	
 	@Column(name = "CATE_BANNER_URL")
-	private String categoryBannerImgURL;
+	private String bannerImgUrl;
+	
+	@Size(min = 2, message = "LastName Should have Atleast two character")
+	@Column(name = "bannerFileName")
+	private String bannerFileNm;
+	
+	@Size(min = 2, message = "LastName Should have Atleast two character")
+	@ApiModelProperty(notes = "LastName Should have Atleast two character")
+	@Column(name = "bannerFilepth")
+	private String bannerFilepth;
+	
+	@Column(name = "bannerFileType")
+	private String bannerImgType;
+
+	
+	@Column(name = "bannerFileSize")
+	private Long bannerImgSize;
 	
 	@JsonIgnore 
 	@OneToMany(mappedBy="category")

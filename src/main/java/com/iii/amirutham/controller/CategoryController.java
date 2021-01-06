@@ -1,12 +1,17 @@
 package com.iii.amirutham.controller;
 
+import java.io.IOException;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,6 +31,7 @@ import com.iii.amirutham.dto.base.GenericResponse;
 import com.iii.amirutham.dto.model.CategoryDto;
 import com.iii.amirutham.model.product.AmiruthamCategory;
 import com.iii.amirutham.service.CategoryService;
+import com.iii.amirutham.utills.AmirthumUtills;
 
 @RestController
 @RequestMapping("/category")
@@ -33,11 +39,27 @@ public class CategoryController {
 
 	@Autowired
 	private CategoryService categoryService;
+	
+	@Autowired
+	private MessageSource messages;
 
 	@PostMapping
-	public ResponseEntity<GenericResponse> saveCategory(@Valid @RequestBody CategoryRequest categoryRequest) {
+	public ResponseEntity<GenericResponse> saveCategory(HttpServletRequest request,
+			@RequestPart("payload") String payload, @RequestPart("file") @Valid @NotNull @NotBlank MultipartFile file) {
+		AmiruthamCategory categoryDao = categoryService.createCategory(payload,file);
+	
+		return  ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+               .body(new GenericResponse(messages.getMessage("category.message.create.success", null, request.getLocale()),categoryDao));
 
-		categoryService.createCategory(categoryRequest);
+
+	}
+	
+	@PostMapping("/Multiple")
+	public ResponseEntity<GenericResponse> saveBulkCategory(HttpServletRequest request,
+			@RequestPart("payload") String payload, @RequestPart("file") @Valid @NotNull @NotBlank MultipartFile file) {
+	CategoryRequest categoryRequest = (CategoryRequest) AmirthumUtills.convertJsontoObject(CategoryRequest.class, payload);
+		categoryService.createBulkCategory(categoryRequest,file);
 		return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON)
                .body(new GenericResponse("success")) ;
@@ -93,6 +115,29 @@ public class CategoryController {
                .body(new GenericResponse("Category Deleted Successfully"));
 
 	}
+	@GetMapping("/downloadFile/{fileName:.+}/{catCode}")
+	public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, @PathVariable String catCode,HttpServletRequest request) {
+		// Load file as Resource
+		Resource resource = categoryService.loadBannerAsResource(fileName,catCode);
+
+		// Try to determine file's content type
+		String contentType = null;
+		try {
+			contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+		} catch (IOException ex) {
+			System.out.println("Could not determine file type.");
+		}
+
+		// Fallback to the default content type if type could not be determined
+		if (contentType == null) {
+			contentType = "application/octet-stream";
+		}
+
+		return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType))
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+				.body(resource);
+	}
+
 	
 	@PostMapping("/bulk")
 	public ResponseEntity<GenericResponse> saveBulkCategory(@RequestPart("file") @Valid @NotNull @NotBlank MultipartFile files) {

@@ -67,9 +67,10 @@ public class ProductServiceImpl implements ProductService {
 			SequnceDto sequence = seqservice.findMySeQuence("PRODUCT");
 			product.setProductCode(sequence.getSeqChar() + String.format("%05d", sequence.getSeqNxtVal()));
 			seqservice.updateMySeQuence(sequence);
+			product.setProductCategoryCode(catogory.get().getCategoryCd());
 			product.setProductNm(productsDto.getProductNm());
 			product.setProductDesc(productsDto.getProductDesc());
-			product.setProductincredience(productsDto.getIncrediances());
+			product.setProductincredience(productsDto.getProductincredience());
 			List<ProductMediaGallary> mediaArray = new ArrayList<ProductMediaGallary>();
 			if (null != files) {
 				for (MultipartFile file : files) {
@@ -128,7 +129,7 @@ public class ProductServiceImpl implements ProductService {
 								varient.getBestBeforeDate(), prod.getId(),varient.getStock()))
 						.collect(Collectors.toList());
 			}
-			ProductDto prodDto=	new ProductDto(prod.getId(), String.valueOf(prod.getCategory().getId()),
+			ProductDto prodDto=	new ProductDto(prod.getId(), prod.getCategory().getId(),
 					prod.getProductCode(), prod.getProductNm(), prod.getProductDesc(), prod.getProductuses(),
 					prod.getProductincredience(),mediaarray, productVarient);
 			prodDto.setUpdatedBy(prod.getUpdatedBy());
@@ -166,7 +167,7 @@ public class ProductServiceImpl implements ProductService {
 								varient.getBestBeforeDate(), prod.getId(),varient.getStock()))
 						.collect(Collectors.toList());
 			}
-			productdto = new ProductDto(prod.getId(), String.valueOf(prod.getCategory().getId()), prod.getProductCode(),
+			productdto = new ProductDto(prod.getId(), prod.getCategory().getId(), prod.getProductCode(),
 					prod.getProductNm(), prod.getProductDesc(), prod.getProductuses(), prod.getProductincredience(),mediaarray, productVarient);
 			productdto.setUpdatedBy(prod.getUpdatedBy());
 			productdto.setCreatedTs(prod.getCreatedTs());

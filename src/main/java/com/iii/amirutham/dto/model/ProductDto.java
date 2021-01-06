@@ -26,7 +26,7 @@ public class ProductDto extends BaseEntityDto {
 	private Integer id;
 	
 	@NotNull
-	private String categoryid;
+	private Integer categoryid;
 	
 	private String productCode;
 	
@@ -39,10 +39,28 @@ public class ProductDto extends BaseEntityDto {
 	@NotNull
 	private String productuses;
 	
-	private String incrediances;
+	private String productincredience;
+	
+	private List<Object> bannerImg;
 	
 	List<ProductMediaDto> prodMedias;
 	List<ProductVarientDto> prodVarient;
+	public ProductDto(Integer id, @NotNull Integer categoryid, String productCode, @NotNull String productNm,
+			@NotNull String productDesc, @NotNull String productuses, String productincredience,
+			List<ProductMediaDto> prodMedias, List<ProductVarientDto> prodVarient) {
+		super();
+		this.id = id;
+		this.categoryid = categoryid;
+		this.productCode = productCode;
+		this.productNm = productNm;
+		this.productDesc = productDesc;
+		this.productuses = productuses;
+		this.productincredience = productincredience;
+		this.prodMedias = prodMedias;
+		this.prodVarient = prodVarient;
+	}
+	
+	
 	
    
 }

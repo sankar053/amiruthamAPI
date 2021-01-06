@@ -9,6 +9,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.iii.amirutham.dto.base.GenericResponse;
 import com.iii.amirutham.dto.model.ProductDto;
 import com.iii.amirutham.model.product.AmiruthamProducts;
 import com.iii.amirutham.service.ProductService;
@@ -32,11 +34,12 @@ public class ProductController {
 
 	@Autowired
 	private ProductService productService;
-
+	@Autowired
+	private MessageSource messages;
 	
 	
 	@PostMapping
-	public ResponseEntity<Object> saveProducts(@RequestPart("payload") String payload,
+	public ResponseEntity<Object> saveProducts(HttpServletRequest request,@RequestPart("payload") String payload,
 			@RequestPart("file") @Valid @NotNull @NotBlank List<MultipartFile> files) {
 		
 			AmiruthamProducts productDao=	productService.addProductandMedia(payload,files);
@@ -44,7 +47,7 @@ public class ProductController {
 
 		return  ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON)
-               .body(productDao);
+               .body(new GenericResponse(messages.getMessage("product.message.create.success", null, request.getLocale()),productDao));
 
 	}
 	

@@ -32,5 +32,6 @@ public class BannerDto {
 	private String twitterLink;
 	
 	private List<AmiruthamProducts> bestselling;
+	private List<Object> bannerImg;
 
 }

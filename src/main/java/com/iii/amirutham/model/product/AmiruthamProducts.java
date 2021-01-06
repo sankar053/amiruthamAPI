@@ -46,7 +46,7 @@ public class AmiruthamProducts extends BaseEntity {
 	@Column(name = "PROD_BRAND")
 	private String productBrand;
 	
-	@Column(name = "PROD_CAT_CODE",unique=true, nullable=false)
+	@Column(name = "PROD_CAT_CODE", nullable=false)
 	private String productCategoryCode;
 	
 	@Column(name = "PROD_NME")
