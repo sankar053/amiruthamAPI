@@ -77,6 +77,8 @@ public class OrderServiceImpl implements OrderService {
 			seqservice.updateMySeQuence(sequence);
 			orderDao.setLastModified(new Date());
 			orderDao.setDatePurchased(new Date());
+			orderDao.setReceiverName(orderDto.getReceiverName());
+			orderDao.setReceiverPhoneNumber(orderDto.getReceiverPhoneNumber());
 			orderDao.setTotal(mypendingCart.getFinalpriceWithCharges());
 			orderDao.setShoppingCartCode(mypendingCart.getShoppingCartCode());
 			orderDao.setUser(userRepository.findById(user.getId()).get());

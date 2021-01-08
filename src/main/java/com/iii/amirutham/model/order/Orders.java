@@ -54,9 +54,12 @@ public class Orders extends BaseEntity {
 	@Column (name ="LAST_MODIFIED")
 	private Date lastModified;
 	
-	/*
-	 * @Column (name ="CUSTOMER_ID") private Integer customerId;
-	 */
+	@Column (name ="ORDER_RECEIVER_NAME")
+	private String receiverName;
+	
+	@Column (name ="ORDER_RECEIVER_PHONE_NUMBER")
+	private String receiverPhoneNumber;
+	
 	
 	@Temporal(TemporalType.DATE)
 	@Column (name ="DATE_PURCHASED")
