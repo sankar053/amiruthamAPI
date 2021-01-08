@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.iii.amirutham.config.UserDetailsImpl;
+import com.iii.amirutham.dto.model.AddressDto;
+import com.iii.amirutham.dto.model.OrderDto;
 import com.iii.amirutham.dto.model.SequnceDto;
 import com.iii.amirutham.exception.UserNotFoundException;
 import com.iii.amirutham.model.Address;
@@ -23,6 +25,7 @@ import com.iii.amirutham.model.order.Orders;
 import com.iii.amirutham.model.product.AmiruthamProducts;
 import com.iii.amirutham.model.shoppingcart.ShoppingCart;
 import com.iii.amirutham.model.shoppingcart.ShoppingCartItem;
+import com.iii.amirutham.model.user.User;
 import com.iii.amirutham.repo.AddressRepository;
 import com.iii.amirutham.repo.CartRepository;
 import com.iii.amirutham.repo.OrderRepository;
@@ -61,26 +64,25 @@ public class OrderServiceImpl implements OrderService {
 	private SequenceService seqservice;
 
 	@Override
-	public void placeOrder(Integer cartId) {
+	public String placeOrder(OrderDto orderDto) {
 		// TODO Auto-generated method stub
 		UserDetailsImpl user = userService.getUserDetails();
-		Optional<ShoppingCart> mycart = cartRepository.findById(cartId);
+		Optional<ShoppingCart> mycart = cartRepository.findById(orderDto.getCartId());
 		if (mycart.isPresent() && "Pending".equals(mycart.get().getShoppingCartStatus())) {
 			ShoppingCart mypendingCart = mycart.get();
-			Orders order = new Orders();
+			Orders orderDao = new Orders();
 			// order.setCustomerId(user.getId());
 			SequnceDto sequence = seqservice.findMySeQuence("ORDER");
-			order.setOrderCode(sequence.getSeqChar() + String.format("%05d", sequence.getSeqNxtVal()));
+			orderDao.setOrderCode(sequence.getSeqChar() + String.format("%05d", sequence.getSeqNxtVal()));
 			seqservice.updateMySeQuence(sequence);
-			order.setLastModified(new Date());
-			order.setDatePurchased(new Date());
-			order.setTotal(mypendingCart.getFinalpriceWithCharges());
-			order.setShoppingCartCode(mypendingCart.getShoppingCartCode());
-			order.setUser(userRepository.findById(user.getId()).get());
+			orderDao.setLastModified(new Date());
+			orderDao.setDatePurchased(new Date());
+			orderDao.setTotal(mypendingCart.getFinalpriceWithCharges());
+			orderDao.setShoppingCartCode(mypendingCart.getShoppingCartCode());
+			orderDao.setUser(userRepository.findById(user.getId()).get());
 			// order.setAddress(new Address("157/73A KR Gardern","Railway Feeder
 			// Road","Shipment","Virudhunagar","TamilNadu","626001",order.getUser()));
-			order.setAddress(addressRepo.save(new Address("157/73A KR Gardern", "Railway Feeder Road", "Shipment",
-					"Virudhunagar", "TamilNadu", "626001", order.getUser())));
+			orderDao.setAddress(getShippingAddress(orderDto.getShippingAddress(), orderDao.getUser()));
 			Set<OrderProduct> orderProducts = new LinkedHashSet<OrderProduct>();
 			for (ShoppingCartItem cartItem : mypendingCart.getLineItems()) {
 				Optional<AmiruthamProducts> product = productRepository.findById(cartItem.getProductId());
@@ -100,14 +102,31 @@ public class OrderServiceImpl implements OrderService {
 							cartItem.getAttributes().getUnitType(), cartItem.getAttributes().getProdCode(),
 							cartItem.getAttributes().getManufactureDate(), cartItem.getAttributes().getBestBeforeDate(),
 							oProduct));
-					oProduct.setOrder(order);
+					oProduct.setOrder(orderDao);
 					orderProducts.add(oProduct);
 				}
 			}
-			order.setOrderProducts(orderProducts);
+			orderDao.setOrderProducts(orderProducts);
 
-			orderRepository.save(order);
-			cartRepository.updateShoppingCartStatus(cartId, "Converted");
+			orderDao = orderRepository.save(orderDao);
+			cartRepository.updateShoppingCartStatus(orderDto.getCartId(), "Converted");
+			return orderDao.getOrderCode();
+		}
+		return null;
+
+	}
+
+	public Address getShippingAddress(AddressDto addressDto, User u) {
+		if (null != addressDto.getId()) {
+			Optional<Address> address = addressRepo.findById(addressDto.getId());
+			if (address.isPresent())
+				return address.get();
+			else
+				return addressRepo.save(new Address(addressDto.getAddress1(), addressDto.getAddress2(), "Shipment",
+						addressDto.getCity(), addressDto.getState(), addressDto.getPostalCopde(), u));
+		} else {
+			return addressRepo.save(new Address(addressDto.getAddress1(), addressDto.getAddress2(), "Shipment",
+					addressDto.getCity(), addressDto.getState(), addressDto.getPostalCopde(), u));
 		}
 
 	}
@@ -116,8 +135,8 @@ public class OrderServiceImpl implements OrderService {
 	public Orders getOrdersById(Integer id) {
 		// TODO Auto-generated method stub
 		Optional<Orders> order = orderRepository.findById(id);
-		if(order.isPresent())
-				return order.get();
+		if (order.isPresent())
+			return order.get();
 		else
 			throw new UserNotFoundException("Orders Not Found");
 	}
@@ -130,9 +149,9 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public void updateOrderprocess(Integer id, OrderStatus status) {
-				// TODO Auto-generated method stub
-		orderRepository.updateOrderStatus(id,status);
-		
+		// TODO Auto-generated method stub
+		orderRepository.updateOrderStatus(id, status);
+
 	}
 
 }

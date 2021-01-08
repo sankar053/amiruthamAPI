@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import com.iii.amirutham.config.UserDetailsImpl;
 import com.iii.amirutham.dto.model.UserDto;
 import com.iii.amirutham.dto.model.ValidateOtpDto;
+import com.iii.amirutham.exception.TokenExpireException;
 import com.iii.amirutham.exception.UserAlreadyExistException;
 import com.iii.amirutham.exception.UserNotFoundException;
 import com.iii.amirutham.model.order.Orders;
@@ -93,7 +94,7 @@ public class UserServiceImpl implements UserService {
 		try {
 			userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		} catch (Exception w) {
-			throw new UserNotFoundException("Token Got Expired");
+			throw new TokenExpireException("Token Got Expired");
 		}
 		return userDetails;
 	}

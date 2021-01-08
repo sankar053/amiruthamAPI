@@ -10,15 +10,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @author sanka
  *
  */
-@ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-public class UserNotFoundException extends RuntimeException {
-
-	/**
-	 * 
-	 */
+@ResponseStatus(HttpStatus.UNAUTHORIZED)
+public class TokenExpireException extends RuntimeException{
 	private static final long serialVersionUID = 1L;
-
-	public UserNotFoundException(String message) {
+	public TokenExpireException(String message) {
 		super(message);
 		// TODO Auto-generated constructor stub
 	}

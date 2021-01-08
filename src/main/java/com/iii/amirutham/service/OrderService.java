@@ -5,6 +5,7 @@ package com.iii.amirutham.service;
 
 import java.util.List;
 
+import com.iii.amirutham.dto.model.OrderDto;
 import com.iii.amirutham.model.order.OrderStatus;
 import com.iii.amirutham.model.order.Orders;
 
@@ -14,7 +15,7 @@ import com.iii.amirutham.model.order.Orders;
  */
 public interface OrderService {
 	
-	public void placeOrder(Integer cartId);
+	public String placeOrder(OrderDto order);
 
 	public Orders getOrdersById(Integer id);
 

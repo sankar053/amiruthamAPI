@@ -6,6 +6,7 @@ package com.iii.amirutham.controller;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -15,10 +16,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.iii.amirutham.dto.base.GenericResponse;
+import com.iii.amirutham.dto.model.OrderDto;
 import com.iii.amirutham.model.order.OrderStatus;
 import com.iii.amirutham.model.order.Orders;
 import com.iii.amirutham.service.OrderService;
@@ -37,12 +40,16 @@ public class OrderContoller {
 	@Autowired
 	private MessageSource messages;
 
-	@PostMapping("/placeorder/{cartId}")
+	@PostMapping("/placeorder")
 	@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-	public ResponseEntity<GenericResponse> placeOrder(HttpServletRequest request,@PathVariable(required = true) Integer cartId) {
+	public ResponseEntity<GenericResponse> placeOrder(HttpServletRequest request,@Valid @RequestBody OrderDto order) {
 
-		orderService.placeOrder(cartId);
-		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(new GenericResponse(messages.getMessage("order.message.success", null, request.getLocale())));
+		String OrderRef = orderService.placeOrder(order);
+		if(null!=OrderRef)
+			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(new GenericResponse(messages.getMessage("order.message.success", null, request.getLocale())+OrderRef));
+		else
+			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(new GenericResponse(messages.getMessage("order.message.failure", null, request.getLocale())));
+			
 	}
 	
 	@GetMapping

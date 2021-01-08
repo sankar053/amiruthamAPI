@@ -42,7 +42,17 @@ public class AmirthumExceptuinHandler extends ResponseEntityExceptionHandler {
 		ExceptionResponse exceptionResponse = new ExceptionResponse("4000", ex.getMessage(), new Date(),
 				request.getDescription(false));
 
-		return new ResponseEntity<Object>(exceptionResponse, HttpStatus.NOT_FOUND);
+		return new ResponseEntity<Object>(exceptionResponse, HttpStatus.UNPROCESSABLE_ENTITY);
+
+	}
+	
+	@ExceptionHandler(TokenExpireException.class)
+	public final ResponseEntity<Object> handleNotFoundException(TokenExpireException ex, WebRequest request)
+			throws Exception {
+		ExceptionResponse exceptionResponse = new ExceptionResponse("4001", ex.getMessage(), new Date(),
+				request.getDescription(false));
+
+		return new ResponseEntity<Object>(exceptionResponse, HttpStatus.UNAUTHORIZED);
 
 	}
 	

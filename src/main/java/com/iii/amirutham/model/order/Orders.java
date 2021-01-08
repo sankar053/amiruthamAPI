@@ -93,9 +93,9 @@ public class Orders extends BaseEntity {
 	private User user;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "addressId")
+    @JoinColumn(name = "addressId" ,nullable = true)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonIgnore
+	@JsonIgnore
     private Address address;
 
 }
