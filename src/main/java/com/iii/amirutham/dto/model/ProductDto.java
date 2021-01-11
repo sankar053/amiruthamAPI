@@ -41,13 +41,16 @@ public class ProductDto extends BaseEntityDto {
 	
 	private String productincredience;
 	
+	private String bestSelling;
+	
 	private List<Object> bannerImg;
 	
 	List<ProductMediaDto> prodMedias;
 	List<ProductVarientDto> prodVarient;
 	public ProductDto(Integer id, @NotNull Integer categoryid, String productCode, @NotNull String productNm,
 			@NotNull String productDesc, @NotNull String productuses, String productincredience,
-			List<ProductMediaDto> prodMedias, List<ProductVarientDto> prodVarient) {
+			List<ProductMediaDto> prodMedias, List<ProductVarientDto> prodVarient,
+			String bestSelling) {
 		super();
 		this.id = id;
 		this.categoryid = categoryid;
@@ -58,6 +61,7 @@ public class ProductDto extends BaseEntityDto {
 		this.productincredience = productincredience;
 		this.prodMedias = prodMedias;
 		this.prodVarient = prodVarient;
+		this.bestSelling="Y".equals(bestSelling)?"true":"false";
 	}
 	
 	

@@ -34,20 +34,19 @@ public class ProductController {
 
 	@Autowired
 	private ProductService productService;
-	@Autowired
-	private MessageSource messages;
+
 	
 	
 	@PostMapping
 	public ResponseEntity<Object> saveProducts(HttpServletRequest request,@RequestPart("payload") String payload,
 			@RequestPart("file") @Valid @NotNull @NotBlank List<MultipartFile> files) {
 		
-			AmiruthamProducts productDao=	productService.addProductandMedia(payload,files);
+		GenericResponse resopnse=	productService.addUpdateProductandMedia(payload,files,request);
 		
 
 		return  ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON)
-               .body(new GenericResponse(messages.getMessage("product.message.create.success", null, request.getLocale()),productDao));
+               .body(resopnse);
 
 	}
 	

@@ -88,7 +88,8 @@ public class AmiruthamProducts extends BaseEntity {
 	@OneToMany(mappedBy="product")
 	private List<ProductVarient> prodVarient;
 
-	public AmiruthamProducts(Integer id, String productCode, String productNm, String productDesc, String productuses,Integer stock,String productincredience) {
+	public AmiruthamProducts(Integer id, String productCode, String productNm, String productDesc, String productuses,Integer stock,
+			String productincredience,String bestSelling) {
 		super();
 		this.id = id;
 		this.productCode = productCode;
@@ -96,6 +97,7 @@ public class AmiruthamProducts extends BaseEntity {
 		this.productDesc = productDesc;
 		this.productuses = productuses;
 		this.productincredience=productincredience;
+		this.productBestSellingYN ="true".equals(bestSelling)?"Y":"N";
 	}
 
 

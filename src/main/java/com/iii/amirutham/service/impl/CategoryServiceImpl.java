@@ -63,12 +63,6 @@ public class CategoryServiceImpl implements CategoryService {
 
 	private Path fileStorageLocation;
 
-	/*
-	 * @Autowired private ModelMapper modelMapper;
-	 */
-	/*
-	 * @Autowired private ProductRepository productRepo;
-	 */
 	@Override
 	public void createBulkCategory(CategoryRequest categoryRequest,MultipartFile files) {
 		// TODO Auto-generated method stub
@@ -151,7 +145,7 @@ public class CategoryServiceImpl implements CategoryService {
 				catgryDto.getProducts()
 						.add(new ProductDto(prod.getId(), 0, prod.getProductCode(), prod.getProductNm(),
 								prod.getProductDesc(), prod.getProductuses(), prod.getProductincredience(), mediaarray,
-								productVarient));
+								productVarient,prod.getProductBestSellingYN()));
 			}
 			catoglistdto.add(catgryDto);
 
@@ -200,7 +194,7 @@ public class CategoryServiceImpl implements CategoryService {
 				catgryDto.getProducts()
 						.add(new ProductDto(prod.getId(), 0, prod.getProductCode(), prod.getProductNm(),
 								prod.getProductDesc(), prod.getProductuses(), prod.getProductincredience(), mediaarray,
-								productVarient));
+								productVarient,prod.getProductBestSellingYN()));
 			}
 			return catgryDto;
 		}
