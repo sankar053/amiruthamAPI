@@ -12,6 +12,7 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +39,9 @@ public class VarientController {
 
 	@Autowired
 	private ProductVarientService productVarientService;
+	
+	@Autowired
+	private MessageSource messages;
 
 	@PostMapping("product/varient")
 	public ResponseEntity<Object> addVarient(@Valid @RequestBody ProductsVarientRequest productVarientDto,
@@ -46,7 +50,7 @@ public class VarientController {
 
 		productVarientService.addVarientInfo(productVarientDto);
 
-		return new ResponseEntity<Object>(new GenericResponse("success"), HttpStatus.OK);
+		return new ResponseEntity<Object>(new GenericResponse(messages.getMessage("varient.message.add.success", null, request.getLocale())), HttpStatus.OK);
 	}
 
 	@PutMapping("product/varient")
@@ -56,7 +60,7 @@ public class VarientController {
 
 		productVarientService.updateVarientInfo(productVarientDto);
 
-		return new ResponseEntity<Object>(new GenericResponse("success"), HttpStatus.OK);
+		return new ResponseEntity<Object>(new GenericResponse(messages.getMessage("varient.message.update.success", null, request.getLocale())), HttpStatus.OK);
 	}
 
 	@GetMapping("product/varient/{id}")

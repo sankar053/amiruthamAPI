@@ -20,6 +20,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ProductsVarientRequest {
+	
+	
+	@NotNull
+	private Integer prodid;
 
 	@Valid
 	@NotNull

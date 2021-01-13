@@ -36,7 +36,7 @@ public class ProductVarientServiceImpl implements ProductVarientService {
 	public void addVarientInfo(ProductsVarientRequest productVarientRequest) {
 
 		for (ProductVarientDto productVarientDto : productVarientRequest.getVarientList()) {
-			Optional<AmiruthamProducts> product = productRepository.findById(productVarientDto.getProdid());
+			Optional<AmiruthamProducts> product = productRepository.findById(productVarientRequest.getProdid());
 			if (product.isPresent()) {
 
 				ProductVarient varientDao = new ProductVarient(productVarientDto.getMaximumRetailPrice(),productVarientDto.getStock(),
@@ -56,7 +56,7 @@ public class ProductVarientServiceImpl implements ProductVarientService {
 		// TODO Auto-generated method stub
 
 		for (ProductVarientDto productVarientDto : productVarientRequest.getVarientList()) {
-			Optional<AmiruthamProducts> product = productRepository.findById(productVarientDto.getProdid());
+			Optional<AmiruthamProducts> product = productRepository.findById(productVarientRequest.getProdid());
 			if (product.isPresent() && productVarientDto.getId() != null) {
 
 				ProductVarient varientDao = new ProductVarient(productVarientDto.getId(),
