@@ -6,6 +6,7 @@ package com.iii.amirutham.model.product;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -73,7 +74,7 @@ public class AmiruthamCategory extends BaseEntity {
 	private Long bannerImgSize;
 	
 	@JsonIgnore 
-	@OneToMany(mappedBy="category")
+	@OneToMany(mappedBy="category",cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<AmiruthamProducts> products =new HashSet<AmiruthamProducts>();
 
 	

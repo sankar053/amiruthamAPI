@@ -19,7 +19,6 @@ import javax.validation.constraints.NotNull;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
@@ -210,9 +209,8 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public AmiruthamCategory createCategory(String catogryStr, MultipartFile files) {
+	public AmiruthamCategory createCategory(CategoryDto categoryDto, MultipartFile files) {
 
-		CategoryDto categoryDto = (CategoryDto) AmirthumUtills.convertJsontoObject(CategoryDto.class, catogryStr);
 
 		AmiruthamCategory category = new AmiruthamCategory();
 		SequnceDto sequence = seqservice.findMySeQuence("CATEGERY");
@@ -249,6 +247,7 @@ public class CategoryServiceImpl implements CategoryService {
 			}
 	}
 		return categryRepo.save(category);
+	
 
 	}
 
@@ -260,24 +259,53 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public AmiruthamCategory updateCategory(CategoryDto categoryDto) {
+	public AmiruthamCategory updateCategory(CategoryDto categoryDto, MultipartFile files) {
 		// TODO Auto-generated method stub
 
-		if (null != categoryDto.getId()) {
+
 			Optional<AmiruthamCategory> catogory = categryRepo.findById(categoryDto.getId());
 			if (catogory.isPresent()) {
 				AmiruthamCategory categoryDao = catogory.get();
 				categoryDao.setCategoryCd(categoryDto.getCategoryCd());
 				categoryDao.setCategoryDesc(categoryDto.getCategoryDesc());
 				categoryDao.setCategoryNm(categoryDto.getCategoryNm());
-				//categoryDao.setCategoryBannerImgURL(categoryDto.getCategoryBannerImgURL());
+				categoryDao.setCategoryOrder(categoryDto.getCategoryOrder());
+				
+				if (null != files) {
+
+					try {
+						
+						fileStorageLocation = Paths.get(Upload_Path + "Banner" + File.separator+categoryDao.getCategoryCd()+File.separator).toAbsolutePath().normalize();
+						AmirthumUtills.makeaDirectory(fileStorageLocation);
+						String fileName = StringUtils.cleanPath(files.getOriginalFilename());
+						if (fileName.contains("..")) {
+							throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
+						}
+						Path targetLocation = fileStorageLocation.resolve(fileName);
+
+						Files.copy(files.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+						categoryDao.setBannerFileNm(fileName);
+						categoryDao.setBannerFilepth(targetLocation.toString());
+						categoryDao.setBannerImgSize(files.getSize());
+						categoryDao.setBannerImgType(files.getContentType());
+						String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+								.path("/category/downloadFile/").path(fileName+"/"+categoryDao.getCategoryCd()).toUriString();
+
+						categoryDao.setBannerImgUrl(fileDownloadUri);
+					
+					} catch (IOException e) { // TODO Auto-generated catch block e.printStackTrace(); }
+						e.printStackTrace();
+					}
+
+				
+				
 				return categryRepo.save(categoryDao);
 			} else {
 				throw new UserNotFoundException("Category Not Found  " + categoryDto.getId());
 			}
 
 		} else {
-			throw new AmirthumCommonException("Category id shoud Not be Empty");
+			throw new AmirthumCommonException("Please select and update the valied categoty");
 		}
 
 	}
@@ -292,7 +320,6 @@ public class CategoryServiceImpl implements CategoryService {
 			workbook = WorkbookFactory.create(files.getInputStream());
 			System.out.println("Workbook has " + workbook.getNumberOfSheets() + " Sheets : ");
 			System.out.println("Retrieving Sheets using Java 8 forEach with lambda");
-			DataFormatter dataFormatter = new DataFormatter();
 			workbook.forEach(sheet -> {
 				System.out.println("=> " + sheet.getSheetName());
 				if ("CAT".equals(sheet.getSheetName())) {

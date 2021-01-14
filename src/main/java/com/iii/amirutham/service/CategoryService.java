@@ -17,7 +17,7 @@ public interface CategoryService {
 
 	public void createBulkCategory(CategoryRequest categoryRequest,MultipartFile files) ;
 
-	public AmiruthamCategory createCategory(String products, MultipartFile files); 
+	public AmiruthamCategory createCategory(CategoryDto categoryDto, MultipartFile files); 
 
 	public List<CategoryDto> findAllCatogry();
 
@@ -29,7 +29,7 @@ public interface CategoryService {
 
 	public void deleteCatogry(int id);
 
-	AmiruthamCategory updateCategory( CategoryDto categories) ;
+	AmiruthamCategory updateCategory( CategoryDto categories, MultipartFile files) ;
 
 	public void createBulkCategory(@Valid @NotNull @NotBlank MultipartFile files);
 

@@ -125,6 +125,7 @@ public class ProductServiceImpl implements ProductService {
 			AmiruthamProducts product =productOps.get();
 			Path fileStorageLocation = Paths.get(Upload_Path + product.getProductCategoryCode() + "//").toAbsolutePath()
 					.normalize();
+			AmirthumUtills.makeaDirectory(fileStorageLocation);
 			product.setProductNm(productsDto.getProductNm());
 			product.setProductDesc(productsDto.getProductDesc());
 			product.setProductBestSellingYN("true".equals(productsDto.getBestSelling()) ? "Y" : "N");
@@ -132,6 +133,7 @@ public class ProductServiceImpl implements ProductService {
 			product.setProductuses(productsDto.getProductuses());
 			List<ProductMediaGallary> mediaArray = product.getProdImgs();
 			if (null != files) {
+				int filecount=0;
 				for (MultipartFile file : files) {
 
 					try {
@@ -140,13 +142,14 @@ public class ProductServiceImpl implements ProductService {
 							throw new FileStorageException(
 									"Sorry! Filename contains invalid path sequence " + fileName);
 						}
-						Path targetLocation = fileStorageLocation.resolve(fileName);
+						String productfilename =product.getProductCode()+"_"+filecount+++fileName.substring(fileName.lastIndexOf("."));
+						Path targetLocation = fileStorageLocation.resolve(productfilename);
 						Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-
+						
 						String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-								.path("/products/downloadFile/").path(fileName).toUriString();
+								.path("/products/downloadFile/").path(productfilename+"/"+product.getProductCategoryCode()).toUriString();
 
-						mediaArray.add(new ProductMediaGallary(fileName, targetLocation.toString(), fileDownloadUri,
+						mediaArray.add(new ProductMediaGallary(productfilename, targetLocation.toString(), fileDownloadUri,
 								file.getContentType(), file.getSize()));
 					} catch (IOException e) { // TODO Auto-generated catch block e.printStackTrace(); }
 						e.printStackTrace();

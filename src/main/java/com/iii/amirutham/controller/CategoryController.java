@@ -39,50 +39,54 @@ public class CategoryController {
 
 	@Autowired
 	private CategoryService categoryService;
-	
+
 	@Autowired
 	private MessageSource messages;
 
 	@PostMapping
 	public ResponseEntity<GenericResponse> saveCategory(HttpServletRequest request,
 			@RequestPart("payload") String payload, @RequestPart("file") @Valid @NotNull @NotBlank MultipartFile file) {
-		AmiruthamCategory categoryDao = categoryService.createCategory(payload,file);
-	
-		return  ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_JSON)
-               .body(new GenericResponse(messages.getMessage("category.message.create.success", null, request.getLocale()),categoryDao));
 
+		CategoryDto categoryDto = (CategoryDto) AmirthumUtills.convertJsontoObject(CategoryDto.class, payload);
+		AmiruthamCategory categoryDao;
+		if (categoryDto.getId() == 0) {
+			categoryDao = categoryService.createCategory(categoryDto, file);
+			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(new GenericResponse(
+					messages.getMessage("category.message.create.success", null, request.getLocale()), categoryDao));
+		} else {
+			categoryDao = categoryService.updateCategory(categoryDto, file);
+			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(new GenericResponse(
+					messages.getMessage("category.message.update.success", null, request.getLocale()), categoryDao));
+
+		}
 
 	}
-	
+
 	@PostMapping("/Multiple")
 	public ResponseEntity<GenericResponse> saveBulkCategory(HttpServletRequest request,
 			@RequestPart("payload") String payload, @RequestPart("file") @Valid @NotNull @NotBlank MultipartFile file) {
-	CategoryRequest categoryRequest = (CategoryRequest) AmirthumUtills.convertJsontoObject(CategoryRequest.class, payload);
-		categoryService.createBulkCategory(categoryRequest,file);
-		return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_JSON)
-               .body(new GenericResponse("success")) ;
+		CategoryRequest categoryRequest = (CategoryRequest) AmirthumUtills.convertJsontoObject(CategoryRequest.class,
+				payload);
+		categoryService.createBulkCategory(categoryRequest, file);
+		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(new GenericResponse("success"));
 
 	}
-	
+
 	@PutMapping
-	public ResponseEntity<Object> updateCategory(@Valid @RequestBody CategoryDto categories) {
+	public ResponseEntity<Object> updateCategory(HttpServletRequest request, @Valid @RequestBody CategoryDto categories,
+			@Valid @NotNull @NotBlank MultipartFile file) {
 
-		AmiruthamCategory updatedCategory =categoryService.updateCategory(categories);
-		return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_JSON)
-               .body(updatedCategory);
+		AmiruthamCategory updatedCategory = categoryService.updateCategory(categories, file);
+		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(updatedCategory);
 
 	}
-	
-	@PatchMapping
-	public ResponseEntity<Object> updateCategoryPatch(@Valid @RequestBody CategoryDto categories) {
 
-		AmiruthamCategory updatedCategory = categoryService.updateCategory(categories);
-		return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_JSON)
-               .body(updatedCategory);
+	@PatchMapping
+	public ResponseEntity<Object> updateCategoryPatch(HttpServletRequest request,
+			@Valid @RequestBody CategoryDto categories, @Valid @NotNull @NotBlank MultipartFile file) {
+
+		AmiruthamCategory updatedCategory = categoryService.updateCategory(categories, file);
+		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(updatedCategory);
 
 	}
 
@@ -90,9 +94,7 @@ public class CategoryController {
 	public ResponseEntity<Object> getAllCatogry() {
 		List<CategoryDto> catogList = categoryService.findAllCatogry();
 		System.out.println(catogList.size());
-		return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_JSON)
-               .body(catogList);
+		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(catogList);
 
 	}
 
@@ -100,25 +102,26 @@ public class CategoryController {
 	public ResponseEntity<Object> getCatogryById(@PathVariable int id) {
 		CategoryDto category = categoryService.findCatogryById(id);
 
-		return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_JSON)
-               .body(category);
+		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(category);
 
 	}
-	
+
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Object> deleteCatogryById(@PathVariable int id) {
+	public ResponseEntity<Object> deleteCatogryById(HttpServletRequest request,@PathVariable int id) {
 		categoryService.deleteCatogry(id);
-
-		return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_JSON)
-               .body(new GenericResponse("Category Deleted Successfully"));
+		List<CategoryDto> catogList = categoryService.findAllCatogry();
+		
+		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(new GenericResponse(
+				messages.getMessage("category.message.delete.success", null, request.getLocale()), catogList));
+		
 
 	}
+
 	@GetMapping("/downloadFile/{fileName:.+}/{catCode}")
-	public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, @PathVariable String catCode,HttpServletRequest request) {
+	public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, @PathVariable String catCode,
+			HttpServletRequest request) {
 		// Load file as Resource
-		Resource resource = categoryService.loadBannerAsResource(fileName,catCode);
+		Resource resource = categoryService.loadBannerAsResource(fileName, catCode);
 
 		// Try to determine file's content type
 		String contentType = null;
@@ -138,16 +141,13 @@ public class CategoryController {
 				.body(resource);
 	}
 
-	
 	@PostMapping("/bulk")
-	public ResponseEntity<GenericResponse> saveBulkCategory(@RequestPart("file") @Valid @NotNull @NotBlank MultipartFile files) {
+	public ResponseEntity<GenericResponse> saveBulkCategory(
+			@RequestPart("file") @Valid @NotNull @NotBlank MultipartFile files) {
 
 		categoryService.createBulkCategory(files);
-		return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_JSON)
-               .body(new GenericResponse("success")) ;
+		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(new GenericResponse("success"));
 
 	}
-	
 
 }

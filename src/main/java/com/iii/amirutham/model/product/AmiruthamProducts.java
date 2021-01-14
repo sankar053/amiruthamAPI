@@ -75,7 +75,7 @@ public class AmiruthamProducts extends BaseEntity {
 	private boolean available = true;
 	
 	@ManyToOne
-    @JoinColumn(name="cart_id", nullable=false)
+    @JoinColumn(name="category_id", nullable=false)
     private AmiruthamCategory category;
     
     @OneToMany(fetch = FetchType.LAZY, cascade = {
@@ -85,7 +85,7 @@ public class AmiruthamProducts extends BaseEntity {
 	private List<ProductMediaGallary> prodImgs;
     
    // @JsonIgnore 
-	@OneToMany(mappedBy="product")
+	@OneToMany(mappedBy="product", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ProductVarient> prodVarient;
 
 	public AmiruthamProducts(Integer id, String productCode, String productNm, String productDesc, String productuses,Integer stock,
