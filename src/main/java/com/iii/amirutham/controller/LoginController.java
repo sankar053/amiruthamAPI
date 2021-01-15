@@ -11,6 +11,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +24,7 @@ import com.iii.amirutham.config.JwtResponse;
 import com.iii.amirutham.config.JwtUtils;
 import com.iii.amirutham.config.LoginRequest;
 import com.iii.amirutham.config.UserDetailsImpl;
+import com.iii.amirutham.exception.UserNotFoundException;
 import com.iii.amirutham.repo.RoleRepository;
 import com.iii.amirutham.repo.UserRepository;
 
@@ -45,18 +48,22 @@ public class LoginController {
 	@Autowired
 	JwtUtils jwtUtils;
 	
+	@Autowired
+	UserDetailsService userDetailsService;
+	
 	
 	@PostMapping("/signin")
-	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest)  {
+		
+		try {
 
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		String jwt = jwtUtils.generateJwtToken(authentication);
 		
 		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();		
-		List<String> roles = userDetails.getAuthorities().stream()
+			List<String> roles = userDetails.getAuthorities().stream()
 				.map(item -> item.getAuthority())
 				.collect(Collectors.toList());
 		
@@ -67,6 +74,13 @@ public class LoginController {
 												 roles,
 												 userDetails.getCartItemCount(),
 												 userDetails.getIsPendingCartAvailable()));
+		}catch(Exception e) {
+			System.out.println(e.getMessage());
+			throw new UserNotFoundException("Error While login");
+		}
+		
+
+		
 	}
 
 }

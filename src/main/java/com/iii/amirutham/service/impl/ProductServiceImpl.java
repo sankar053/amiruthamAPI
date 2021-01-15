@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -23,7 +22,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.iii.amirutham.dto.base.GenericResponse;
 import com.iii.amirutham.dto.model.ProductDto;
 import com.iii.amirutham.dto.model.ProductMediaDto;
 import com.iii.amirutham.dto.model.ProductVarientDto;
@@ -49,21 +47,14 @@ public class ProductServiceImpl implements ProductService {
 	private String Upload_Path;
 
 	@Autowired
-	private MessageSource messages;
-
-	@Autowired
 	private CategoryRepository categryRepo;
 
 	@Autowired
 	private SequenceService seqservice;
 
 	@Override
-	public GenericResponse addUpdateProductandMedia(String productstr, List<MultipartFile> files,HttpServletRequest request) {
+	public AmiruthamProducts addProductandMedia(ProductDto productsDto, List<MultipartFile> files,HttpServletRequest request) {
 
-		ProductDto productsDto = (ProductDto) AmirthumUtills.convertJsontoObject(ProductDto.class, productstr);
-		if (productsDto.getId() != 0) {
-			return updateProductDAO(productsDto,files,request);
-		} else {
 			Optional<AmiruthamCategory> catogory = categryRepo.findById(Integer.valueOf(productsDto.getCategoryid()));
 			Path fileStorageLocation = Paths.get(Upload_Path + catogory.get().getCategoryCd() + "//").toAbsolutePath()
 					.normalize();
@@ -82,6 +73,7 @@ public class ProductServiceImpl implements ProductService {
 				product.setProductuses(productsDto.getProductuses());
 				List<ProductMediaGallary> mediaArray = new ArrayList<ProductMediaGallary>();
 				if (null != files) {
+					int filecount=0;
 					for (MultipartFile file : files) {
 
 						try {
@@ -90,13 +82,14 @@ public class ProductServiceImpl implements ProductService {
 								throw new FileStorageException(
 										"Sorry! Filename contains invalid path sequence " + fileName);
 							}
-							Path targetLocation = fileStorageLocation.resolve(fileName);
+							String productfilename =product.getProductCode()+"_"+filecount+++fileName.substring(fileName.lastIndexOf("."));
+							Path targetLocation = fileStorageLocation.resolve(productfilename);
 							Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-
+							
 							String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-									.path("/products/downloadFile/").path(fileName).toUriString();
+									.path("/products/downloadFile/").path(productfilename+"/"+product.getProductCategoryCode()).toUriString();
 
-							mediaArray.add(new ProductMediaGallary(fileName, targetLocation.toString(), fileDownloadUri,
+							mediaArray.add(new ProductMediaGallary(productfilename, targetLocation.toString(), fileDownloadUri,
 									file.getContentType(), file.getSize()));
 						} catch (IOException e) { // TODO Auto-generated catch block e.printStackTrace(); }
 							e.printStackTrace();
@@ -105,18 +98,19 @@ public class ProductServiceImpl implements ProductService {
 					}
 				}
 				product.setProdImgs(mediaArray);
-				product= productRepo.save(product);
-				return new GenericResponse(messages.getMessage("product.message.create.success", null, request.getLocale()),product);
+				return productRepo.save(product);
+				
 			} else {
 				throw new UserNotFoundException("Category Not Found  " + productsDto.getCategoryid());
 			}
-		}
+		
 		
 
 	}
-	
-	
-	public GenericResponse updateProductDAO(ProductDto productsDto,List<MultipartFile> files,HttpServletRequest request) {
+
+
+	@Override
+	public AmiruthamProducts updateProductandMedia(ProductDto productsDto,List<MultipartFile> files,HttpServletRequest request) {
 		
 
 		Optional<AmiruthamProducts> productOps = productRepo.findById(productsDto.getId());
@@ -158,8 +152,8 @@ public class ProductServiceImpl implements ProductService {
 				}
 			}
 			product.setProdImgs(mediaArray);
-			product= productRepo.save(product);
-			return new GenericResponse(messages.getMessage("product.message.update.success", null, request.getLocale()),product);
+			return productRepo.save(product);
+		
 		} else {
 			throw new UserNotFoundException("Category Not Found  " + productsDto.getCategoryid());
 		}

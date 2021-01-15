@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,13 +26,16 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.iii.amirutham.dto.model.BannerDto;
+import com.iii.amirutham.dto.model.SequnceDto;
 import com.iii.amirutham.exception.FileStorageException;
 import com.iii.amirutham.exception.MyFileNotFoundException;
 import com.iii.amirutham.model.HomeBanner;
+import com.iii.amirutham.model.HomeBannerMedia;
 import com.iii.amirutham.model.product.AmiruthamProducts;
 import com.iii.amirutham.repo.BannerRepository;
 import com.iii.amirutham.repo.ProductRepository;
 import com.iii.amirutham.service.BannerService;
+import com.iii.amirutham.service.SequenceService;
 import com.iii.amirutham.utills.AmirthumUtills;
 
 /**
@@ -49,6 +53,9 @@ public class BannerServiceImpl implements BannerService {
 
 	@Autowired
 	private ModelMapper modelMapper;
+	
+	@Autowired
+	private SequenceService seqservice;
 
 	@Value("${amirthum.file.upload-dir}")
 	private String Upload_Path;
@@ -56,9 +63,8 @@ public class BannerServiceImpl implements BannerService {
 	private Path fileStorageLocation;
 
 	@Override
-	public BannerDto addHomeBanner(String payload, MultipartFile file) {
+	public BannerDto addHomeBanner(BannerDto bannerdto, List<MultipartFile> files) {
 
-		BannerDto bannerdto = (BannerDto) AmirthumUtills.convertJsontoObject(BannerDto.class, payload);
 		HomeBanner bannerDao = new HomeBanner();
 		fileStorageLocation = Paths.get(Upload_Path + "Banner" + File.separator).toAbsolutePath().normalize();
 		try {
@@ -67,42 +73,45 @@ public class BannerServiceImpl implements BannerService {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		if (null != bannerdto) {
-
 			bannerDao.setBannerName(bannerdto.getBannerName());
+			SequnceDto sequence = seqservice.findMySeQuence("BANNER");
+			bannerDao.setBannerCode(sequence.getSeqChar() + String.format("%05d", sequence.getSeqNxtVal()));
+			seqservice.updateMySeQuence(sequence);
 			bannerDao.setBannerDesc(bannerdto.getBannerDesc());
 			bannerDao.setInstaLink(bannerdto.getInstaLink());
 			bannerDao.setFacebookLink(bannerdto.getFacebookLink());
 			bannerDao.setYoutubeLink(bannerdto.getYoutubeLink());
-			bannerDao.setTwitterLink(bannerdto.getTwitterLink());
-			if (null != file) {
+			bannerDao.setWhatsappLink(bannerdto.getWhatsappLink());
+			List<HomeBannerMedia> mediaArray = new ArrayList<HomeBannerMedia>();
+			if (null != files) {
+				int filecount=0;
+				for (MultipartFile file : files) {
 
-				try {
-					AmirthumUtills.makeaDirectory(fileStorageLocation);
-					String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-					if (fileName.contains("..")) {
-						throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
+					try {
+						String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+						if (fileName.contains("..")) {
+							throw new FileStorageException(
+									"Sorry! Filename contains invalid path sequence " + fileName);
+						}
+						String productfilename =bannerDao.getBannerCode()+"_"+filecount+++fileName.substring(fileName.lastIndexOf("."));
+						Path targetLocation = fileStorageLocation.resolve(productfilename);
+						Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+						
+						String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+								.path("/banner/downloadFile/").path(productfilename+"/"+bannerDao.getBannerCode()).toUriString();
+
+						mediaArray.add(new HomeBannerMedia(productfilename, targetLocation.toString(), fileDownloadUri,
+								file.getContentType(), file.getSize()));
+					} catch (IOException e) { // TODO Auto-generated catch block e.printStackTrace(); }
+						e.printStackTrace();
 					}
-					Path targetLocation = fileStorageLocation.resolve(fileName);
-
-					Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-					bannerDao.setBannerFileNm(fileName);
-					bannerDao.setBannerFilepth(targetLocation.toString());
-					bannerDao.setBannerImgSize(file.getSize());
-					bannerDao.setBannerImgType(file.getContentType());
-					String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-							.path("/banner/downloadFile/").path(fileName).toUriString();
-
-					bannerDao.setBannerImgUrl(fileDownloadUri);
-					bannerDao = bannerRepo.save(bannerDao);
-				} catch (IOException e) { // TODO Auto-generated catch block e.printStackTrace(); }
-					e.printStackTrace();
+					// TODO Auto-generated method stub
 				}
-				
-
+				bannerDao.setBannerImgs(mediaArray);
+				bannerDao=bannerRepo.save(bannerDao);
 			}
 
-		}
+		
 		List<AmiruthamProducts> allprod = productRepo.findAll();
 		List<AmiruthamProducts> bestselling = allprod.stream().filter(p -> "Y".equals(p.getProductBestSellingYN()))
 				.collect(Collectors.toList());
@@ -110,6 +119,62 @@ public class BannerServiceImpl implements BannerService {
 		homeBanner.setBestselling(bestselling);
 		return (homeBanner);
 
+	}
+	
+	@Override
+	public BannerDto updateHomeBanner(BannerDto bannerdto, List<MultipartFile> files) {
+		// TODO Auto-generated method stub
+
+
+		HomeBanner bannerDao = new HomeBanner();
+		fileStorageLocation = Paths.get(Upload_Path + "Banner" + File.separator).toAbsolutePath().normalize();
+	
+		bannerDao.setId(bannerdto.getId());
+			bannerDao.setBannerName(bannerdto.getBannerName());
+			SequnceDto sequence = seqservice.findMySeQuence("BANNER");
+			bannerDao.setBannerCode(sequence.getSeqChar() + String.format("%05d", sequence.getSeqNxtVal()));
+			seqservice.updateMySeQuence(sequence);
+			bannerDao.setBannerDesc(bannerdto.getBannerDesc());
+			bannerDao.setInstaLink(bannerdto.getInstaLink());
+			bannerDao.setFacebookLink(bannerdto.getFacebookLink());
+			bannerDao.setYoutubeLink(bannerdto.getYoutubeLink());
+			bannerDao.setWhatsappLink(bannerdto.getWhatsappLink());
+			List<HomeBannerMedia> mediaArray = new ArrayList<HomeBannerMedia>();
+			if (null != files) {
+				int filecount=0;
+				for (MultipartFile file : files) {
+
+					try {
+						String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+						if (fileName.contains("..")) {
+							throw new FileStorageException(
+									"Sorry! Filename contains invalid path sequence " + fileName);
+						}
+						String productfilename =bannerDao.getBannerCode()+"_"+filecount+++fileName.substring(fileName.lastIndexOf("."));
+						Path targetLocation = fileStorageLocation.resolve(productfilename);
+						Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+						
+						String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+								.path("/banner/downloadFile/").path(productfilename+"/"+bannerDao.getBannerCode()).toUriString();
+
+						mediaArray.add(new HomeBannerMedia(productfilename, targetLocation.toString(), fileDownloadUri,
+								file.getContentType(), file.getSize()));
+					} catch (IOException e) { // TODO Auto-generated catch block e.printStackTrace(); }
+						e.printStackTrace();
+					}
+					// TODO Auto-generated method stub
+				}
+				bannerDao.setBannerImgs(mediaArray);
+				bannerDao=bannerRepo.save(bannerDao);
+			}
+		List<AmiruthamProducts> allprod = productRepo.findAll();
+		List<AmiruthamProducts> bestselling = allprod.stream().filter(p -> "Y".equals(p.getProductBestSellingYN()))
+				.collect(Collectors.toList());
+		BannerDto homeBanner = ((BannerDto) AmirthumUtills.convertToDto(bannerDao, BannerDto.class, modelMapper));
+		homeBanner.setBestselling(bestselling);
+		return (homeBanner);
+
+	
 	}
 
 	@Override
@@ -158,5 +223,7 @@ public class BannerServiceImpl implements BannerService {
 			throw new MyFileNotFoundException("File not found " + fileName, ex);
 		}
 	}
+
+	
 
 }

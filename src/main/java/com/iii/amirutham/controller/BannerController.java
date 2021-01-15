@@ -2,6 +2,7 @@
 package com.iii.amirutham.controller;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -25,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.iii.amirutham.dto.base.GenericResponse;
 import com.iii.amirutham.dto.model.BannerDto;
 import com.iii.amirutham.service.BannerService;
+import com.iii.amirutham.utills.AmirthumUtills;
 
 @RestController
 @RequestMapping("/banner")
@@ -39,12 +41,21 @@ public class BannerController {
 	@PostMapping
 	// @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
 	public ResponseEntity<GenericResponse> createHomeBanner(HttpServletRequest request,
-			@RequestPart("payload") String payload, @RequestPart("file") @Valid @NotNull @NotBlank MultipartFile file) {
-		bannerService.addHomeBanner(payload, file);
+			@RequestPart("payload") String payload, @RequestPart("file") @Valid @NotNull @NotBlank List<MultipartFile> files) {
+		
+		BannerDto bannerdto = (BannerDto) AmirthumUtills.convertJsontoObject(BannerDto.class, payload);
+		if(bannerdto.getId()==0) {
+			bannerService.addHomeBanner(bannerdto, files);
+			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
+					.body(new GenericResponse(messages.getMessage("banner.message.create.success", null, request.getLocale())));	
+		}
+		else {
+			bannerService.updateHomeBanner(bannerdto, files);
+			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
+					.body(new GenericResponse(messages.getMessage("banner.message.update.success", null, request.getLocale())));	
+		}
 
-		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
-				.body(new GenericResponse(messages.getMessage("banner.message.success", null, request.getLocale())));
-
+	
 	}
 
 	@GetMapping

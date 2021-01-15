@@ -7,16 +7,18 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.iii.amirutham.dto.base.GenericResponse;
 import com.iii.amirutham.dto.model.ProductDto;
+import com.iii.amirutham.model.product.AmiruthamProducts;
 
 public interface ProductService {
 	
 	public List<ProductDto> retriveProducts();
 	public ProductDto retriveProductById(int id);
 	public void deleteProductById(int id);
-	public GenericResponse addUpdateProductandMedia(String prodStr,List<MultipartFile> files,HttpServletRequest request);
+	public AmiruthamProducts addProductandMedia(ProductDto productsDto,List<MultipartFile> files,HttpServletRequest request);
 	public Resource loadProductAsResource(String fileName,String catid);
+	public AmiruthamProducts updateProductandMedia(ProductDto productsDto, List<MultipartFile> files,
+			HttpServletRequest request);
 	
 
 

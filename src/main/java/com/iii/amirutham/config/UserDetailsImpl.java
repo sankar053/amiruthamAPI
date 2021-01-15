@@ -59,6 +59,7 @@ public class UserDetailsImpl implements UserDetails {
 	}
 
 	public static UserDetailsImpl build(User user,Integer availitemCount,String ispendingCart) {
+		if(null!=user) {
 		List<GrantedAuthority> authorities = user.getRoles().stream()
 				.map(role -> new SimpleGrantedAuthority(role.getName().name()))
 				.collect(Collectors.toList());
@@ -73,6 +74,9 @@ public class UserDetailsImpl implements UserDetails {
 				availitemCount,
 				ispendingCart,
 				authorities);
+		}else {
+			return null;
+		}
 	}
 
 	@Override

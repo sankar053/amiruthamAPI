@@ -1,14 +1,22 @@
 package com.iii.amirutham.model;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-import io.swagger.annotations.ApiModelProperty;
+import com.sun.istack.NotNull;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,36 +33,24 @@ public class HomeBanner extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-
+	
 	@Size(min = 2, message = "FirstName Should have Atleast two character")
+	@Column(name = "bannerCode")
+	private String bannerCode;
+
+	@Size(min = 2, message = "Banner Name Should not Null")
+	@NotBlank
+	@NotNull
 	@Column(name = "bannerName")
 	private String bannerName;
 
-	@Size(min = 2, message = "LastName Should have Atleast two character")
+	@Size(min = 2, message = "Banenr Description Should have Atleast two character")
+	@NotBlank
+	@NotNull
 	@Column(name = "bannerDesc")
 	private String bannerDesc;
 
-	@Size(min = 2, message = "LastName Should have Atleast two character")
-	@Column(name = "bannerFileName")
-	private String bannerFileNm;
-	
-	@Size(min = 2, message = "LastName Should have Atleast two character")
-	@ApiModelProperty(notes = "LastName Should have Atleast two character")
-	@Column(name = "bannerFilepth")
-	private String bannerFilepth;
-	
-	@Size(min = 2, message = "LastName Should have Atleast two character")
-	@ApiModelProperty(notes = "LastName Should have Atleast two character")
-	@Column(name = "bannerFileUrl")
-	private String bannerImgUrl;
-	
-	@Column(name = "bannerFileType")
-	private String bannerImgType;
-
-	
-	@Column(name = "bannerFileSize")
-	private Long bannerImgSize;
-	
+		
 	@Column(name = "home_insta_link")
 	private String instaLink;
 	
@@ -64,7 +60,13 @@ public class HomeBanner extends BaseEntity {
 	@Column(name = "home_facebook_link")
 	private String facebookLink;
 	
-	@Column(name = "home_twitter_link")
-	private String twitterLink;
+	@Column(name = "home_whatsapp_link")
+	private String whatsappLink;
+	
+	@OneToMany(fetch = FetchType.LAZY, cascade = {
+   		 CascadeType.ALL
+       })
+	@JoinColumn(name = "HOME_ID")
+	private List<HomeBannerMedia> bannerImgs;
 
 }

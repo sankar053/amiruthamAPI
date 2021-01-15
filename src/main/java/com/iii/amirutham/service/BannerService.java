@@ -3,6 +3,8 @@
  */
 package com.iii.amirutham.service;
 
+import java.util.List;
+
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,7 +16,9 @@ import com.iii.amirutham.dto.model.BannerDto;
  */
 public interface BannerService {
 
-	public BannerDto addHomeBanner(String payload, MultipartFile files);
+	public BannerDto addHomeBanner(BannerDto bannerDto, List<MultipartFile> file);
+	
+	public BannerDto updateHomeBanner(BannerDto bannerDto, List<MultipartFile> file);
 
 	public BannerDto retriveAllBanners();
 

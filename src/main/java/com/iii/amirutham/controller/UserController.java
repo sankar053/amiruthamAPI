@@ -112,7 +112,7 @@ public class UserController {
 				.publishEvent(new OnRegistrationCompleteEvent(registered, request.getLocale(), getAppUrl(request)));
 		
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).
-				body(new GenericResponse("success"));
+				body(new GenericResponse(messages.getMessage("login.message.success", null, request.getLocale())));
 	}
 
 	@DeleteMapping("/users/{id}")

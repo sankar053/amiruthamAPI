@@ -29,7 +29,7 @@ public class BannerDto {
 	
 	private String facebookLink;
 	
-	private String twitterLink;
+	private String whatsappLink;
 	
 	private List<AmiruthamProducts> bestselling;
 	private List<Object> bannerImg;
