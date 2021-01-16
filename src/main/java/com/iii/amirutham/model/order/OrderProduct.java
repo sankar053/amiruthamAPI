@@ -20,8 +20,6 @@ import javax.persistence.Transient;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.iii.amirutham.model.BaseEntity;
 import com.iii.amirutham.model.product.AmiruthamProducts;
-import com.iii.amirutham.model.shoppingcart.ShoppingCartAttributeItem;
-import com.iii.amirutham.model.shoppingcart.ShoppingCartItem;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

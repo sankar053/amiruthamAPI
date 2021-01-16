@@ -22,6 +22,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -37,12 +38,12 @@ import com.iii.amirutham.dto.model.ProductDto;
 import com.iii.amirutham.dto.model.ProductMediaDto;
 import com.iii.amirutham.dto.model.ProductVarientDto;
 import com.iii.amirutham.dto.model.SequnceDto;
-import com.iii.amirutham.exception.AmirthumCommonException;
 import com.iii.amirutham.exception.FileStorageException;
 import com.iii.amirutham.exception.MyFileNotFoundException;
 import com.iii.amirutham.exception.UserNotFoundException;
 import com.iii.amirutham.model.product.AmiruthamCategory;
 import com.iii.amirutham.model.product.AmiruthamProducts;
+import com.iii.amirutham.model.product.CategoryBanner;
 import com.iii.amirutham.repo.CategoryRepository;
 import com.iii.amirutham.service.CategoryService;
 import com.iii.amirutham.service.SequenceService;
@@ -56,16 +57,19 @@ public class CategoryServiceImpl implements CategoryService {
 
 	@Autowired
 	private SequenceService seqservice;
-	
+
 	@Value("${amirthum.file.upload-dir}")
 	private String Upload_Path;
 
 	private Path fileStorageLocation;
 
+	@Autowired
+	private ModelMapper modelMapper;
+
 	@Override
-	public void createBulkCategory(CategoryRequest categoryRequest,MultipartFile files) {
+	public void createBulkCategory(CategoryRequest categoryRequest, List<MultipartFile> files) {
 		// TODO Auto-generated method stub
-		List<AmiruthamCategory> categoryList = new ArrayList<>();
+
 		for (CategoryDto categoryDto : categoryRequest.getCategories()) {
 			AmiruthamCategory category = new AmiruthamCategory();
 			SequnceDto sequence = seqservice.findMySeQuence("CATEGERY");
@@ -74,78 +78,53 @@ public class CategoryServiceImpl implements CategoryService {
 			category.setCategoryDesc(categoryDto.getCategoryDesc());
 			category.setCategoryNm(categoryDto.getCategoryNm());
 			category.setCategoryOrder(categoryDto.getCategoryOrder());
-		
+
 			if (null != files) {
+				List<CategoryBanner> mediaArray = new ArrayList<CategoryBanner>();
+				fileStorageLocation = Paths.get(Upload_Path + "Banner" + File.separator + "category" + File.separator
+						+ category.getCategoryCd() + File.separator).toAbsolutePath().normalize();
+				AmirthumUtills.makeaDirectory(fileStorageLocation);
+				int filecount = 0;
+				for (MultipartFile file : files) {
 
-				try {
-					
-					fileStorageLocation = Paths.get(Upload_Path + "Banner" + File.separator+category.getCategoryCd()+File.separator).toAbsolutePath().normalize();
-					AmirthumUtills.makeaDirectory(fileStorageLocation);
-					String fileName = StringUtils.cleanPath(files.getOriginalFilename());
-					if (fileName.contains("..")) {
-						throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
+					try {
+						String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+						if (fileName.contains("..")) {
+							throw new FileStorageException(
+									"Sorry! Filename contains invalid path sequence " + fileName);
+						}
+						String productfilename = category.getCategoryCd() + "_" + filecount++
+								+ fileName.substring(fileName.lastIndexOf("."));
+						Path targetLocation = fileStorageLocation.resolve(productfilename);
+						Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+
+						String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+								.path("/category/downloadFile/").path(productfilename + "/" + category.getCategoryCd())
+								.toUriString();
+
+						mediaArray.add(new CategoryBanner(productfilename, targetLocation.toString(), fileDownloadUri,
+								file.getContentType(), file.getSize(), category));
+					} catch (IOException e) { // TODO Auto-generated catch block e.printStackTrace(); }
+						e.printStackTrace();
 					}
-					Path targetLocation = fileStorageLocation.resolve(fileName);
 
-					Files.copy(files.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-					category.setBannerFileNm(fileName);
-					category.setBannerFilepth(targetLocation.toString());
-					category.setBannerImgSize(files.getSize());
-					category.setBannerImgType(files.getContentType());
-					String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-							.path("/category/downloadFile/").path(fileName).toUriString();
-
-					category.setBannerImgUrl(fileDownloadUri);
-				
-				} catch (IOException e) { // TODO Auto-generated catch block e.printStackTrace(); }
-					e.printStackTrace();
 				}
+				category.setBannerImgs(mediaArray);
+				categryRepo.save(category);
+			}
+
 		}
-			categoryList.add(category);
-		}
-		categryRepo.saveAll(categoryList);
 
 	}
 
 	@Override
 	public List<CategoryDto> findAllCatogry() {
-		List<AmiruthamCategory> catogList = categryRepo.findAll();
+		List<AmiruthamCategory> catogDaoList = categryRepo.findAll();
 		List<CategoryDto> catoglistdto = new ArrayList<CategoryDto>();
-		for (AmiruthamCategory cato : catogList) {
-			CategoryDto catgryDto = new CategoryDto();
-			catgryDto.setId(cato.getId());
-			catgryDto.setCategoryCd(cato.getCategoryCd());
-			catgryDto.setCategoryDesc(cato.getCategoryDesc());
-			catgryDto.setCategoryNm(cato.getCategoryNm());
-			catgryDto.setCategoryOrder(cato.getCategoryOrder());
-			catgryDto.setCategoryBannerImgURL(cato.getBannerImgUrl());
-			catgryDto.setCreatedTs(cato.getCreatedTs());
-			catgryDto.setUpdatedTs(cato.getUpdatedTs());
-			for (AmiruthamProducts prod : cato.getProducts()) {
-				List<ProductMediaDto> mediaarray = null;
-				List<ProductVarientDto> productVarient = null;
-				if (null != prod.getProdImgs() && prod.getProdImgs().size() > 0) {
-					mediaarray = prod.getProdImgs().stream()
-							.map(prodmed -> new ProductMediaDto(prodmed.getId(), prodmed.getProdImgNm(),
-									prodmed.getProdImgPath(), prodmed.getProdImgUrl(), prodmed.getProdImgType(),
-									prodmed.getProdImgSize()))
-							.collect(Collectors.toList());
+		for (AmiruthamCategory category : catogDaoList) {
 
-				}
-				if (null != prod.getProdVarient() && prod.getProdVarient().size() > 0) {
-					productVarient = prod.getProdVarient().stream()
-							.map(varient -> new ProductVarientDto(varient.getId(), varient.getMaximumRetailPrice(),
-									varient.getSellingPrice(), varient.getSavedPrice(), varient.getDiscount(),
-									varient.getUnit(), varient.getUnitType(), varient.getManufactureDate(),
-									varient.getBestBeforeDate(), prod.getId(), varient.getStock()))
-							.collect(Collectors.toList());
-				}
-
-				catgryDto.getProducts()
-						.add(new ProductDto(prod.getId(), 0, prod.getProductCode(), prod.getProductNm(),
-								prod.getProductDesc(), prod.getProductuses(), prod.getProductincredience(), mediaarray,
-								productVarient,prod.getProductBestSellingYN()));
-			}
+			CategoryDto catgryDto = ((CategoryDto) AmirthumUtills.convertToDto(category, CategoryDto.class,
+					modelMapper));
 			catoglistdto.add(catgryDto);
 
 		}
@@ -160,41 +139,8 @@ public class CategoryServiceImpl implements CategoryService {
 		Optional<AmiruthamCategory> categoryDao = categryRepo.findById(id);
 
 		if (categoryDao.isPresent()) {
-			AmiruthamCategory cato = categoryDao.get();
-			CategoryDto catgryDto = new CategoryDto();
-			catgryDto.setId(cato.getId());
-			catgryDto.setCategoryCd(cato.getCategoryCd());
-			catgryDto.setCategoryDesc(cato.getCategoryDesc());
-			catgryDto.setCategoryNm(cato.getCategoryNm());
-			catgryDto.setCategoryOrder(cato.getCategoryOrder());
-			catgryDto.setCreatedTs(cato.getCreatedTs());
-			catgryDto.setCategoryBannerImgURL(cato.getBannerImgUrl());
-			catgryDto.setUpdatedTs(cato.getUpdatedTs());
-			for (AmiruthamProducts prod : cato.getProducts()) {
-				List<ProductMediaDto> mediaarray = null;
-				List<ProductVarientDto> productVarient = null;
-				if (null != prod.getProdImgs() && prod.getProdImgs().size() > 0) {
-					mediaarray = prod.getProdImgs().stream()
-							.map(prodmed -> new ProductMediaDto(prodmed.getId(), prodmed.getProdImgNm(),
-									prodmed.getProdImgPath(), prodmed.getProdImgUrl(), prodmed.getProdImgType(),
-									prodmed.getProdImgSize()))
-							.collect(Collectors.toList());
-
-				}
-				if (null != prod.getProdVarient() && prod.getProdVarient().size() > 0) {
-					productVarient = prod.getProdVarient().stream()
-							.map(varient -> new ProductVarientDto(varient.getId(), varient.getMaximumRetailPrice(),
-									varient.getSellingPrice(), varient.getSavedPrice(), varient.getDiscount(),
-									varient.getUnit(), varient.getUnitType(), varient.getManufactureDate(),
-									varient.getBestBeforeDate(), prod.getId(), varient.getStock()))
-							.collect(Collectors.toList());
-				}
-
-				catgryDto.getProducts()
-						.add(new ProductDto(prod.getId(), 0, prod.getProductCode(), prod.getProductNm(),
-								prod.getProductDesc(), prod.getProductuses(), prod.getProductincredience(), mediaarray,
-								productVarient,prod.getProductBestSellingYN()));
-			}
+			CategoryDto catgryDto = ((CategoryDto) AmirthumUtills.convertToDto(categoryDao.get(), CategoryDto.class,
+					modelMapper));
 			return catgryDto;
 		}
 		return null;
@@ -209,8 +155,7 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public AmiruthamCategory createCategory(CategoryDto categoryDto, MultipartFile files) {
-
+	public AmiruthamCategory createCategory(CategoryDto categoryDto, List<MultipartFile> files) {
 
 		AmiruthamCategory category = new AmiruthamCategory();
 		SequnceDto sequence = seqservice.findMySeQuence("CATEGERY");
@@ -219,35 +164,40 @@ public class CategoryServiceImpl implements CategoryService {
 		category.setCategoryDesc(categoryDto.getCategoryDesc());
 		category.setCategoryNm(categoryDto.getCategoryNm());
 		category.setCategoryOrder(categoryDto.getCategoryOrder());
-		
+
 		if (null != files) {
+			List<CategoryBanner> mediaArray = new ArrayList<CategoryBanner>();
+			fileStorageLocation = Paths.get(Upload_Path + "Banner" + File.separator + "category" + File.separator
+					+ category.getCategoryCd() + File.separator).toAbsolutePath().normalize();
+			AmirthumUtills.makeaDirectory(fileStorageLocation);
+			int filecount = 0;
+			for (MultipartFile file : files) {
 
-			try {
-				
-				fileStorageLocation = Paths.get(Upload_Path + "Banner" + File.separator+category.getCategoryCd()+File.separator).toAbsolutePath().normalize();
-				AmirthumUtills.makeaDirectory(fileStorageLocation);
-				String fileName = StringUtils.cleanPath(files.getOriginalFilename());
-				if (fileName.contains("..")) {
-					throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
+				try {
+					String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+					if (fileName.contains("..")) {
+						throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
+					}
+					String productfilename = category.getCategoryCd() + "_" + filecount++
+							+ fileName.substring(fileName.lastIndexOf("."));
+					Path targetLocation = fileStorageLocation.resolve(productfilename);
+					Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+
+					String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+							.path("/category/downloadFile/").path(productfilename + "/" + category.getCategoryCd())
+							.toUriString();
+
+					mediaArray.add(new CategoryBanner(productfilename, targetLocation.toString(), fileDownloadUri,
+							file.getContentType(), file.getSize(), category));
+				} catch (IOException e) { // TODO Auto-generated catch block e.printStackTrace(); }
+					e.printStackTrace();
 				}
-				Path targetLocation = fileStorageLocation.resolve(fileName);
 
-				Files.copy(files.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-				category.setBannerFileNm(fileName);
-				category.setBannerFilepth(targetLocation.toString());
-				category.setBannerImgSize(files.getSize());
-				category.setBannerImgType(files.getContentType());
-				String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-						.path("/category/downloadFile/").path(fileName+"/"+category.getCategoryCd()).toUriString();
-
-				category.setBannerImgUrl(fileDownloadUri);
-			
-			} catch (IOException e) { // TODO Auto-generated catch block e.printStackTrace(); }
-				e.printStackTrace();
 			}
-	}
-		return categryRepo.save(category);
-	
+			category.setBannerImgs(mediaArray);
+			return categryRepo.save(category);
+		}
+		return category;
 
 	}
 
@@ -259,54 +209,54 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public AmiruthamCategory updateCategory(CategoryDto categoryDto, MultipartFile files) {
+	public AmiruthamCategory updateCategory(CategoryDto categoryDto, List<MultipartFile> files) {
 		// TODO Auto-generated method stub
 
+		Optional<AmiruthamCategory> catogory = categryRepo.findById(categoryDto.getId());
+		if (catogory.isPresent()) {
+			AmiruthamCategory categoryDao = catogory.get();
+			categoryDao.setCategoryDesc(categoryDto.getCategoryDesc());
+			categoryDao.setCategoryNm(categoryDto.getCategoryNm());
+			categoryDao.setCategoryOrder(categoryDto.getCategoryOrder());
 
-			Optional<AmiruthamCategory> catogory = categryRepo.findById(categoryDto.getId());
-			if (catogory.isPresent()) {
-				AmiruthamCategory categoryDao = catogory.get();
-				categoryDao.setCategoryCd(categoryDto.getCategoryCd());
-				categoryDao.setCategoryDesc(categoryDto.getCategoryDesc());
-				categoryDao.setCategoryNm(categoryDto.getCategoryNm());
-				categoryDao.setCategoryOrder(categoryDto.getCategoryOrder());
-				
-				if (null != files) {
+			if (null != files) {
+				List<CategoryBanner> mediaArray = new ArrayList<CategoryBanner>();
+				fileStorageLocation = Paths.get(Upload_Path + "Banner" + File.separator + "category" + File.separator
+						+ categoryDao.getCategoryCd() + File.separator).toAbsolutePath().normalize();
+				AmirthumUtills.makeaDirectory(fileStorageLocation);
+				int filecount = 0;
+				for (MultipartFile file : files) {
 
 					try {
-						
-						fileStorageLocation = Paths.get(Upload_Path + "Banner" + File.separator+categoryDao.getCategoryCd()+File.separator).toAbsolutePath().normalize();
-						AmirthumUtills.makeaDirectory(fileStorageLocation);
-						String fileName = StringUtils.cleanPath(files.getOriginalFilename());
+						String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 						if (fileName.contains("..")) {
-							throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
+							throw new FileStorageException(
+									"Sorry! Filename contains invalid path sequence " + fileName);
 						}
-						Path targetLocation = fileStorageLocation.resolve(fileName);
+						String productfilename = categoryDao.getCategoryCd() + "_" + filecount++
+								+ fileName.substring(fileName.lastIndexOf("."));
+						Path targetLocation = fileStorageLocation.resolve(productfilename);
+						Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
-						Files.copy(files.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-						categoryDao.setBannerFileNm(fileName);
-						categoryDao.setBannerFilepth(targetLocation.toString());
-						categoryDao.setBannerImgSize(files.getSize());
-						categoryDao.setBannerImgType(files.getContentType());
 						String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-								.path("/category/downloadFile/").path(fileName+"/"+categoryDao.getCategoryCd()).toUriString();
+								.path("/category/downloadFile/")
+								.path(productfilename + "/" + categoryDao.getCategoryCd()).toUriString();
 
-						categoryDao.setBannerImgUrl(fileDownloadUri);
-					
+						mediaArray.add(new CategoryBanner(productfilename, targetLocation.toString(), fileDownloadUri,
+								file.getContentType(), file.getSize(), categoryDao));
 					} catch (IOException e) { // TODO Auto-generated catch block e.printStackTrace(); }
 						e.printStackTrace();
 					}
 
-				
-				
+				}
+				categoryDao.setBannerImgs(mediaArray);
 				return categryRepo.save(categoryDao);
-			} else {
-				throw new UserNotFoundException("Category Not Found  " + categoryDto.getId());
 			}
 
 		} else {
-			throw new AmirthumCommonException("Please select and update the valied categoty");
+			throw new UserNotFoundException("Category Not Found  " + categoryDto.getId());
 		}
+		return null;
 
 	}
 
@@ -339,7 +289,7 @@ public class CategoryServiceImpl implements CategoryService {
 							}
 							categoryList.add(category);
 						}
-						
+
 					});
 					categryRepo.saveAll(categoryList);
 				} else {
@@ -351,21 +301,6 @@ public class CategoryServiceImpl implements CategoryService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-//		List<AmiruthamCategory> categoryList = new ArrayList<>();
-//		if (null !=files) {
-//			CategoryDto categoryDto =null;
-//			AmiruthamCategory category = new AmiruthamCategory();
-//			SequnceDto sequence = seqservice.findMySeQuence("CATEGERY");
-//			category.setCategoryCd(sequence.getSeqChar() + String.format("%05d", sequence.getSeqNxtVal()));
-//			seqservice.updateMySeQuence(sequence);
-//			category.setCategoryDesc(categoryDto.getCategoryDesc());
-//			category.setCategoryNm(categoryDto.getCategoryNm());
-//			category.setCategoryOrder(categoryDto.getCategoryOrder());
-//			category.setCategoryBannerImgURL(categoryDto.getCategoryBannerImgURL());
-//			categoryList.add(category);
-//		}
-//		categryRepo.saveAll(categoryList);
 
 	}
 
@@ -407,7 +342,8 @@ public class CategoryServiceImpl implements CategoryService {
 	public Resource loadBannerAsResource(String fileName, String catCode) {
 		// TODO Auto-generated method stub
 		try {
-			fileStorageLocation = Paths.get(Upload_Path + "Banner" + File.separator+catCode+File.separator).toAbsolutePath().normalize();
+			fileStorageLocation = Paths.get(Upload_Path + "Banner" + File.separator +"category"+File.separator+ catCode + File.separator)
+					.toAbsolutePath().normalize();
 			Path filePath = fileStorageLocation.resolve(fileName).normalize();
 			Resource resource = new UrlResource(filePath.toUri());
 			if (resource.exists()) {

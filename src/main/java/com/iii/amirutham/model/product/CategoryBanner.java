@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.iii.amirutham.model;
+package com.iii.amirutham.model.product;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,7 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.iii.amirutham.model.BaseEntity;
+import com.iii.amirutham.model.HomeBanner;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,18 +24,18 @@ import lombok.Setter;
  * @author sanka
  *
  */
-@Entity(name = "homebannermedia")
-@Table(name = "homebannermedia")
+@Entity
+@Table(name = "CATEGORY_BANNER")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class HomeBannerMedia extends BaseEntity {
-
+public class CategoryBanner extends BaseEntity {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-
+	
 	@Column(name = "bannerFileName")
 	private String bannerFileNm;
 
@@ -49,20 +50,20 @@ public class HomeBannerMedia extends BaseEntity {
 
 	@Column(name = "bannerFileSize")
 	private Long bannerImgSize;
-	@JsonIgnore
-	@ManyToOne(targetEntity = HomeBanner.class)
-	@JoinColumn(name = "HOME_ID", nullable = true)
-	private HomeBanner home;
+//	//@JsonIgnore
+	@ManyToOne(targetEntity = AmiruthamCategory.class)
+	@JoinColumn(name = "category_id", nullable = true)
+	private AmiruthamCategory categorymedia;
 
-	public HomeBannerMedia(String bannerFileNm, String bannerFilepth, String bannerImgUrl, String bannerImgType,
-			Long bannerImgSize,HomeBanner home) {
+	public CategoryBanner(String bannerFileNm, String bannerFilepth, String bannerImgUrl, String bannerImgType,
+			Long bannerImgSize,AmiruthamCategory category) {
 		super();
 		this.bannerFileNm = bannerFileNm;
 		this.bannerFilepth = bannerFilepth;
 		this.bannerImgUrl = bannerImgUrl;
 		this.bannerImgType = bannerImgType;
 		this.bannerImgSize = bannerImgSize;
-		this.home=home;
+		this.categorymedia=category;
 	}
 
 }

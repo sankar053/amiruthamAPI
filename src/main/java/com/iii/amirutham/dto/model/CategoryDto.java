@@ -27,17 +27,19 @@ public class CategoryDto extends BaseEntityDto{
 	
 	private String categoryCd;
 	
+	@NotNull
 	private String categoryNm;
 	
+	@NotNull
 	private String categoryDesc;
-	
-	private String categoryBannerImgURL;
 	
 	@NotNull
 	private Integer categoryOrder;
 	
    //@JsonIgnore
-   private List<ProductDto> products = new ArrayList();
+   private List<ProductDto> products =new ArrayList<ProductDto>();
+   
+   private List<CategoryBannerDto> bannerImgs;
 	
 
 }

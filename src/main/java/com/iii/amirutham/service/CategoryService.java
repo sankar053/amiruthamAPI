@@ -15,9 +15,9 @@ import com.iii.amirutham.model.product.AmiruthamCategory;
 
 public interface CategoryService {
 
-	public void createBulkCategory(CategoryRequest categoryRequest,MultipartFile files) ;
+	public void createBulkCategory(CategoryRequest categoryRequest,List<MultipartFile> files) ;
 
-	public AmiruthamCategory createCategory(CategoryDto categoryDto, MultipartFile files); 
+	public AmiruthamCategory createCategory(CategoryDto categoryDto, List<MultipartFile> files); 
 
 	public List<CategoryDto> findAllCatogry();
 
@@ -29,7 +29,7 @@ public interface CategoryService {
 
 	public void deleteCatogry(int id);
 
-	AmiruthamCategory updateCategory( CategoryDto categories, MultipartFile files) ;
+	AmiruthamCategory updateCategory( CategoryDto categories, List<MultipartFile> files) ;
 
 	public void createBulkCategory(@Valid @NotNull @NotBlank MultipartFile files);
 

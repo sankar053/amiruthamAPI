@@ -15,6 +15,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,38 +47,49 @@ public class BannerController {
 		BannerDto bannerdto = (BannerDto) AmirthumUtills.convertJsontoObject(BannerDto.class, payload);
 		if(bannerdto.getId()==0) {
 			bannerService.addHomeBanner(bannerdto, files);
+			List<BannerDto> homeBanners = bannerService.retriveAllBanners();
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
-					.body(new GenericResponse(messages.getMessage("banner.message.create.success", null, request.getLocale())));	
+					.body(new GenericResponse(messages.getMessage("banner.message.create.success", null, request.getLocale()),homeBanners));	
 		}
 		else {
 			bannerService.updateHomeBanner(bannerdto, files);
+			List<BannerDto> homeBanners = bannerService.retriveAllBanners();
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
-					.body(new GenericResponse(messages.getMessage("banner.message.update.success", null, request.getLocale())));	
+					.body(new GenericResponse(messages.getMessage("banner.message.update.success", null, request.getLocale()),homeBanners));	
 		}
 
 	
 	}
 
 	@GetMapping
-	public ResponseEntity<Object> retribeAllBanner() {
-		BannerDto homeBanner = bannerService.retriveAllBanners();
+	public ResponseEntity<GenericResponse> retribeAllBanner() {
+		List<BannerDto> homeBanners = bannerService.retriveAllBanners();
 
-		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(homeBanner);
+		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(new GenericResponse("Success",homeBanners));
 
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<Object> retribeBannerByID(@PathVariable int id) {
+	public ResponseEntity<BannerDto> retribeBannerByID(@PathVariable int id) {
 		BannerDto homeBanner = bannerService.retribeBannerByID(id);
 
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(homeBanner);
 
 	}
+	
+	@DeleteMapping("/{id}")
+	public ResponseEntity<GenericResponse> deleteBannerByID(HttpServletRequest request,@PathVariable int id) {
+		bannerService.deleteBannerByID(id);
+		List<BannerDto> homeBanners = bannerService.retriveAllBanners();
+		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
+				.body(new GenericResponse(messages.getMessage("banner.message.detete.success", null, request.getLocale()),homeBanners));	
 
-	@GetMapping("/downloadFile/{fileName:.+}")
-	public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
+	}
+
+	@GetMapping("/downloadFile/{fileName:.+}/{bannerCode}")
+	public ResponseEntity<Resource> downloadFile(@PathVariable String fileName,@PathVariable String bannerCode, HttpServletRequest request) {
 		// Load file as Resource
-		Resource resource = bannerService.loadBannerAsResource(fileName);
+		Resource resource = bannerService.loadBannerAsResource(fileName,bannerCode);
 
 		// Try to determine file's content type
 		String contentType = null;

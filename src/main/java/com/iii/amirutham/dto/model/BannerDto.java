@@ -5,16 +5,16 @@ package com.iii.amirutham.dto.model;
 
 import java.util.List;
 
-import com.iii.amirutham.model.product.AmiruthamProducts;
-
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author sanka
  *
  */
-@Data
-public class BannerDto {
+@Getter
+@Setter
+public class BannerDto extends BaseEntityDto {
 
 	private Integer id;
 
@@ -31,7 +31,9 @@ public class BannerDto {
 	
 	private String whatsappLink;
 	
-	private List<AmiruthamProducts> bestselling;
+	private List<ProductDto> bestselling;
 	private List<Object> bannerImg;
+	
+	private List<BannerMediaDto> bannerImgs;
 
 }

@@ -9,7 +9,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
@@ -63,10 +62,10 @@ public class HomeBanner extends BaseEntity {
 	@Column(name = "home_whatsapp_link")
 	private String whatsappLink;
 	
-	@OneToMany(fetch = FetchType.LAZY, cascade = {
-   		 CascadeType.ALL
-       })
-	@JoinColumn(name = "HOME_ID")
+
+	@OneToMany(mappedBy = "home", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<HomeBannerMedia> bannerImgs;
+	
+	
 
 }

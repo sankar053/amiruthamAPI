@@ -21,36 +21,45 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductDto extends BaseEntityDto {
-	
 
 	private Integer id;
-	
+
+	private String productCode;
+
+	private String productBrand;
+
+	private String productCategoryCode;
+
+	private String productNm;
+
+	private String productDesc;
+
+	private String productuses;
+
+	private String productspec;
+
+	private String productincredience;
+
+	private String productHighlight;
+
+	private String productBestSellingYN;
+
+	private boolean available;
+
+	private List<ProductMediaDto> prodImgs;
+
+	private List<ProductVarientDto> prodVarient;
+
 	@NotNull
 	private Integer categoryid;
-	
-	private String productCode;
-	
-	@NotNull
-	private String productNm;
-	
-	@NotNull
-	private String productDesc;
-	
-	@NotNull
-	private String productuses;
-	
-	private String productincredience;
-	
+
 	private String bestSelling;
-	
+
 	private List<Object> bannerImg;
-	
-	List<ProductMediaDto> prodMedias;
-	List<ProductVarientDto> prodVarient;
+
 	public ProductDto(Integer id, @NotNull Integer categoryid, String productCode, @NotNull String productNm,
 			@NotNull String productDesc, @NotNull String productuses, String productincredience,
-			List<ProductMediaDto> prodMedias, List<ProductVarientDto> prodVarient,
-			String bestSelling) {
+			List<ProductMediaDto> prodMedias, List<ProductVarientDto> prodVarient, String bestSelling) {
 		super();
 		this.id = id;
 		this.categoryid = categoryid;
@@ -59,12 +68,9 @@ public class ProductDto extends BaseEntityDto {
 		this.productDesc = productDesc;
 		this.productuses = productuses;
 		this.productincredience = productincredience;
-		this.prodMedias = prodMedias;
+		this.prodImgs = prodMedias;
 		this.prodVarient = prodVarient;
-		this.bestSelling="Y".equals(bestSelling)?"true":"false";
+		this.bestSelling = "Y".equals(bestSelling) ? "true" : "false";
 	}
-	
-	
-	
-   
+
 }

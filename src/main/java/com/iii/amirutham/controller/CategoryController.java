@@ -45,16 +45,16 @@ public class CategoryController {
 
 	@PostMapping
 	public ResponseEntity<GenericResponse> saveCategory(HttpServletRequest request,
-			@RequestPart("payload") String payload, @RequestPart("file") @Valid @NotNull @NotBlank MultipartFile file) {
+			@RequestPart("payload") String payload, @RequestPart("file") @Valid @NotNull @NotBlank List<MultipartFile> files) {
 
 		CategoryDto categoryDto = (CategoryDto) AmirthumUtills.convertJsontoObject(CategoryDto.class, payload);
 		AmiruthamCategory categoryDao;
 		if (categoryDto.getId() == 0) {
-			categoryDao = categoryService.createCategory(categoryDto, file);
+			categoryDao = categoryService.createCategory(categoryDto, files);
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(new GenericResponse(
 					messages.getMessage("category.message.create.success", null, request.getLocale()), categoryDao));
 		} else {
-			categoryDao = categoryService.updateCategory(categoryDto, file);
+			categoryDao = categoryService.updateCategory(categoryDto, files);
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(new GenericResponse(
 					messages.getMessage("category.message.update.success", null, request.getLocale()), categoryDao));
 
@@ -64,28 +64,28 @@ public class CategoryController {
 
 	@PostMapping("/Multiple")
 	public ResponseEntity<GenericResponse> saveBulkCategory(HttpServletRequest request,
-			@RequestPart("payload") String payload, @RequestPart("file") @Valid @NotNull @NotBlank MultipartFile file) {
+			@RequestPart("payload") String payload, @RequestPart("file") @Valid @NotNull @NotBlank List<MultipartFile> files) {
 		CategoryRequest categoryRequest = (CategoryRequest) AmirthumUtills.convertJsontoObject(CategoryRequest.class,
 				payload);
-		categoryService.createBulkCategory(categoryRequest, file);
+		categoryService.createBulkCategory(categoryRequest, files);
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(new GenericResponse("success"));
 
 	}
 
 	@PutMapping
 	public ResponseEntity<Object> updateCategory(HttpServletRequest request, @Valid @RequestBody CategoryDto categories,
-			@Valid @NotNull @NotBlank MultipartFile file) {
+			@Valid @NotNull @NotBlank List<MultipartFile> files) {
 
-		AmiruthamCategory updatedCategory = categoryService.updateCategory(categories, file);
+		AmiruthamCategory updatedCategory = categoryService.updateCategory(categories, files);
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(updatedCategory);
 
 	}
 
 	@PatchMapping
 	public ResponseEntity<Object> updateCategoryPatch(HttpServletRequest request,
-			@Valid @RequestBody CategoryDto categories, @Valid @NotNull @NotBlank MultipartFile file) {
+			@Valid @RequestBody CategoryDto categories, @Valid @NotNull @NotBlank List<MultipartFile> files) {
 
-		AmiruthamCategory updatedCategory = categoryService.updateCategory(categories, file);
+		AmiruthamCategory updatedCategory = categoryService.updateCategory(categories, files);
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(updatedCategory);
 
 	}

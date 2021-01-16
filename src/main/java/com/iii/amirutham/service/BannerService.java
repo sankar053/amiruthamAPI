@@ -16,14 +16,16 @@ import com.iii.amirutham.dto.model.BannerDto;
  */
 public interface BannerService {
 
-	public BannerDto addHomeBanner(BannerDto bannerDto, List<MultipartFile> file);
+	public void addHomeBanner(BannerDto bannerDto, List<MultipartFile> file);
 	
-	public BannerDto updateHomeBanner(BannerDto bannerDto, List<MultipartFile> file);
+	public void updateHomeBanner(BannerDto bannerDto, List<MultipartFile> file);
 
-	public BannerDto retriveAllBanners();
+	public  List<BannerDto> retriveAllBanners();
 
 	public BannerDto retribeBannerByID(int id);
 
-	public Resource loadBannerAsResource(String fileName);
+	public Resource loadBannerAsResource(String fileName,String bannerCode);
+
+	public void deleteBannerByID(int id);
 
 }

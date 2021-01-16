@@ -175,7 +175,7 @@ public class ProductServiceImpl implements ProductService {
 				mediaarray = prod.getProdImgs().stream()
 						.map(prodmed -> new ProductMediaDto(prodmed.getId(), prodmed.getProdImgNm(),
 								prodmed.getProdImgPath(), prodmed.getProdImgUrl(), prodmed.getProdImgType(),
-								prodmed.getProdImgSize()))
+								prodmed.getProdImgSize(),prodmed.getProductCode()))
 						.collect(Collectors.toList());
 
 			}
@@ -213,7 +213,7 @@ public class ProductServiceImpl implements ProductService {
 				mediaarray = prod.getProdImgs().stream()
 						.map(prodmed -> new ProductMediaDto(prodmed.getId(), prodmed.getProdImgNm(),
 								prodmed.getProdImgPath(), prodmed.getProdImgUrl(), prodmed.getProdImgType(),
-								prodmed.getProdImgSize()))
+								prodmed.getProdImgSize(),prodmed.getProductCode()))
 						.collect(Collectors.toList());
 
 			}

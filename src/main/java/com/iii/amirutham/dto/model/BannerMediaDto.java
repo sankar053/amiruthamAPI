@@ -1,3 +1,6 @@
+/**
+ * 
+ */
 package com.iii.amirutham.dto.model;
 
 import lombok.AllArgsConstructor;
@@ -5,24 +8,28 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * @author sanka
+ *
+ */
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductMediaDto extends BaseEntityDto {
+public class BannerMediaDto {
+	
 
 	private Integer id;
 
-	private String prodImgNm;
 
-	private String prodImgPath;
+	private String bannerFileNm;
 
-	private String prodImgUrl;
+	private String bannerFilepth;
 
-	private String prodImgType;
+	private String bannerImgUrl;
 
-	private Long prodImgSize;
+	private String bannerImgType;
 
-	private String productCode;
+	private Long bannerImgSize;
 
 }
