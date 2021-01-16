@@ -13,7 +13,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.iii.amirutham.model.BaseEntity;
-import com.iii.amirutham.model.HomeBanner;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
