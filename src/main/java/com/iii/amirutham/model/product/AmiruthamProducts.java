@@ -44,7 +44,7 @@ public class AmiruthamProducts extends BaseEntity {
 	private String productCode;
 	
 	@Column(name = "PROD_BRAND")
-	private String productBrand;
+	private String productBrand="Amirutham";
 	
 	@Column(name = "PROD_CAT_CODE", nullable=false)
 	private String productCategoryCode;
@@ -82,7 +82,7 @@ public class AmiruthamProducts extends BaseEntity {
     		 CascadeType.ALL
         })
 	@JoinColumn(name = "PROD_ID")
-	private List<ProductMediaGallary> prodImgs;
+	private List<ProductMediaGallary> prodMedias;
     
    // @JsonIgnore 
 	@OneToMany(mappedBy="product", cascade = CascadeType.ALL, orphanRemoval = true)

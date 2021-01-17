@@ -47,11 +47,11 @@ public class ProductController {
 		if (productsDto.getId() != 0) {
 			AmiruthamProducts product = productService.updateProductandMedia(productsDto,files,request);
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(new GenericResponse(
-					messages.getMessage("product.message.update.success", null, request.getLocale()),product));
+					messages.getMessage("product.message.update.success", null, request.getLocale())));
 		} else {
 			AmiruthamProducts product =productService.addProductandMedia(productsDto, files, request);
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(new GenericResponse(
-					messages.getMessage("product.message.create.success", null, request.getLocale()),product));
+					messages.getMessage("product.message.create.success", null, request.getLocale())));
 		}
 
 	

@@ -88,7 +88,7 @@ public class CartServiceImpl implements CartService {
 					ProductVarient varient = product.get().getProdVarient().stream()
 							.filter(v -> v.getId() == mycartItem.getVarientId()).findAny().orElse(null);
 
-					List<ProductMediaGallary> media = product.get().getProdImgs();
+					List<ProductMediaGallary> media = product.get().getProdMedias();
 
 					ShoppingCartItem item = new ShoppingCartItem();
 					item.setProduct(product.get());
@@ -188,7 +188,7 @@ public class CartServiceImpl implements CartService {
 			ProductVarient varient = product.get().getProdVarient().stream()
 					.filter(v -> v.getId() == mycartItem.getVarientId()).findAny().orElse(null);
 
-			List<ProductMediaGallary> media = product.get().getProdImgs();
+			List<ProductMediaGallary> media = product.get().getProdMedias();
 
 			ShoppingCartItem item = new ShoppingCartItem();
 			item.setProduct(product.get());
@@ -219,7 +219,7 @@ public class CartServiceImpl implements CartService {
 			ProductVarient varient = product.get().getProdVarient().stream()
 					.filter(v -> v.getId() == mycartItem.getVarientId()).findAny().orElse(null);
 
-			List<ProductMediaGallary> media = product.get().getProdImgs();
+			List<ProductMediaGallary> media = product.get().getProdMedias();
 
 			ShoppingCartItem item = new ShoppingCartItem();
 			item.setProduct(product.get());

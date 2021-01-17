@@ -97,7 +97,7 @@ public class ProductServiceImpl implements ProductService {
 						// TODO Auto-generated method stub
 					}
 				}
-				product.setProdImgs(mediaArray);
+				product.setProdMedias(mediaArray);
 				return productRepo.save(product);
 				
 			} else {
@@ -125,7 +125,7 @@ public class ProductServiceImpl implements ProductService {
 			product.setProductBestSellingYN("true".equals(productsDto.getBestSelling()) ? "Y" : "N");
 			product.setProductincredience(productsDto.getProductincredience());
 			product.setProductuses(productsDto.getProductuses());
-			List<ProductMediaGallary> mediaArray = product.getProdImgs();
+			List<ProductMediaGallary> mediaArray = product.getProdMedias();
 			if (null != files) {
 				int filecount=0;
 				for (MultipartFile file : files) {
@@ -151,7 +151,7 @@ public class ProductServiceImpl implements ProductService {
 					// TODO Auto-generated method stub
 				}
 			}
-			product.setProdImgs(mediaArray);
+			product.setProdMedias(mediaArray);
 			return productRepo.save(product);
 		
 		} else {
@@ -171,8 +171,8 @@ public class ProductServiceImpl implements ProductService {
 		for (AmiruthamProducts prod : prodList) {
 			List<ProductMediaDto> mediaarray = null;
 			List<ProductVarientDto> productVarient = null;
-			if (null != prod.getProdImgs() && prod.getProdImgs().size() > 0) {
-				mediaarray = prod.getProdImgs().stream()
+			if (null != prod.getProdMedias() && prod.getProdMedias().size() > 0) {
+				mediaarray = prod.getProdMedias().stream()
 						.map(prodmed -> new ProductMediaDto(prodmed.getId(), prodmed.getProdImgNm(),
 								prodmed.getProdImgPath(), prodmed.getProdImgUrl(), prodmed.getProdImgType(),
 								prodmed.getProdImgSize(),prodmed.getProductCode()))
@@ -209,8 +209,8 @@ public class ProductServiceImpl implements ProductService {
 			AmiruthamProducts prod = product.get();
 			List<ProductMediaDto> mediaarray = null;
 			List<ProductVarientDto> productVarient = null;
-			if (null != prod.getProdImgs() && prod.getProdImgs().size() > 0) {
-				mediaarray = prod.getProdImgs().stream()
+			if (null != prod.getProdMedias() && prod.getProdMedias().size() > 0) {
+				mediaarray = prod.getProdMedias().stream()
 						.map(prodmed -> new ProductMediaDto(prodmed.getId(), prodmed.getProdImgNm(),
 								prodmed.getProdImgPath(), prodmed.getProdImgUrl(), prodmed.getProdImgType(),
 								prodmed.getProdImgSize(),prodmed.getProductCode()))

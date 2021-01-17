@@ -25,6 +25,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.iii.amirutham.config.UserDetailsImpl;
 import com.iii.amirutham.dto.model.BannerDto;
 import com.iii.amirutham.dto.model.ProductDto;
 import com.iii.amirutham.dto.model.ProductMediaDto;
@@ -39,6 +40,7 @@ import com.iii.amirutham.repo.BannerRepository;
 import com.iii.amirutham.repo.ProductRepository;
 import com.iii.amirutham.service.BannerService;
 import com.iii.amirutham.service.SequenceService;
+import com.iii.amirutham.service.UserService;
 import com.iii.amirutham.utills.AmirthumUtills;
 
 /**
@@ -47,6 +49,9 @@ import com.iii.amirutham.utills.AmirthumUtills;
  */
 @Service
 public class BannerServiceImpl implements BannerService {
+	
+	@Autowired
+	private UserService userService;
 
 	@Autowired
 	private BannerRepository bannerRepo;
@@ -68,6 +73,7 @@ public class BannerServiceImpl implements BannerService {
 	@Override
 	public void addHomeBanner(BannerDto bannerdto, List<MultipartFile> files) {
 
+		UserDetailsImpl user = userService.getUserDetails();
 		HomeBanner bannerDao = new HomeBanner();
 		bannerDao.setBannerName(bannerdto.getBannerName());
 		SequnceDto sequence = seqservice.findMySeQuence("BANNER");
@@ -78,7 +84,7 @@ public class BannerServiceImpl implements BannerService {
 		bannerDao.setFacebookLink(bannerdto.getFacebookLink());
 		bannerDao.setYoutubeLink(bannerdto.getYoutubeLink());
 		bannerDao.setWhatsappLink(bannerdto.getWhatsappLink());
-		
+		bannerDao.setCreatedBy(user.getFirstName());
 		if (null != files) {
 			List<HomeBannerMedia> mediaArray = new ArrayList<HomeBannerMedia>();
 			fileStorageLocation = Paths
@@ -120,7 +126,7 @@ public class BannerServiceImpl implements BannerService {
 	@Override
 	public void updateHomeBanner(BannerDto bannerdto, List<MultipartFile> files) {
 		// TODO Auto-generated method stub
-
+		UserDetailsImpl user = userService.getUserDetails();
 		HomeBanner bannerDao = new HomeBanner();
 
 		bannerDao.setId(bannerdto.getId());
@@ -133,7 +139,9 @@ public class BannerServiceImpl implements BannerService {
 		bannerDao.setFacebookLink(bannerdto.getFacebookLink());
 		bannerDao.setYoutubeLink(bannerdto.getYoutubeLink());
 		bannerDao.setWhatsappLink(bannerdto.getWhatsappLink());
+		bannerDao.setUpdatedBy(user.getFirstName());
 		List<HomeBannerMedia> mediaArray = new ArrayList<HomeBannerMedia>();
+		
 		if (null != files) {
 			fileStorageLocation = Paths
 					.get(Upload_Path + "Banner" + File.separator + bannerDao.getBannerCode() + File.separator)
@@ -185,8 +193,8 @@ public class BannerServiceImpl implements BannerService {
 			for (AmiruthamProducts prod : bestselling) {
 				List<ProductMediaDto> mediaarray = null;
 				List<ProductVarientDto> productVarient = null;
-				if (null != prod.getProdImgs() && prod.getProdImgs().size() > 0) {
-					mediaarray = prod.getProdImgs().stream()
+				if (null != prod.getProdMedias() && prod.getProdMedias().size() > 0) {
+					mediaarray = prod.getProdMedias().stream()
 							.map(prodmed -> new ProductMediaDto(prodmed.getId(), prodmed.getProdImgNm(),
 									prodmed.getProdImgPath(), prodmed.getProdImgUrl(), prodmed.getProdImgType(),
 									prodmed.getProdImgSize(),prodmed.getProductCode()))
@@ -238,8 +246,8 @@ public class BannerServiceImpl implements BannerService {
 			for (AmiruthamProducts prod : bestselling) {
 				List<ProductMediaDto> mediaarray = null;
 				List<ProductVarientDto> productVarient = null;
-				if (null != prod.getProdImgs() && prod.getProdImgs().size() > 0) {
-					mediaarray = prod.getProdImgs().stream()
+				if (null != prod.getProdMedias() && prod.getProdMedias().size() > 0) {
+					mediaarray = prod.getProdMedias().stream()
 							.map(prodmed -> new ProductMediaDto(prodmed.getId(), prodmed.getProdImgNm(),
 									prodmed.getProdImgPath(), prodmed.getProdImgUrl(), prodmed.getProdImgType(),
 									prodmed.getProdImgSize(),prodmed.getProductCode()))

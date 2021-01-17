@@ -46,7 +46,7 @@ public class ProductDto extends BaseEntityDto {
 
 	private boolean available;
 
-	private List<ProductMediaDto> prodImgs;
+	private List<ProductMediaDto> prodMedias;
 
 	private List<ProductVarientDto> prodVarient;
 
@@ -68,7 +68,7 @@ public class ProductDto extends BaseEntityDto {
 		this.productDesc = productDesc;
 		this.productuses = productuses;
 		this.productincredience = productincredience;
-		this.prodImgs = prodMedias;
+		this.prodMedias = prodMedias;
 		this.prodVarient = prodVarient;
 		this.bestSelling = "Y".equals(bestSelling) ? "true" : "false";
 	}

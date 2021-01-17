@@ -18,8 +18,8 @@ INSERT INTO `sequnce` (`id`,`creation_ts`,`update_ts`,`active_yn`,`deleted_yn`,`
 INSERT INTO `amirutham`.`sequnce` (`id`, `creation_ts`, `update_ts`, `active_yn`, `deleted_yn`, `sequencecharacter`, `sequencecurrentvalue`, `sequencelimitvalue`, `sequencename`, `sequencenextvalue`) VALUES ('3', '2020-12-06 16:10:54', '2020-12-06 16:10:54', 'Y', 'N', 'CART', '1', '999999', 'CART', '1');
 
 */
-@Entity(name = "sequnce")
-@Table(name = "sequnce")
+@Entity(name = "sequence")
+@Table(name = "sequence")
 @Getter
 @Setter
 @AllArgsConstructor
