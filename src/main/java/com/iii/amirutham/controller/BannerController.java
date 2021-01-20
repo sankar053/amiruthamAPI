@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,11 +28,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.iii.amirutham.dto.base.GenericResponse;
 import com.iii.amirutham.dto.model.BannerDto;
+import com.iii.amirutham.dto.model.CustomerNewsLetterDto;
+import com.iii.amirutham.model.CustomerNewsLetter;
 import com.iii.amirutham.service.BannerService;
 import com.iii.amirutham.utills.AmirthumUtills;
 
+
 @RestController
-@RequestMapping("/banner")
+@RequestMapping("/home")
 public class BannerController {
 
 	@Autowired
@@ -40,7 +44,7 @@ public class BannerController {
 	@Autowired
 	private MessageSource messages;
 
-	@PostMapping
+	@PostMapping("/banner")
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<GenericResponse> createHomeBanner(HttpServletRequest request,
 			@RequestPart("payload") String payload, @RequestPart("file") @Valid @NotNull @NotBlank List<MultipartFile> files) {
@@ -58,6 +62,17 @@ public class BannerController {
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
 					.body(new GenericResponse(messages.getMessage("banner.message.update.success", null, request.getLocale()),homeBanners));	
 		}
+
+	
+	}
+	
+	@PostMapping("/contactus")
+	public ResponseEntity<GenericResponse> createHomeBanner(HttpServletRequest request,
+			@Valid @RequestBody CustomerNewsLetterDto requestContactus) {
+		
+		bannerService.addHomecontactreference(requestContactus);
+		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
+				.body(new GenericResponse(messages.getMessage("home.message.contactus.success", null, request.getLocale())));
 
 	
 	}

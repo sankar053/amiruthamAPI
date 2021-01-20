@@ -9,6 +9,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.iii.amirutham.dto.model.BannerDto;
+import com.iii.amirutham.dto.model.CustomerNewsLetterDto;
 
 /**
  * @author sanka
@@ -27,5 +28,7 @@ public interface BannerService {
 	public Resource loadBannerAsResource(String fileName,String bannerCode);
 
 	public void deleteBannerByID(int id);
+
+	public void addHomecontactreference(CustomerNewsLetterDto contactus);
 
 }

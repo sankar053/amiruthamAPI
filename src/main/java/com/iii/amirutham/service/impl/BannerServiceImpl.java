@@ -27,16 +27,19 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.iii.amirutham.config.UserDetailsImpl;
 import com.iii.amirutham.dto.model.BannerDto;
+import com.iii.amirutham.dto.model.CustomerNewsLetterDto;
 import com.iii.amirutham.dto.model.ProductDto;
 import com.iii.amirutham.dto.model.ProductMediaDto;
 import com.iii.amirutham.dto.model.ProductVarientDto;
 import com.iii.amirutham.dto.model.SequnceDto;
 import com.iii.amirutham.exception.FileStorageException;
 import com.iii.amirutham.exception.MyFileNotFoundException;
+import com.iii.amirutham.model.CustomerNewsLetter;
 import com.iii.amirutham.model.HomeBanner;
 import com.iii.amirutham.model.HomeBannerMedia;
 import com.iii.amirutham.model.product.AmiruthamProducts;
 import com.iii.amirutham.repo.BannerRepository;
+import com.iii.amirutham.repo.NewsLetterRepository;
 import com.iii.amirutham.repo.ProductRepository;
 import com.iii.amirutham.service.BannerService;
 import com.iii.amirutham.service.SequenceService;
@@ -64,9 +67,14 @@ public class BannerServiceImpl implements BannerService {
 
 	@Autowired
 	private SequenceService seqservice;
+	
+	@Autowired
+	private NewsLetterRepository newsLetterRepository;
 
 	@Value("${amirthum.file.upload-dir}")
 	private String Upload_Path;
+	
+	
 
 	private Path fileStorageLocation;
 
@@ -105,7 +113,7 @@ public class BannerServiceImpl implements BannerService {
 					Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
 					String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-							.path("/banner/downloadFile/").path(productfilename + "/" + bannerDao.getBannerCode())
+							.path("/home/banner/downloadFile/").path(productfilename + "/" + bannerDao.getBannerCode())
 							.toUriString();
 
 					mediaArray.add(new HomeBannerMedia(productfilename, targetLocation.toString(), fileDownloadUri,
@@ -301,6 +309,15 @@ public class BannerServiceImpl implements BannerService {
 		// TODO Auto-generated method stub
 		bannerRepo.deleteById(id);
 
+	}
+
+	@Override
+	public void addHomecontactreference(CustomerNewsLetterDto contactus) {
+		// TODO Auto-generated method stub
+		
+		
+		newsLetterRepository.save(new CustomerNewsLetter(contactus.getEmailAddress(),"Guest"));
+		
 	}
 
 }
