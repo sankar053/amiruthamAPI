@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.iii.amirutham.model.BaseEntity;
 import com.iii.amirutham.model.user.User;
 
@@ -53,6 +54,7 @@ public class ProductReviews extends BaseEntity
     @JoinColumn(name="user_id", nullable=false)
     private User user;
 	
+	@JsonIgnore
 	@ManyToOne
     @JoinColumn(name="prod_id", nullable=false)
     private AmiruthamProducts product;

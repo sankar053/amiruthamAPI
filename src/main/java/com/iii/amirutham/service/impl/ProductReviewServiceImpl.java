@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 
 import com.iii.amirutham.config.UserDetailsImpl;
 import com.iii.amirutham.dto.model.ProductReviewDto;
+import com.iii.amirutham.exception.UserNotFoundException;
+import com.iii.amirutham.model.INProductAvgRating;
 import com.iii.amirutham.model.product.AmiruthamProducts;
 import com.iii.amirutham.model.product.ProductReviews;
 import com.iii.amirutham.model.user.User;
@@ -39,12 +41,11 @@ public class ProductReviewServiceImpl implements ProductReviewService {
 
 	@Autowired
 	private UserRepository userRepository;
-	
-	//@Autowired
-	
+
+	// @Autowired
 
 	@Autowired
-	private ProductRepository prodRepo;
+	private ProductRepository prodRepository;
 
 	@Override
 	public void addReviewsToProduct(@Valid ProductReviewDto reviewRequest) {
@@ -57,23 +58,35 @@ public class ProductReviewServiceImpl implements ProductReviewService {
 		Optional<User> user = userRepository.findById(userdetails.getId());
 		if (user.isPresent())
 			reviewDao.setUser(user.get());
-		Optional<AmiruthamProducts> prodct = prodRepo.findById(reviewRequest.getPoroductId());
-		if (prodct.isPresent())
+		Optional<AmiruthamProducts> prodct = prodRepository.findById(reviewRequest.getPoroductId());
+		if (prodct.isPresent()) {
 			reviewDao.setProduct(prodct.get());
+			reviewRepo.save(reviewDao);
+			updateProductRating(prodct.get().getId());
+		} else {
+			throw new UserNotFoundException("Please select the valid product");
+		}
 
-		reviewRepo.save(reviewDao);
+	}
+
+	private void updateProductRating(Integer prodId) {
+		// TODO Auto-generated method stub
+		INProductAvgRating ProductAvgRating = reviewRepo.findRatingByCategoryId(prodId);
+		prodRepository.updateProductRating(prodId, ProductAvgRating.getRating());
 	}
 
 	@Override
-	public Page<ProductReviews> getReviewsByProduct(Integer productId,Integer pageNo, Integer pageSize,Pageable pageable) {
+	public Page<ProductReviews> getReviewsByProduct(Integer productId, Integer pageNo, Integer pageSize,
+			Pageable pageable) {
 		// TODO Auto-generated method stub
-		if(pageNo!=null && pageSize!=null)
+		if (pageNo != null && pageSize != null)
 			pageable = PageRequest.of(pageNo, pageSize);
-		Optional<AmiruthamProducts> prodct = prodRepo.findById(productId);
+		Optional<AmiruthamProducts> prodct = prodRepository.findById(productId);
+
 		if (prodct.isPresent())
-			return reviewRepo.findByProduct(prodct.get(),pageable);
+			return reviewRepo.findByProduct(prodct.get(), pageable);
 		return null;
-		
+
 	}
 
 }

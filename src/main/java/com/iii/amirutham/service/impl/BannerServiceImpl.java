@@ -211,7 +211,7 @@ public class BannerServiceImpl implements BannerService {
 				}
 				ProductDto prodDto = new ProductDto(prod.getId(), prod.getCategory().getId(), prod.getProductCode(),
 						prod.getProductNm(), prod.getProductDesc(), prod.getProductuses(), prod.getProductincredience(),
-						mediaarray, productVarient, prod.getProductBestSellingYN());
+						mediaarray, productVarient, prod.getProductBestSellingYN(),prod.getProductRating());
 				prodDto.setUpdatedBy(prod.getUpdatedBy());
 				prodDto.setCreatedTs(prod.getCreatedTs());
 				productlistdto.add(prodDto);
@@ -264,7 +264,7 @@ public class BannerServiceImpl implements BannerService {
 				}
 				ProductDto prodDto = new ProductDto(prod.getId(), prod.getCategory().getId(), prod.getProductCode(),
 						prod.getProductNm(), prod.getProductDesc(), prod.getProductuses(), prod.getProductincredience(),
-						mediaarray, productVarient, prod.getProductBestSellingYN());
+						mediaarray, productVarient, prod.getProductBestSellingYN(),prod.getProductRating());
 				prodDto.setUpdatedBy(prod.getUpdatedBy());
 				prodDto.setCreatedTs(prod.getCreatedTs());
 				productlistdto.add(prodDto);

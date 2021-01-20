@@ -70,6 +70,9 @@ public class AmiruthamProducts extends BaseEntity {
 	@Column(name = "PROD_BEST_SELLING_YN")
 	private String productBestSellingYN="N";
 	
+	@Column(name = "PROD_RATING")
+	private Float productRating=Float.valueOf(0);
+	
 	
 	@Column(name = "PROD_AVAILABLE")
 	private boolean available = true;
@@ -89,7 +92,7 @@ public class AmiruthamProducts extends BaseEntity {
 	private List<ProductVarient> prodVarient;
 
 	public AmiruthamProducts(Integer id, String productCode, String productNm, String productDesc, String productuses,Integer stock,
-			String productincredience,String bestSelling) {
+			String productincredience,String bestSelling,Float productRating) {
 		super();
 		this.id = id;
 		this.productCode = productCode;
@@ -98,6 +101,7 @@ public class AmiruthamProducts extends BaseEntity {
 		this.productuses = productuses;
 		this.productincredience=productincredience;
 		this.productBestSellingYN ="true".equals(bestSelling)?"Y":"N";
+		this.productRating=productRating;  
 	}
 
 
