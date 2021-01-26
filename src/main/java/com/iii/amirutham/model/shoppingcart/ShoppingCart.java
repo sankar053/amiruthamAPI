@@ -53,11 +53,11 @@ public class ShoppingCart extends BaseEntity {
     @JoinColumn(name = "chargeCartId",referencedColumnName = "id")
 	private AddOnCharges charges;
 
-	@Column(name = "FINAL_PRICE_WITHOUT_ADDONS", nullable = false) // TODO CODE
-	private BigDecimal finalpriceWithoutCharges;
+	@Column(name = "FINAL_PRICE_WITHOUT_TaX", nullable = false) // TODO CODE
+	private BigDecimal finalpriceWithoutTax;
 	
-	@Column(name = "FINAL_PRICE_WITH_ADDONS", nullable = false) // TODO CODE
-	private BigDecimal finalpriceWithCharges;
+	@Column(name = "FINAL_PRICE_WITH_TAX", nullable = false) // TODO CODE
+	private BigDecimal finalpriceWithTax;
 	/*
 	 * @ManyToOne(fetch = FetchType.LAZY)
 	 * 

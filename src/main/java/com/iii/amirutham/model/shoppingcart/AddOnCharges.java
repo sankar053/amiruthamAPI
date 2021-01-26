@@ -40,6 +40,14 @@ public class AddOnCharges extends BaseEntity{
 	
 	@Column(name = "discountPercent", nullable = false) 
 	private int discountPercent = 0;
+
+	public AddOnCharges(BigDecimal chargeAmount, String description, boolean discounted, int discountPercent) {
+		super();
+		this.chargeAmount = chargeAmount;
+		this.description = description;
+		this.discounted = discounted;
+		this.discountPercent = discountPercent;
+	}
 	
 
 

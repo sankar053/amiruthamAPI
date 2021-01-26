@@ -4,14 +4,18 @@
 package com.iii.amirutham.model.shoppingcart;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -70,18 +74,12 @@ public class ShoppingCartItem extends BaseEntity {
     @JoinColumn(name = "cart_item_id",referencedColumnName = "id")
 	private ShoppingCartAttributeItem attributes;
 	
-//	@JsonIgnore
-//	@ManyToOne(targetEntity = ShoppingCart.class)
-//	@JoinColumn(name = "mycartId", nullable = true)
-//	private ShoppingCart myCart;
+	@OneToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+	@JoinColumn(name = "cartitemid",referencedColumnName = "id")
+	private TaxInformation taxinfo;
 	
-	/*
-	 * @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy
-	 * ="shoppingCartItem") private Set<ShoppingCartAttributeItem> attributes = new
-	 * HashSet<ShoppingCartAttributeItem>();
-	 */
-	// @JsonIgnore
-	// @Transient
+	
+	
 	private BigDecimal itemPrice;// item final price including all rebates
 
 	// @JsonIgnore

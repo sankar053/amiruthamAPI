@@ -67,6 +67,12 @@ public class ProductVarient extends BaseEntity {
 	@Column(name = "PROD_STOCK",nullable = false)
 	private Integer stock;
 	
+	@Column(name = "STATE_GST",nullable = true)
+	private Double sgst=Double.valueOf(2.5);
+	
+	@Column(name = "CENTRAL_GST",nullable = true)
+	private Double cgst=Double.valueOf(2.5);
+	
 	@JsonIgnore
 	@ManyToOne
     @JoinColumn(name="PROD_ID", nullable=false)

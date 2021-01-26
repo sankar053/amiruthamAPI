@@ -27,6 +27,7 @@ import com.iii.amirutham.model.shoppingcart.AddOnCharges;
 import com.iii.amirutham.model.shoppingcart.ShoppingCart;
 import com.iii.amirutham.model.shoppingcart.ShoppingCartAttributeItem;
 import com.iii.amirutham.model.shoppingcart.ShoppingCartItem;
+import com.iii.amirutham.model.shoppingcart.TaxInformation;
 import com.iii.amirutham.repo.CartItemRepository;
 import com.iii.amirutham.repo.CartRepository;
 import com.iii.amirutham.repo.ProductRepository;
@@ -71,7 +72,7 @@ public class CartServiceImpl implements CartService {
 	public CartDto addORUpdateMyLocalCart(CartRequest cartRequest) {
 		
 		UserDetailsImpl user = userService.getUserDetails();
-		ShoppingCart pendingcart = cartRepository.findByCustomerIdAndShoppingCartStatus(user.getId(),"pending");
+		ShoppingCart pendingcart = cartRepository.findByCustomerIdAndShoppingCartStatus(user.getId(),"Pending");
 		
 		if(null==pendingcart) {
 			ShoppingCart myCart = new ShoppingCart();
@@ -82,6 +83,7 @@ public class CartServiceImpl implements CartService {
 			myCart.setCustomerId(user.getId());
 			BigDecimal finalPrice = new BigDecimal(0);
 			Set<ShoppingCartItem> cartItems = new HashSet<ShoppingCartItem>();
+		
 			for (CategoryRequestItems mycartItem : cartRequest.getCartItems()) {
 				Optional<AmiruthamProducts> product = productRepository.findById(mycartItem.getProductId());
 				if (product.isPresent()) {
@@ -108,7 +110,19 @@ public class CartServiceImpl implements CartService {
 							varient.getUnitType(), varient.getProdCode(), varient.getManufactureDate(),
 							varient.getBestBeforeDate(), item));
 			//		 item.setMyCart(myCart);
+					
+					
+					BigDecimal sgst=item.getSubTotal().multiply(new BigDecimal(varient.getSgst()/100));
+					BigDecimal cgst=item.getSubTotal().multiply(new BigDecimal(varient.getCgst()/100));
+					
+					BigDecimal Taxpayable =sgst.add(cgst);
+//					TaxInformation(BigDecimal finalTaxAmount, Double totalTaxPresentage, BigDecimal sgstPresentage,
+//							BigDecimal sgst, BigDecimal cgstPresentage, BigDecimal cgst, String description) {
+					item.setTaxinfo(new TaxInformation(Taxpayable,(varient.getSgst()+varient.getCgst()),
+							varient.getSgst(),sgst,
+							varient.getCgst(),cgst,"Tax Deducted"));
 					cartItems.add(item);
+					
 				}
 
 			}
@@ -116,8 +130,8 @@ public class CartServiceImpl implements CartService {
 			
 			myCart.setLineItems(cartItems);
 			myCart.setCharges(new AddOnCharges());
-			myCart.setFinalpriceWithoutCharges(finalPrice);
-			myCart.setFinalpriceWithCharges(finalPrice.add(myCart.getCharges().getChargeAmount()));
+			myCart.setFinalpriceWithoutTax(finalPrice.setScale(2,BigDecimal.ROUND_HALF_DOWN));
+			myCart.setFinalpriceWithTax(finalPrice.add(myCart.getCharges().getChargeAmount()).setScale(2,BigDecimal.ROUND_HALF_DOWN));
 		//	myCart= calculateCartTotal(myCart);
 					
 			ShoppingCart savedCart= cartRepository.save(myCart);
@@ -205,7 +219,7 @@ public class CartServiceImpl implements CartService {
 					varient.getProdCode(), varient.getManufactureDate(), varient.getBestBeforeDate(), item));
 			// item.set
 			updateCart.getLineItems().add(item);
-			updateCart.getFinalpriceWithCharges().add(st);
+			updateCart.getFinalpriceWithTax().add(st);
 		}
 		updateCart = calculateCartTotal(updateCart);
 		updateCart = cartRepository.save(updateCart);
@@ -236,9 +250,21 @@ public class CartServiceImpl implements CartService {
 			item.setAttributes(new ShoppingCartAttributeItem(varient.getMaximumRetailPrice(), varient.getSellingPrice(),
 					varient.getSavedPrice(), varient.getDiscount(), varient.getUnit(), varient.getUnitType(),
 					varient.getProdCode(), varient.getManufactureDate(), varient.getBestBeforeDate(), item));
+			
+			BigDecimal sgst=item.getSubTotal().multiply(new BigDecimal(varient.getSgst()/100));
+			BigDecimal cgst=item.getSubTotal().multiply(new BigDecimal(varient.getCgst()/100));
+			
+			BigDecimal Taxpayable =sgst.add(cgst);
+
+			item.setTaxinfo(new TaxInformation(Taxpayable,(varient.getSgst()+varient.getCgst()),
+					varient.getSgst(),sgst,
+					varient.getCgst(),cgst,"Tax Deducted"));
+			
 			// item.set
 			pendingCart.getLineItems().add(item);
-			pendingCart.getFinalpriceWithCharges().add(st);
+			pendingCart.getFinalpriceWithTax().add(st);
+			
+			
 		}
 		pendingCart = calculateCartTotal(pendingCart);
 		pendingCart = cartRepository.save(pendingCart);
@@ -248,14 +274,19 @@ public class CartServiceImpl implements CartService {
 	public ShoppingCart calculateCartTotal(ShoppingCart cartDao) {
 
 		BigDecimal finalPrcWthoutCharge = new BigDecimal(0);
+		BigDecimal TotalTaxforcart = new BigDecimal(0);
 
 		finalPrcWthoutCharge = cartDao.getLineItems().stream().filter(v -> "N".equals(v.getIsDeleted()))
 				.map(ci -> ci.getSubTotal()) // map
 				.reduce(BigDecimal.ZERO, BigDecimal::add); // reduce
+		
+		TotalTaxforcart = cartDao.getLineItems().stream().filter(v -> "N".equals(v.getIsDeleted()))
+				.map(ci -> ci.getTaxinfo().getFinalTaxAmount()) // map
+				.reduce(BigDecimal.ZERO, BigDecimal::add);
 
-		cartDao.setFinalpriceWithoutCharges(finalPrcWthoutCharge);
-		cartDao.setFinalpriceWithCharges(
-				cartDao.getFinalpriceWithoutCharges().add(cartDao.getCharges().getChargeAmount()));
+		cartDao.setFinalpriceWithoutTax(finalPrcWthoutCharge.setScale(2,BigDecimal.ROUND_HALF_DOWN));
+		cartDao.setFinalpriceWithTax(
+				cartDao.getFinalpriceWithoutTax().add(TotalTaxforcart).setScale(2,BigDecimal.ROUND_HALF_DOWN));
 		return cartRepository.save(cartDao);
 
 	}
@@ -273,9 +304,9 @@ public class CartServiceImpl implements CartService {
 			lineitem.setSubTotal(st);
 			updateCart.getLineItems().add(lineitem);
 			// cartItemRepository.save(lineitem);
-			updateCart.setFinalpriceWithoutCharges(updateCart.getFinalpriceWithoutCharges().add(st));
-			updateCart.setFinalpriceWithCharges(
-					updateCart.getFinalpriceWithoutCharges().add(updateCart.getCharges().getChargeAmount()));
+			updateCart.setFinalpriceWithoutTax(updateCart.getFinalpriceWithoutTax().add(st).setScale(2,BigDecimal.ROUND_HALF_DOWN));
+			updateCart.setFinalpriceWithTax(
+					updateCart.getFinalpriceWithoutTax().add(updateCart.getCharges().getChargeAmount()).setScale(2,BigDecimal.ROUND_HALF_DOWN));
 			updateCart = calculateCartTotal(updateCart);
 			cartRepository.save(updateCart);
 		} else {
@@ -288,16 +319,25 @@ public class CartServiceImpl implements CartService {
 
 
 			ShoppingCartAttributeItem varient = lineitem.getAttributes();
-
+			TaxInformation taxinfo = lineitem.getTaxinfo();
 			lineitem.setQuantity(quantity);
 			lineitem.setItemPrice(new BigDecimal(varient.getSellingPrice()));
 			BigDecimal st = lineitem.getItemPrice().multiply(new BigDecimal(quantity));
 			lineitem.setSubTotal(st);
+			
+			BigDecimal sgst=lineitem.getSubTotal().multiply(new BigDecimal(taxinfo.getSgstPresentage()/100));
+			BigDecimal cgst=lineitem.getSubTotal().multiply(new BigDecimal(taxinfo.getCgstPresentage()/100));
+			BigDecimal updatedTaxpayable =sgst.add(cgst);
+			taxinfo.setFinalTaxAmount(updatedTaxpayable);
+			taxinfo.setCgst(cgst);
+			taxinfo.setCgst(cgst);
+			lineitem.setTaxinfo(taxinfo);
+			
 			updateCart.getLineItems().add(lineitem);
 			// cartItemRepository.save(lineitem);
-			updateCart.setFinalpriceWithoutCharges(updateCart.getFinalpriceWithoutCharges().add(st));
-			updateCart.setFinalpriceWithCharges(
-					updateCart.getFinalpriceWithoutCharges().add(updateCart.getCharges().getChargeAmount()));
+			updateCart.setFinalpriceWithoutTax(updateCart.getFinalpriceWithoutTax().add(st).setScale(2,BigDecimal.ROUND_HALF_DOWN));
+			updateCart.setFinalpriceWithTax(
+					updateCart.getFinalpriceWithoutTax().add(updateCart.getCharges().getChargeAmount()).setScale(2,BigDecimal.ROUND_HALF_DOWN));
 			updateCart = calculateCartTotal(updateCart);
 			cartRepository.save(updateCart);
 		

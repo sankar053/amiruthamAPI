@@ -79,7 +79,7 @@ public class OrderServiceImpl implements OrderService {
 			orderDao.setDatePurchased(new Date());
 			orderDao.setReceiverName(orderDto.getReceiverName());
 			orderDao.setReceiverPhoneNumber(orderDto.getReceiverPhoneNumber());
-			orderDao.setTotal(mypendingCart.getFinalpriceWithCharges());
+			orderDao.setTotal(mypendingCart.getFinalpriceWithTax());
 			orderDao.setShoppingCartCode(mypendingCart.getShoppingCartCode());
 			orderDao.setUser(userRepository.findById(user.getId()).get());
 			// order.setAddress(new Address("157/73A KR Gardern","Railway Feeder

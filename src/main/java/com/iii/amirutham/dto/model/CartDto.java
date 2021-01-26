@@ -38,8 +38,8 @@ public class CartDto extends BaseEntity {
 
 	private String shoppingCartStatus;
 	
-	private BigDecimal finalpriceWithoutCharges;
+	private BigDecimal finalpriceWithoutTax;
 	
-	private BigDecimal finalpriceWithCharges;
+	private BigDecimal finalpriceWithTax;
 
 }
