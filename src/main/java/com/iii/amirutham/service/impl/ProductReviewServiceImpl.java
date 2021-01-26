@@ -72,7 +72,7 @@ public class ProductReviewServiceImpl implements ProductReviewService {
 	private void updateProductRating(Integer prodId) {
 		// TODO Auto-generated method stub
 		INProductAvgRating ProductAvgRating = reviewRepo.findRatingByCategoryId(prodId);
-		prodRepository.updateProductRating(prodId, ProductAvgRating.getRating());
+		prodRepository.updateProductRating(prodId, ProductAvgRating.getRating(),ProductAvgRating.getTotalReviews());
 	}
 
 	@Override

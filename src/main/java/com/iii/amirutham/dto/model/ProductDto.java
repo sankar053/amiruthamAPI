@@ -50,7 +50,9 @@ public class ProductDto extends BaseEntityDto {
 
 	private List<ProductVarientDto> prodVarient;
 	
-	private Float productRating;
+	private Float productRating= Float.valueOf(0);
+	
+	private Integer noofReviews;
 
 	@NotNull
 	private Integer categoryid;
@@ -61,7 +63,7 @@ public class ProductDto extends BaseEntityDto {
 
 	public ProductDto(Integer id, @NotNull Integer categoryid, String productCode, @NotNull String productNm,
 			@NotNull String productDesc, @NotNull String productuses, String productincredience,
-			List<ProductMediaDto> prodMedias, List<ProductVarientDto> prodVarient, String bestSelling,Float productRating) {
+			List<ProductMediaDto> prodMedias, List<ProductVarientDto> prodVarient, String bestSelling,Float productRating,Integer noofReviews) {
 		super();
 		this.id = id;
 		this.categoryid = categoryid;
@@ -74,6 +76,7 @@ public class ProductDto extends BaseEntityDto {
 		this.prodVarient = prodVarient;
 		this.bestSelling = "Y".equals(bestSelling) ? "true" : "false";
 		this.productRating=(null!=productRating ? productRating : Float.valueOf(0));
+		this.noofReviews=noofReviews;
 	}
 
 }

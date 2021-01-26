@@ -21,8 +21,9 @@ public interface ProductRepository extends JpaRepository<AmiruthamProducts, Inte
 	
 	  @Modifying
 	  @Transactional
-	  @Query(value ="update products p set p.PROD_RATING = :productRating where p.id = :id", nativeQuery = true)
-	  void updateProductRating(@Param(value = "id") Integer id, @Param(value = "productRating") float productRating);
+	  @Query(value ="update products p set p.PROD_RATING = :productRating,p.PROD_NOOF_REVIEWS=:noofreviews where p.id = :id", nativeQuery = true)
+	  void updateProductRating(@Param(value = "id") Integer id, @Param(value = "productRating") float productRating,
+			  @Param(value = "noofreviews") float noofreviews);
 	
 	
 

@@ -73,6 +73,9 @@ public class AmiruthamProducts extends BaseEntity {
 	@Column(name = "PROD_RATING")
 	private Float productRating=Float.valueOf(0);
 	
+	@Column(name = "PROD_NOOF_REVIEWS")
+	private Integer noofReviews;
+	
 	
 	@Column(name = "PROD_AVAILABLE")
 	private boolean available = true;
@@ -92,7 +95,7 @@ public class AmiruthamProducts extends BaseEntity {
 	private List<ProductVarient> prodVarient;
 
 	public AmiruthamProducts(Integer id, String productCode, String productNm, String productDesc, String productuses,Integer stock,
-			String productincredience,String bestSelling,Float productRating) {
+			String productincredience,String bestSelling,Float productRating,Integer noofReviews) {
 		super();
 		this.id = id;
 		this.productCode = productCode;
@@ -102,6 +105,7 @@ public class AmiruthamProducts extends BaseEntity {
 		this.productincredience=productincredience;
 		this.productBestSellingYN ="true".equals(bestSelling)?"Y":"N";
 		this.productRating=productRating;  
+		this.noofReviews=noofReviews;
 	}
 
 

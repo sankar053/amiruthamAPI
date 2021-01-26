@@ -61,11 +61,6 @@ public class EmailService {
         message.setSubject(subject);
         message.setFrom(fromEmail);
         message.setTo(toEmail);
-        // Add the inline images, referenced from the HTML code as "cid:image-name"
-//        message.addInline("background", new ClassPathResource(BACKGROUND_IMAGE), PNG_MIME);
-//       	message.addInline("logo-background", new ClassPathResource(LOGO_BACKGROUND_IMAGE), PNG_MIME);
-//        message.addInline("thymeleaf-banner", new ClassPathResource(THYMELEAF_BANNER_IMAGE), PNG_MIME);
-       // message.addInline("thymeleaf-logo", new ClassPathResource(THYMELEAF_LOGO_IMAGE), PNG_MIME);
         if(!ObjectUtils.isEmpty(cc)) message.setCc(cc);
         message.setText(body, isHtml);
         return mimeMessage;

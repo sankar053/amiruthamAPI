@@ -18,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.iii.amirutham.common.EmailService;
 import com.iii.amirutham.config.UserDetailsImpl;
 import com.iii.amirutham.dto.model.UserDto;
 import com.iii.amirutham.dto.model.ValidateOtpDto;
@@ -59,6 +60,9 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private Environment env;
+	
+	@Autowired
+	private EmailService emailService;
 
 	@Autowired
 	private PasswordResetTokenRepository passwordTokenRepository;
@@ -107,10 +111,10 @@ public class UserServiceImpl implements UserService {
 					"There is an account with that Phone Number: " + accountDto.getPhoneNbr());
 		}
 
-		if (userRepository.existsByEmailAddress(accountDto.getEmailAddress())) {
-			throw new UserAlreadyExistException(
-					"There is an account with that email address: " + accountDto.getEmailAddress());
-		}
+//		if (userRepository.existsByEmailAddress(accountDto.getEmailAddress())) {
+//			throw new UserAlreadyExistException(
+//					"There is an account with that email address: " + accountDto.getEmailAddress());
+//		}
 
 		// Create new user's account
 		User user = new User(null, accountDto.getFirstName(), accountDto.getLastName(), accountDto.getPhoneNbr(),
@@ -146,9 +150,10 @@ public class UserServiceImpl implements UserService {
 			});
 			user.setRoles(roles);
 		}
-
-		return userRepository.save(user);
-
+		emailService.sendTemplateEmail(user.getEmailAddress(), "Registation", "email-editable", null, null);
+	//	return userRepository.save(user);
+		user.setId(1);
+		return user;
 	}
 
 	@Override

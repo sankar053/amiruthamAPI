@@ -139,7 +139,7 @@ public class BannerController {
 				.body(resource);
 	}
 
-	@PostMapping("/contactus")
+	@PostMapping("/subscribe")
 	public ResponseEntity<GenericResponse> createHomeBanner(HttpServletRequest request,
 			@Valid @RequestBody CustomerNewsLetterDto requestContactus) {
 

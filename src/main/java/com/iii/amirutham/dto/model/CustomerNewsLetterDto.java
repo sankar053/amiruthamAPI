@@ -3,9 +3,7 @@
  */
 package com.iii.amirutham.dto.model;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.NotBlank;
 
 import com.iii.amirutham.validation.ValidEmail;
 
@@ -31,10 +29,8 @@ public class CustomerNewsLetterDto {
 	private String phoneNbr;
 
 	@ValidEmail
-	@NotEmpty(message = "{NotEmpty.user.email}")
-	@NotNull(message = "{NotNull.user.email}")
-	@Size(min = 1, message = "{Size.userDto.email}")
-	private String emailAddress;
+	@NotBlank(message = "{NotEmpty.user.email}")
+	private String email;
 
 
 	

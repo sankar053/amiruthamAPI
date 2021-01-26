@@ -219,7 +219,7 @@ public class BannerServiceImpl implements BannerService {
 				}
 				ProductDto prodDto = new ProductDto(prod.getId(), prod.getCategory().getId(), prod.getProductCode(),
 						prod.getProductNm(), prod.getProductDesc(), prod.getProductuses(), prod.getProductincredience(),
-						mediaarray, productVarient, prod.getProductBestSellingYN(),prod.getProductRating());
+						mediaarray, productVarient, prod.getProductBestSellingYN(),prod.getProductRating(),prod.getNoofReviews());
 				prodDto.setUpdatedBy(prod.getUpdatedBy());
 				prodDto.setCreatedTs(prod.getCreatedTs());
 				productlistdto.add(prodDto);
@@ -272,7 +272,7 @@ public class BannerServiceImpl implements BannerService {
 				}
 				ProductDto prodDto = new ProductDto(prod.getId(), prod.getCategory().getId(), prod.getProductCode(),
 						prod.getProductNm(), prod.getProductDesc(), prod.getProductuses(), prod.getProductincredience(),
-						mediaarray, productVarient, prod.getProductBestSellingYN(),prod.getProductRating());
+						mediaarray, productVarient, prod.getProductBestSellingYN(),prod.getProductRating(),prod.getNoofReviews());
 				prodDto.setUpdatedBy(prod.getUpdatedBy());
 				prodDto.setCreatedTs(prod.getCreatedTs());
 				productlistdto.add(prodDto);
@@ -333,7 +333,7 @@ public class BannerServiceImpl implements BannerService {
 		// TODO Auto-generated method stub
 		
 		
-		newsLetterRepository.save(new CustomerNewsLetter(contactus.getEmailAddress(),"Guest"));
+		newsLetterRepository.save(new CustomerNewsLetter(contactus.getEmail(),"Guest"));
 		
 	}
 
