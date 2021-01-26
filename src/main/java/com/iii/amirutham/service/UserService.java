@@ -4,6 +4,7 @@
 package com.iii.amirutham.service;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -39,11 +40,13 @@ public interface UserService {
 	
 	public UserDetailsImpl getUserDetails();
 
-	String createPasswordResetTokenForUser(User user, String token);
+	String createPasswordResetTokenForUser(User user);
 
 	public Page<Orders> myorders(Integer pageNo, Integer pageSize,Pageable pageable);
 	
 	public boolean checkIfValidOldPassword(UserDetailsImpl user,String oldPassword);
 	
 	public void changeUserPassword(String userName,String password);
+
+	public void constructOTPEmail(User user, String otp);
 }

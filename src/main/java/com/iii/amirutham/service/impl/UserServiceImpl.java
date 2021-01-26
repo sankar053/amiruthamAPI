@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -19,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.iii.amirutham.common.EmailService;
+import com.iii.amirutham.common.mail.dto.OnetimePasswordMail;
 import com.iii.amirutham.config.UserDetailsImpl;
 import com.iii.amirutham.dto.model.UserDto;
 import com.iii.amirutham.dto.model.ValidateOtpDto;
@@ -179,7 +181,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public String createPasswordResetTokenForUser(User user, String token) {
+	public String createPasswordResetTokenForUser(User user) {
+		String token = UUID.randomUUID().toString();
 		String otp = AmirthumUtills.generateOTP();
 		final PasswordResetToken myToken = new PasswordResetToken(token, user, otp);
 		passwordTokenRepository.save(myToken);
@@ -263,6 +266,15 @@ public class UserServiceImpl implements UserService {
 			userRepository.save(userDao);
 		}
 
+	}
+
+	@Override
+	public void constructOTPEmail(User user, String otp) {
+		// TODO Auto-generated method stub
+		
+		emailService.sendTemplateEmail(user.getEmailAddress(), "Forgot Project", "otp-template", 
+					new OnetimePasswordMail(otp,user.getFirstName()), null);
+		
 	}
 
 }

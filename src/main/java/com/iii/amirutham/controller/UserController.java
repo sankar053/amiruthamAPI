@@ -97,8 +97,7 @@ public class UserController {
 	@GetMapping("/user/profile")
 	public @ResponseBody ResponseEntity<UserDetailsImpl> getUserProfileInfo() {
 		UserDetailsImpl user = userService.getUserDetails();
-		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).
-				body(user);
+		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(user);
 
 	}
 
@@ -112,17 +111,17 @@ public class UserController {
 		userService.addUserLocation(registered, getClientIP(request));
 		eventPublisher
 				.publishEvent(new OnRegistrationCompleteEvent(registered, request.getLocale(), getAppUrl(request)));
-		
-		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).
-				body(new GenericResponse(messages.getMessage("login.message.success", null, request.getLocale())));
+
+		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
+				.body(new GenericResponse(messages.getMessage("login.message.success", null, request.getLocale())));
 	}
 
 	@DeleteMapping("/users/{id}")
 	public ResponseEntity<GenericResponse> deleteUser(@PathVariable int id) {
 
 		userService.deleteUserById(id);
-		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).
-				body(new GenericResponse("User got Deleted Succesfully"));
+		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
+				.body(new GenericResponse("User got Deleted Succesfully"));
 
 	}
 
@@ -133,9 +132,8 @@ public class UserController {
 		if (null == user) {
 			throw new UserNotFoundException(messages.getMessage("auth.message.invalidUser", null, request.getLocale()));
 		}
-		String token = UUID.randomUUID().toString();
-		String otp = userService.createPasswordResetTokenForUser(user.get(), token);
-		constructOTPEmail(user.get(), request.getLocale(), otp);
+		String otp = userService.createPasswordResetTokenForUser(user.get());
+		userService.constructOTPEmail(user.get(), otp);
 		return new GenericResponse(messages.getMessage("message.otpEmail", null, request.getLocale()));
 	}
 
@@ -147,12 +145,12 @@ public class UserController {
 		if (null == user) {
 			throw new UserNotFoundException("");
 		}
-		String token = UUID.randomUUID().toString();
-		userService.createPasswordResetTokenForUser(user.get(), token);
-		mailSender.send(constructResetTokenEmail(getAppUrl(request), request.getLocale(), token, user.get()));
-		
-		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).
-				body(new GenericResponse(messages.getMessage("message.resetPasswordEmail", null, request.getLocale())));
+//		String token = UUID.randomUUID().toString();
+//		userService.createPasswordResetTokenForUser(user.get(), token);
+		mailSender.send(constructResetTokenEmail(getAppUrl(request), request.getLocale(), "", user.get()));
+
+		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(
+				new GenericResponse(messages.getMessage("message.resetPasswordEmail", null, request.getLocale())));
 	}
 
 	public void constructOTPEmail(User to, Locale locale, String otp) {
@@ -174,7 +172,7 @@ public class UserController {
 	}
 
 	public void sendOtpMessage(User to, String subject, String body, final Locale locale) {
-			mailSender.send(constructEmail(subject, body, to));
+		mailSender.send(constructEmail(subject, body, to));
 
 	}
 
@@ -185,22 +183,21 @@ public class UserController {
 		final String result = securityUserService.validateOneTimePassword(otpDto.getOneTimePassword());
 
 		if (result != null) {
-			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).
-					body(new GenericResponse(messages.getMessage("auth.message." + result, null, request.getLocale())));
+			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(
+					new GenericResponse(messages.getMessage("auth.message." + result, null, request.getLocale())));
 		}
 
 		boolean updated = userService.updatePassword(otpDto);
 		if (updated) {
 
-			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).
-					body(new GenericResponse(messages.getMessage("message.resetPasswordSuc", null, request.getLocale())));
+			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(
+					new GenericResponse(messages.getMessage("message.resetPasswordSuc", null, request.getLocale())));
 		} else {
-			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).
-					body(new GenericResponse(messages.getMessage("auth.message.invalid", null, request.getLocale())));
+			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
+					.body(new GenericResponse(messages.getMessage("auth.message.invalid", null, request.getLocale())));
 		}
 
 	}
-
 
 	@PostMapping("/user/changePassword")
 	public @ResponseBody ResponseEntity<GenericResponse> showChangePasswordPage(final HttpServletRequest request,
@@ -208,11 +205,11 @@ public class UserController {
 		UserDetailsImpl user = userService.getUserDetails();
 
 		if (!userService.checkIfValidOldPassword(user, changePasswordRequest.getOldPassword())) {
-	        throw new InvalidOldPasswordException("You entered Wrong Old password");
-	    }
-		  userService.changeUserPassword(user.getUsername(), changePasswordRequest.getPassword());
-		  return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).
-					body(new GenericResponse(messages.getMessage("message.changePassword.success", null, request.getLocale())));
+			throw new InvalidOldPasswordException("You entered Wrong Old password");
+		}
+		userService.changeUserPassword(user.getUsername(), changePasswordRequest.getPassword());
+		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(
+				new GenericResponse(messages.getMessage("message.changePassword.success", null, request.getLocale())));
 	}
 
 	@GetMapping("/updatePassword")
@@ -258,15 +255,14 @@ public class UserController {
 		return xfHeader.split(",")[0];
 	}
 
-
 	@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-	@GetMapping(value = {"/users/myorders"})
-	public @ResponseBody ResponseEntity<Page<Orders>> myorders(HttpServletRequest request,@RequestParam(name = "page",required = false) Integer pageNo, 
-			@RequestParam(name = "size",required = false) Integer pageSize,@SortDefault.SortDefaults({
-	    		@SortDefault(sort = "createdTs", direction = Sort.Direction.DESC),
-	    		@SortDefault(sort = "id", direction = Sort.Direction.DESC)
-	    })@Qualifier("my") Pageable pageable) {
-		Page<Orders> orderList = userService.myorders(pageNo,pageSize,pageable);
+	@GetMapping(value = { "/users/myorders" })
+	public @ResponseBody ResponseEntity<Page<Orders>> myorders(HttpServletRequest request,
+			@RequestParam(name = "page", required = false) Integer pageNo,
+			@RequestParam(name = "size", required = false) Integer pageSize,
+			@SortDefault.SortDefaults({ @SortDefault(sort = "createdTs", direction = Sort.Direction.DESC),
+					@SortDefault(sort = "id", direction = Sort.Direction.DESC) }) @Qualifier("my") Pageable pageable) {
+		Page<Orders> orderList = userService.myorders(pageNo, pageSize, pageable);
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(orderList);
 
 	}

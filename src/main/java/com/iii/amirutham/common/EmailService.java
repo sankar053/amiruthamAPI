@@ -18,11 +18,7 @@ public class EmailService {
     @Value("${support.email}")
     private String fromEmail;
     
-    private static final String BACKGROUND_IMAGE = "templates/images/background.png";
-    private static final String LOGO_BACKGROUND_IMAGE = "templates/images/logo-background.png";
-    private static final String THYMELEAF_BANNER_IMAGE = "templates/images/thymeleaf-banner.png";
-    private static final String THYMELEAF_LOGO_IMAGE = "templates/images/thymeleaf-logo.png";
-    private static final String PNG_MIME = "image/png";
+
     
     private final TemplateEngine templateEngine;
     private final JavaMailSender javaMailSender;
@@ -33,18 +29,16 @@ public class EmailService {
     }
   //  Object data,
     public void sendTemplateEmail(String toEmail, String subject, String templateName, Object data, String cc) {
-        Context context = new Context();
-        context.setVariable("register", data);
-        context.setVariable("name", "sankar");
-        String html = this.templateEngine.process(templateName, context);
-        
-    
-
-        try {
-            this.javaMailSender.send(constructEmail(subject, html, toEmail, cc, true));
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        }
+    	 Context context = new Context();
+         context.setVariable("data", data);
+//         context.setVariable("name", "test");
+//         context.setVariable("otp", 123);
+         String html = this.templateEngine.process(templateName, context);
+         try {
+             this.javaMailSender.send(constructEmail(subject, html, toEmail, cc, true));
+         } catch (MessagingException e) {
+             e.printStackTrace();
+         }
     }
 
     public void sendStringEmail(String toEmail, String subject, String body, String cc) {
