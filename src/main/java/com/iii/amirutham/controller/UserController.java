@@ -45,6 +45,7 @@ import com.iii.amirutham.config.UserDetailsImpl;
 import com.iii.amirutham.dto.base.EmailTemplate;
 import com.iii.amirutham.dto.base.GenericResponse;
 import com.iii.amirutham.dto.base.OnRegistrationCompleteEvent;
+import com.iii.amirutham.dto.model.ChangePasswordRequest;
 import com.iii.amirutham.dto.model.UserDto;
 import com.iii.amirutham.dto.model.ValidateOtpDto;
 import com.iii.amirutham.exception.InvalidOldPasswordException;
@@ -200,14 +201,16 @@ public class UserController {
 
 	}
 
+
 	@PostMapping("/user/changePassword")
-	public @ResponseBody ResponseEntity<GenericResponse> showChangePasswordPage(final HttpServletRequest request,@RequestParam("oldPassword") String oldPassword, @RequestParam("password") String password) {
+	public @ResponseBody ResponseEntity<GenericResponse> showChangePasswordPage(final HttpServletRequest request,
+			@Valid @RequestBody ChangePasswordRequest changePasswordRequest) {
 		UserDetailsImpl user = userService.getUserDetails();
 
-		if (!userService.checkIfValidOldPassword(user, oldPassword)) {
+		if (!userService.checkIfValidOldPassword(user, changePasswordRequest.getOldPassword())) {
 	        throw new InvalidOldPasswordException("You entered Wrong Old password");
 	    }
-		  userService.changeUserPassword(user.getUsername(), password);
+		  userService.changeUserPassword(user.getUsername(), changePasswordRequest.getPassword());
 		  return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).
 					body(new GenericResponse(messages.getMessage("message.changePassword.success", null, request.getLocale())));
 	}
