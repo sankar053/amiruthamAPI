@@ -303,6 +303,23 @@ public class BannerServiceImpl implements BannerService {
 			throw new MyFileNotFoundException("File not found " + fileName, ex);
 		}
 	}
+	
+	@Override
+	public Resource loadEmailTemplateResource(String fileName, String templateCode) {
+		try {
+			fileStorageLocation = Paths.get(Upload_Path + "EmailTemplate" + File.separator + templateCode + File.separator)
+					.toAbsolutePath().normalize();
+			Path filePath = fileStorageLocation.resolve(fileName).normalize();
+			Resource resource = new UrlResource(filePath.toUri());
+			if (resource.exists()) {
+				return resource;
+			} else {
+				throw new MyFileNotFoundException("File not found " + fileName);
+			}
+		} catch (MalformedURLException ex) {
+			throw new MyFileNotFoundException("File not found " + fileName, ex);
+		}
+	}
 
 	@Override
 	public void deleteBannerByID(int id) {

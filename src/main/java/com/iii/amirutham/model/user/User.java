@@ -43,11 +43,11 @@ public class User extends BaseEntity {
 	@Column(name = "lastName")
 	private String lastName;
 
-	@Size(min = 10, message = "LastName Should have Atleast two character")
+	@Size(min = 10, message = "Phone Number Should have Atleast two character")
 	@Column(name = "phoneNumber")
 	private String phoneNbr;
 
-	@Size(min = 2, message = "LastName Should have Atleast two character")
+	@Size(min = 2, message = "Email Address Should have Atleast two character")
 	@Column(name = "emailAddress")
 	private String emailAddress;
 

@@ -31,4 +31,6 @@ public interface BannerService {
 
 	public void addHomecontactreference(CustomerNewsLetterDto contactus);
 
+	Resource loadEmailTemplateResource(String fileName, String templateCode);
+
 }

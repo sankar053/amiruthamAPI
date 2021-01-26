@@ -29,7 +29,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.iii.amirutham.dto.base.GenericResponse;
 import com.iii.amirutham.dto.model.BannerDto;
 import com.iii.amirutham.dto.model.CustomerNewsLetterDto;
-import com.iii.amirutham.model.CustomerNewsLetter;
 import com.iii.amirutham.service.BannerService;
 import com.iii.amirutham.utills.AmirthumUtills;
 
@@ -47,41 +46,30 @@ public class BannerController {
 	@PostMapping("/banner")
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<GenericResponse> createHomeBanner(HttpServletRequest request,
-			@RequestPart("payload") String payload, @RequestPart("file") @Valid @NotNull @NotBlank List<MultipartFile> files) {
-		
+			@RequestPart("payload") String payload,
+			@RequestPart("file") @Valid @NotNull @NotBlank List<MultipartFile> files) {
+
 		BannerDto bannerdto = (BannerDto) AmirthumUtills.convertJsontoObject(BannerDto.class, payload);
-		if(bannerdto.getId()==0) {
+		if (bannerdto.getId() == 0) {
 			bannerService.addHomeBanner(bannerdto, files);
 			List<BannerDto> homeBanners = bannerService.retriveAllBanners();
-			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
-					.body(new GenericResponse(messages.getMessage("banner.message.create.success", null, request.getLocale()),homeBanners));	
-		}
-		else {
+			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(new GenericResponse(
+					messages.getMessage("banner.message.create.success", null, request.getLocale()), homeBanners));
+		} else {
 			bannerService.updateHomeBanner(bannerdto, files);
 			List<BannerDto> homeBanners = bannerService.retriveAllBanners();
-			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
-					.body(new GenericResponse(messages.getMessage("banner.message.update.success", null, request.getLocale()),homeBanners));	
+			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(new GenericResponse(
+					messages.getMessage("banner.message.update.success", null, request.getLocale()), homeBanners));
 		}
 
-	
-	}
-	
-	@PostMapping("/contactus")
-	public ResponseEntity<GenericResponse> createHomeBanner(HttpServletRequest request,
-			@Valid @RequestBody CustomerNewsLetterDto requestContactus) {
-		
-		bannerService.addHomecontactreference(requestContactus);
-		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
-				.body(new GenericResponse(messages.getMessage("home.message.contactus.success", null, request.getLocale())));
-
-	
 	}
 
 	@GetMapping
 	public ResponseEntity<GenericResponse> retribeAllBanner() {
 		List<BannerDto> homeBanners = bannerService.retriveAllBanners();
 
-		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(new GenericResponse("Success",homeBanners));
+		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
+				.body(new GenericResponse("Success", homeBanners));
 
 	}
 
@@ -92,21 +80,22 @@ public class BannerController {
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(homeBanner);
 
 	}
-	
+
 	@PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping("/{id}")
-	public ResponseEntity<GenericResponse> deleteBannerByID(HttpServletRequest request,@PathVariable int id) {
+	public ResponseEntity<GenericResponse> deleteBannerByID(HttpServletRequest request, @PathVariable int id) {
 		bannerService.deleteBannerByID(id);
 		List<BannerDto> homeBanners = bannerService.retriveAllBanners();
-		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
-				.body(new GenericResponse(messages.getMessage("banner.message.detete.success", null, request.getLocale()),homeBanners));	
+		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(new GenericResponse(
+				messages.getMessage("banner.message.detete.success", null, request.getLocale()), homeBanners));
 
 	}
 
 	@GetMapping("/downloadFile/{fileName:.+}/{bannerCode}")
-	public ResponseEntity<Resource> downloadFile(@PathVariable String fileName,@PathVariable String bannerCode, HttpServletRequest request) {
+	public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, @PathVariable String bannerCode,
+			HttpServletRequest request) {
 		// Load file as Resource
-		Resource resource = bannerService.loadBannerAsResource(fileName,bannerCode);
+		Resource resource = bannerService.loadBannerAsResource(fileName, bannerCode);
 
 		// Try to determine file's content type
 		String contentType = null;
@@ -124,6 +113,40 @@ public class BannerController {
 		return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType))
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
 				.body(resource);
+	}
+
+	@GetMapping("/emailFile/{fileName:.+}/{templateCode}")
+	public ResponseEntity<Resource> downloadEmailTemplateFile(@PathVariable String fileName,
+			@PathVariable String templateCode, HttpServletRequest request) {
+		// Load file as Resource
+		Resource resource = bannerService.loadEmailTemplateResource(fileName, templateCode);
+
+		// Try to determine file's content type
+		String contentType = null;
+		try {
+			contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+		} catch (IOException ex) {
+			System.out.println("Could not determine file type.");
+		}
+
+		// Fallback to the default content type if type could not be determined
+		if (contentType == null) {
+			contentType = "application/octet-stream";
+		}
+
+		return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType))
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+				.body(resource);
+	}
+
+	@PostMapping("/contactus")
+	public ResponseEntity<GenericResponse> createHomeBanner(HttpServletRequest request,
+			@Valid @RequestBody CustomerNewsLetterDto requestContactus) {
+
+		bannerService.addHomecontactreference(requestContactus);
+		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(
+				new GenericResponse(messages.getMessage("home.message.contactus.success", null, request.getLocale())));
+
 	}
 
 }
