@@ -153,28 +153,7 @@ public class UserController {
 				new GenericResponse(messages.getMessage("message.resetPasswordEmail", null, request.getLocale())));
 	}
 
-	public void constructOTPEmail(User to, Locale locale, String otp) {
-
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		String username = auth.getName();
-		LOGGER.info("OTP : " + otp);
-
-		// Generate The Template to send OTP
-		EmailTemplate template = new EmailTemplate("SendOtp.html");
-
-		Map<String, String> replacements = new HashMap<String, String>();
-		replacements.put("user", username);
-		replacements.put("otpnum", otp);
-
-		String message = template.getTemplate(replacements);
-
-		sendOtpMessage(to, "OTP -SpringBoot", message, locale);
-	}
-
-	public void sendOtpMessage(User to, String subject, String body, final Locale locale) {
-		mailSender.send(constructEmail(subject, body, to));
-
-	}
+	
 
 	@PostMapping("/user/validateOtp")
 	public @ResponseBody ResponseEntity<GenericResponse> validateOtp(@Valid @RequestBody ValidateOtpDto otpDto,

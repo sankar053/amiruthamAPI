@@ -21,7 +21,7 @@ public interface BannerService {
 	
 	public void updateHomeBanner(BannerDto bannerDto, List<MultipartFile> file);
 
-	public  List<BannerDto> retriveAllBanners();
+	public  BannerDto retriveActiveBanner();
 
 	public BannerDto retribeBannerByID(int id);
 
@@ -32,5 +32,7 @@ public interface BannerService {
 	public void addHomecontactreference(CustomerNewsLetterDto contactus);
 
 	Resource loadEmailTemplateResource(String fileName, String templateCode);
+
+	public List<BannerDto> retriveAllBanners();
 
 }

@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.iii.amirutham.model.HomeBanner;
-import com.iii.amirutham.model.HomeBannerMedia;
 
 public interface BannerRepository extends JpaRepository<HomeBanner, Integer> {
 	
@@ -26,6 +25,9 @@ public interface BannerRepository extends JpaRepository<HomeBanner, Integer> {
 	@Modifying
 	@Query("delete from CategoryBanner m where m.id=:id")
 	void deleteCategoryBanner(@Param("id") Integer id);
+	
+	
+	HomeBanner findByIsActive(String activeYN);
 	
 //	@Query("select * from categoryBanner m where m.id=:id")
 //	HomeBannerMedia getHomeBanner(@Param("id") Integer id);

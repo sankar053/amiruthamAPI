@@ -186,11 +186,11 @@ public class BannerServiceImpl implements BannerService {
 	}
 
 	@Override
-	public List<BannerDto> retriveAllBanners() {
+	public BannerDto retriveActiveBanner() {
 		// TODO Auto-generated method stub
-		List<BannerDto> homeBannerList = new ArrayList<BannerDto>();
-		List<HomeBanner> bannerDaoList = bannerRepo.findAll();
-		if (bannerDaoList != null) {
+		BannerDto homeBanner=null;
+		HomeBanner banner = bannerRepo.findByIsActive("Y");
+		if (banner != null) {
 			List<AmiruthamProducts> allprod = productRepo.findAll();
 			List<AmiruthamProducts> bestselling = allprod.stream().filter(p -> "Y".equals(p.getProductBestSellingYN()))
 					.collect(Collectors.toList());
@@ -226,15 +226,12 @@ public class BannerServiceImpl implements BannerService {
 
 			}
 			
-			
-			for (HomeBanner banner : bannerDaoList) {
-				BannerDto homeBanner = ((BannerDto) AmirthumUtills.convertToDto(banner, BannerDto.class, modelMapper));
-				homeBanner.setBestselling(productlistdto);
-				homeBannerList.add(homeBanner);
-			}
+			homeBanner = ((BannerDto) AmirthumUtills.convertToDto(banner, BannerDto.class, modelMapper));
+			homeBanner.setBestselling(productlistdto);
+		
 
 		}
-		return (homeBannerList);
+		return (homeBanner);
 
 	}
 
@@ -336,5 +333,55 @@ public class BannerServiceImpl implements BannerService {
 		newsLetterRepository.save(new CustomerNewsLetter(contactus.getEmail(),"Guest"));
 		
 	}
+
+	@Override
+	public List<BannerDto> retriveAllBanners() {// TODO Auto-generated method stub
+		List<BannerDto> homeBannerList = new ArrayList<BannerDto>();
+		List<HomeBanner> bannerDaoList = bannerRepo.findAll();
+		if (bannerDaoList != null) {
+			List<AmiruthamProducts> allprod = productRepo.findAll();
+			List<AmiruthamProducts> bestselling = allprod.stream().filter(p -> "Y".equals(p.getProductBestSellingYN()))
+					.collect(Collectors.toList());
+			
+			
+			List<ProductDto> productlistdto = new ArrayList<ProductDto>();
+
+			for (AmiruthamProducts prod : bestselling) {
+				List<ProductMediaDto> mediaarray = null;
+				List<ProductVarientDto> productVarient = null;
+				if (null != prod.getProdMedias() && prod.getProdMedias().size() > 0) {
+					mediaarray = prod.getProdMedias().stream()
+							.map(prodmed -> new ProductMediaDto(prodmed.getId(), prodmed.getProdImgNm(),
+									prodmed.getProdImgPath(), prodmed.getProdImgUrl(), prodmed.getProdImgType(),
+									prodmed.getProdImgSize(),prodmed.getProductCode()))
+							.collect(Collectors.toList());
+
+				}
+				if (null != prod.getProdVarient() && prod.getProdVarient().size() > 0) {
+					productVarient = prod.getProdVarient().stream()
+							.map(varient -> new ProductVarientDto(varient.getId(), varient.getMaximumRetailPrice(),
+									varient.getSellingPrice(), varient.getSavedPrice(), varient.getDiscount(),
+									varient.getUnit(), varient.getUnitType(), varient.getManufactureDate(),
+									varient.getBestBeforeDate(), prod.getId(), varient.getStock()))
+							.collect(Collectors.toList());
+				}
+				ProductDto prodDto = new ProductDto(prod.getId(), prod.getCategory().getId(), prod.getProductCode(),
+						prod.getProductNm(), prod.getProductDesc(), prod.getProductuses(), prod.getProductincredience(),
+						mediaarray, productVarient, prod.getProductBestSellingYN(),prod.getProductRating(),prod.getNoofReviews());
+				prodDto.setUpdatedBy(prod.getUpdatedBy());
+				prodDto.setCreatedTs(prod.getCreatedTs());
+				productlistdto.add(prodDto);
+
+			}
+			
+			
+			for (HomeBanner banner : bannerDaoList) {
+				BannerDto homeBanner = ((BannerDto) AmirthumUtills.convertToDto(banner, BannerDto.class, modelMapper));
+				homeBanner.setBestselling(productlistdto);
+				homeBannerList.add(homeBanner);
+			}
+
+		}
+		return (homeBannerList);}
 
 }

@@ -64,12 +64,12 @@ public class BannerController {
 
 	}
 
-	@GetMapping
-	public ResponseEntity<GenericResponse> retribeAllBanner() {
-		List<BannerDto> homeBanners = bannerService.retriveAllBanners();
+	@GetMapping("/banner")
+	public ResponseEntity<BannerDto> retribeAllBanner() {
+		BannerDto homeBanners = bannerService.retriveActiveBanner();
 
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
-				.body(new GenericResponse("Success", homeBanners));
+				.body(homeBanners);
 
 	}
 
