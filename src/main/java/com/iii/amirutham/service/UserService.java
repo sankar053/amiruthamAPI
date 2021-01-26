@@ -29,7 +29,7 @@ public interface UserService {
 	
 	public void deleteUserById(int id);
 
-	public Optional<User> findUserByEmail(String userEmailORPhone);
+	public Optional<User> findByUserName(String userEmailORPhone);
 	
 	public boolean updatePassword(ValidateOtpDto otpDto);
 
@@ -42,4 +42,8 @@ public interface UserService {
 	String createPasswordResetTokenForUser(User user, String token);
 
 	public Page<Orders> myorders(Integer pageNo, Integer pageSize,Pageable pageable);
+	
+	public boolean checkIfValidOldPassword(UserDetailsImpl user,String oldPassword);
+	
+	public void changeUserPassword(String userName,String password);
 }

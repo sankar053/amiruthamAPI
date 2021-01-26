@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	@Qualifier("GeoIPCountry")
 	private DatabaseReader databaseReader;
-	
+
 	@Autowired
 	private OrderRepository orderRepository;
 
@@ -160,7 +160,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Optional<User> findUserByEmail(String userEmailORPhone) {
+	public Optional<User> findByUserName(String userEmailORPhone) {
 		// TODO Auto-generated method stub
 
 		if (userRepository.existsByPhoneNbr(userEmailORPhone)) {
@@ -216,7 +216,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public boolean updatePassword(ValidateOtpDto otpDto) {
 
-		Optional<User> user = findUserByEmail(otpDto.getUserName());
+		Optional<User> user = findByUserName(otpDto.getUserName());
 
 		if (user.isPresent()) {
 			user.get().setPassword(passwordEncoder.encode(otpDto.getChangePassword()));
@@ -230,17 +230,34 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Page<Orders> myorders(Integer pageNo, Integer pageSize,Pageable pageable) {
+	public Page<Orders> myorders(Integer pageNo, Integer pageSize, Pageable pageable) {
 		// TODO Auto-generated method stub
-		if(pageNo!=null && pageSize!=null)
-			pageable = PageRequest.of(pageNo, pageSize,Sort.by(
-				    Order.desc("createdTs"),
-				    Order.desc("id")));
+		if (pageNo != null && pageSize != null)
+			pageable = PageRequest.of(pageNo, pageSize, Sort.by(Order.desc("createdTs"), Order.desc("id")));
 		UserDetailsImpl userDetails = getUserDetails();
 		Optional<User> user = userRepository.findById(userDetails.getId());
-				if(user.isPresent())
-					return orderRepository.findByUser(user.get(),pageable);
+		if (user.isPresent())
+			return orderRepository.findByUser(user.get(), pageable);
 		return null;
+	}
+
+	@Override
+	public boolean checkIfValidOldPassword(UserDetailsImpl user, String oldPassword) {
+		// TODO Auto-generated method stub
+		return passwordEncoder.matches(oldPassword, user.getPassword());
+	}
+
+	@Override
+	public void changeUserPassword(String userName, String password) {
+		// TODO Auto-generated method stub
+		Optional<User> user = findByUserName(userName);
+
+		if (user.isPresent()) {
+			User userDao = user.get();
+			userDao.setPassword(passwordEncoder.encode(password));
+			userRepository.save(userDao);
+		}
+
 	}
 
 }

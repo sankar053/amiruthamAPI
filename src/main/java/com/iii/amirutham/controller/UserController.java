@@ -47,6 +47,7 @@ import com.iii.amirutham.dto.base.GenericResponse;
 import com.iii.amirutham.dto.base.OnRegistrationCompleteEvent;
 import com.iii.amirutham.dto.model.UserDto;
 import com.iii.amirutham.dto.model.ValidateOtpDto;
+import com.iii.amirutham.exception.InvalidOldPasswordException;
 import com.iii.amirutham.exception.UserNotFoundException;
 import com.iii.amirutham.model.order.Orders;
 import com.iii.amirutham.model.user.User;
@@ -127,7 +128,7 @@ public class UserController {
 	@PostMapping("/user/forgetPassword")
 	public @ResponseBody GenericResponse forgetPassword(HttpServletRequest request,
 			@RequestParam("username") String userEmailORPhone) {
-		Optional<User> user = userService.findUserByEmail(userEmailORPhone);
+		Optional<User> user = userService.findByUserName(userEmailORPhone);
 		if (null == user) {
 			throw new UserNotFoundException(messages.getMessage("auth.message.invalidUser", null, request.getLocale()));
 		}
@@ -140,7 +141,7 @@ public class UserController {
 	@PostMapping("/user/resetPassword")
 	public @ResponseBody ResponseEntity<GenericResponse> resetPassword(HttpServletRequest request,
 			@RequestParam("username") String userEmailORPhone) {
-		Optional<User> user = userService.findUserByEmail(userEmailORPhone);
+		Optional<User> user = userService.findByUserName(userEmailORPhone);
 
 		if (null == user) {
 			throw new UserNotFoundException("");
@@ -199,18 +200,16 @@ public class UserController {
 
 	}
 
-	@GetMapping("/user/changePassword")
-	public ModelAndView showChangePasswordPage(final ModelMap model, @RequestParam("token") final String token) {
-		final String result = securityUserService.validatePasswordResetToken(token);
+	@PostMapping("/user/changePassword")
+	public @ResponseBody ResponseEntity<GenericResponse> showChangePasswordPage(final HttpServletRequest request,@RequestParam("oldPassword") String oldPassword, @RequestParam("password") String password) {
+		UserDetailsImpl user = userService.getUserDetails();
 
-		if (result != null) {
-			String messageKey = "auth.message." + result;
-			model.addAttribute("messageKey", messageKey);
-			return new ModelAndView("redirect:/login", model);
-		} else {
-			model.addAttribute("token", token);
-			return new ModelAndView("redirect:/updatePassword");
-		}
+		if (!userService.checkIfValidOldPassword(user, oldPassword)) {
+	        throw new InvalidOldPasswordException("You entered Wrong Old password");
+	    }
+		  userService.changeUserPassword(user.getUsername(), password);
+		  return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).
+					body(new GenericResponse(messages.getMessage("message.changePassword.success", null, request.getLocale())));
 	}
 
 	@GetMapping("/updatePassword")

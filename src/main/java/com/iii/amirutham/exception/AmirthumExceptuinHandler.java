@@ -46,6 +46,16 @@ public class AmirthumExceptuinHandler extends ResponseEntityExceptionHandler {
 
 	}
 	
+	@ExceptionHandler(InvalidOldPasswordException.class)
+	public final ResponseEntity<Object> handleInvalidOldPasswordException(InvalidOldPasswordException ex, WebRequest request)
+			throws Exception {
+		ExceptionResponse exceptionResponse = new ExceptionResponse("4004", ex.getMessage(), new Date(),
+				request.getDescription(false));
+
+		return new ResponseEntity<Object>(exceptionResponse, HttpStatus.UNAUTHORIZED);
+
+	}
+	
 	@ExceptionHandler(TokenExpireException.class)
 	public final ResponseEntity<Object> handleNotFoundException(TokenExpireException ex, WebRequest request)
 			throws Exception {
