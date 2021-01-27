@@ -82,8 +82,6 @@ public class OrderServiceImpl implements OrderService {
 			orderDao.setTotal(mypendingCart.getFinalpriceWithTax());
 			orderDao.setShoppingCartCode(mypendingCart.getShoppingCartCode());
 			orderDao.setUser(userRepository.findById(user.getId()).get());
-			// order.setAddress(new Address("157/73A KR Gardern","Railway Feeder
-			// Road","Shipment","Virudhunagar","TamilNadu","626001",order.getUser()));
 			orderDao.setAddress(getShippingAddress(orderDto.getShippingAddress(), orderDao.getUser()));
 			Set<OrderProduct> orderProducts = new LinkedHashSet<OrderProduct>();
 			for (ShoppingCartItem cartItem : mypendingCart.getLineItems()) {
