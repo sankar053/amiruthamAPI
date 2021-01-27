@@ -113,10 +113,10 @@ public class UserServiceImpl implements UserService {
 					"There is an account with that Phone Number: " + accountDto.getPhoneNbr());
 		}
 
-		if (userRepository.existsByEmailAddress(accountDto.getEmailAddress())) {
-			throw new UserAlreadyExistException(
-					"There is an account with that email address: " + accountDto.getEmailAddress());
-		}
+//		if (userRepository.existsByEmailAddress(accountDto.getEmailAddress())) {
+//			throw new UserAlreadyExistException(
+//					"There is an account with that email address: " + accountDto.getEmailAddress());
+//		}
 
 		// Create new user's account
 		User user = new User(null, accountDto.getFirstName(), accountDto.getLastName(), accountDto.getPhoneNbr(),
@@ -152,8 +152,8 @@ public class UserServiceImpl implements UserService {
 			});
 			user.setRoles(roles);
 		}
-		emailService.sendTemplateEmail(user.getEmailAddress(), "Registation", "email-editable", null, null);
-		return userRepository.save(user);
+		emailService.sendTemplateEmail(user.getEmailAddress(), "Registation", "register-template", user, null);
+		return user;//userRepository.save(user);
 		
 	}
 
@@ -271,8 +271,8 @@ public class UserServiceImpl implements UserService {
 	public void constructOTPEmail(User user, String otp) {
 		// TODO Auto-generated method stub
 		
-		emailService.sendTemplateEmail(user.getEmailAddress(), "Forgot Project", "otp-template", 
-					new OnetimePasswordMail(otp,user.getFirstName()), null);
+		emailService.sendTemplateEmail(user.getEmailAddress(), "Password Reset Request for Amirutham eportal", "otp-template", 
+					new OnetimePasswordMail(otp,user.getFirstName(),user.getEmailAddress()), null);
 		
 	}
 

@@ -11,5 +11,9 @@ public class RegistationMail {
 	
 	private String name;
 	
+	private String email;
+	
+	private String homeurl;
+	
 
 }

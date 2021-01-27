@@ -1,12 +1,9 @@
 package com.iii.amirutham.controller;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -27,8 +24,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,7 +37,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.iii.amirutham.config.UserDetailsImpl;
-import com.iii.amirutham.dto.base.EmailTemplate;
 import com.iii.amirutham.dto.base.GenericResponse;
 import com.iii.amirutham.dto.base.OnRegistrationCompleteEvent;
 import com.iii.amirutham.dto.model.ChangePasswordRequest;

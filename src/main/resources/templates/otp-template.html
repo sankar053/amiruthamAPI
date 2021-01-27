@@ -5,35 +5,46 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     </head>
     <body>
-        <div style="background-color: #ccc; background-image: url(images/background.png)"
-             data-th-style="|background-color: #ccc; background-image: url(cid:background)|">
+       <div style="background-color: #ccc;">
             <div style="padding: 40px;">
-                <div style="margin-left: auto; margin-right: auto; min-width: 320px; border: solid 1px #62ea92; border-radius: 6px;">
-                    <div style="background-color: #62ea92; padding: 4px 4px 2px 4px;">
-                        <div style="background-image: url(images/logo-background.png);"
-                             data-th-style="|background-image: url(cid:logo-background)|">
-                            
-                        </div>
-                    </div>
+                <div style="margin-left: auto; margin-right: auto; min-width: 120px; border: solid 1px #62ea92; border-radius: 3px;">
+                   
                     <div style="padding: 15px 15px 30px 15px; font-family: Verdana, Arial, Helvetica, sans-serif; font-size:1em; background-color: #fff; color:#333;">
-    <img src="https://blog.hubspot.com/hs-fs/hubfs/email-signature-example-generator-2.png?width=458&name=email-signature-example-generator-2.png" />                      
-					  <p>Hello <span th:text="${data.name}">User</span></p>
+                    
+					<div style="font-size:20px;line-height:34px;font-family:Georgia,serif;font-style:italic;font-weight:400;color:#999999">
+					Hello from CrazyMonk!</div>
+					
+					<h1 style="margin:0;text-align:center;font-size:32px;line-height:40px;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;font-style:normal;font-weight:600;color:#222222">
+					Password reset instructions</h1>
+					
+					
+                   <p>Dear  <span th:text="${data.name}">User</span></p>
+				   
+				   <p style="margin:0 0 16px">Someone requested that the password be reset for the following account:</p>
+				   
+				   <p style="margin:0 0 16px">Username: <a th:href="'mailto:' + ${data.email} " target="_blank" th:text="${data.email}">xxxx@gmail.com</a></p>
                         <p>
-                            You One Time Password is <span th:text="${data.otp}">OneTimePassword</span>
+                         						
+							<p> To reset your password,Enter the OTP to proceed.</p> <p>OTP: <span th:text="${data.otp}">OneTimePassword</span></p> 
+<p>(This OTP is generated at <span th:text="${data.time}">hh:mm AM IST</span>  and is valid for next 15 minutes)</p>
+							
                         </p>
-                        
-                      <p>
+                  <p style="margin:0 0 16px">If this was a mistake, just ignore this email and nothing will happen.</p>      
+                  
        <p>
             <img src="https://raw.githubusercontent.com/sankar053/amiruthumimg/main/logo.png" />
         </p>
-    </p>   
+  	<p>
+      Regards, <br />
+      <em>Amiruthum Support</em>
+    </p> 
 						
                     </div>
                    
                     </div>
                 </div>
             </div>
-        </div>
+    
     </body>
 </html>
 
