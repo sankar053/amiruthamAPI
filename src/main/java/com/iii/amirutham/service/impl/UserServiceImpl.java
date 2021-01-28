@@ -1,6 +1,7 @@
 package com.iii.amirutham.service.impl;
 
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +22,10 @@ import org.springframework.stereotype.Service;
 
 import com.iii.amirutham.common.EmailService;
 import com.iii.amirutham.common.mail.dto.OnetimePasswordMail;
+import com.iii.amirutham.common.mail.dto.OrderDataMail;
+import com.iii.amirutham.common.mail.dto.OrderDeliveryDetails;
+import com.iii.amirutham.common.mail.dto.OrderItemsMail;
+import com.iii.amirutham.common.mail.dto.RegistationMail;
 import com.iii.amirutham.config.UserDetailsImpl;
 import com.iii.amirutham.dto.model.UserDto;
 import com.iii.amirutham.dto.model.ValidateOtpDto;
@@ -113,10 +118,9 @@ public class UserServiceImpl implements UserService {
 					"There is an account with that Phone Number: " + accountDto.getPhoneNbr());
 		}
 
-//		if (userRepository.existsByEmailAddress(accountDto.getEmailAddress())) {
-//			throw new UserAlreadyExistException(
-//					"There is an account with that email address: " + accountDto.getEmailAddress());
-//		}
+		if (userRepository.existsByEmailAddress(accountDto.getEmailAddress())) {
+			throw new UserAlreadyExistException(
+					"There is an account with that email address: " + accountDto.getEmailAddress());		}
 
 		// Create new user's account
 		User user = new User(null, accountDto.getFirstName(), accountDto.getLastName(), accountDto.getPhoneNbr(),
@@ -152,8 +156,10 @@ public class UserServiceImpl implements UserService {
 			});
 			user.setRoles(roles);
 		}
-		emailService.sendTemplateEmail(user.getEmailAddress(), "Registation", "register-template", user, null);
-		return user;//userRepository.save(user);
+		emailService.sendTemplateEmail(user.getEmailAddress(), "Your Amirutham ePortal account has been created!", "register-template", 
+				new RegistationMail(user.getFirstName(),user.getEmailAddress(),"http://localhost:4200/home")
+				, null);
+		return userRepository.save(user);
 		
 	}
 
@@ -270,6 +276,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void constructOTPEmail(User user, String otp) {
 		// TODO Auto-generated method stub
+		
 		
 		emailService.sendTemplateEmail(user.getEmailAddress(), "Password Reset Request for Amirutham eportal", "otp-template", 
 					new OnetimePasswordMail(otp,user.getFirstName(),user.getEmailAddress()), null);

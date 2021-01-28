@@ -3,6 +3,7 @@
  */
 package com.iii.amirutham.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -12,6 +13,10 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.iii.amirutham.common.EmailService;
+import com.iii.amirutham.common.mail.dto.OrderDataMail;
+import com.iii.amirutham.common.mail.dto.OrderDeliveryDetails;
+import com.iii.amirutham.common.mail.dto.OrderItemsMail;
 import com.iii.amirutham.config.UserDetailsImpl;
 import com.iii.amirutham.dto.model.AddressDto;
 import com.iii.amirutham.dto.model.OrderDto;
@@ -44,6 +49,9 @@ public class OrderServiceImpl implements OrderService {
 
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private EmailService emailService;
 
 	@Autowired
 	private UserRepository userRepository;
@@ -110,11 +118,50 @@ public class OrderServiceImpl implements OrderService {
 
 			orderDao = orderRepository.save(orderDao);
 			cartRepository.updateShoppingCartStatus(orderDto.getCartId(), "Converted");
+			
+			sentMailforOrderConformation(orderDao,user);
+			
+			
 			return orderDao.getOrderCode();
 		}
 		return null;
 
 	}
+	
+	
+	
+	void sentMailforOrderConformation(Orders orderDao,UserDetailsImpl user){
+		
+		
+		List<OrderItemsMail> orderedItem = new ArrayList<OrderItemsMail>();
+		
+		Set<OrderProduct> orderedProducts =orderDao.getOrderProducts();
+		if(null!=orderedProducts) {
+			for(OrderProduct product : orderedProducts) {
+				orderedItem.add(new OrderItemsMail(product.getOrderedproductName(),
+						product.getOrderedQuantity(),product.getProductPrice()) );
+			}
+		}
+		
+		Address shippingAddress = orderDao.getAddress();
+		OrderDeliveryDetails address =new OrderDeliveryDetails(orderDao.getReceiverName(),
+				user.getEmail(),orderDao.getReceiverPhoneNumber(),
+				shippingAddress.getAddress1()+" "+shippingAddress.getAddress2(),
+				shippingAddress.getCity()+"-"+shippingAddress.getPostalCopde(),
+				shippingAddress.getState());
+		
+	
+		OrderDataMail order =new OrderDataMail(orderDao.getOrderCode(),
+				user.getFirstName(),
+				orderDao.getTotal(),"Free Shipping",
+				"50","COD",orderDao.getTotal(),orderedItem,address,"http:localhost:4200/home");
+		emailService.sendTemplateEmail(user.getEmail(), "Your Amiruthum ePortal order has been received!", "order-Conformation-template", 
+				order, null);
+	}
+	
+	
+	
+	
 
 	public Address getShippingAddress(AddressDto addressDto, User u) {
 		if (null != addressDto.getId()) {
