@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.thymeleaf.TemplateEngine;
@@ -28,6 +29,7 @@ public class EmailService {
         this.javaMailSender = javaMailSender;
     }
   //  Object data,
+    
     public void sendTemplateEmail(String toEmail, String subject, String templateName, Object data, String cc) {
     	 Context context = new Context();
          context.setVariable("data", data);
@@ -35,7 +37,7 @@ public class EmailService {
 //         context.setVariable("otp", 123);
          String html = this.templateEngine.process(templateName, context);
          try {
-             this.javaMailSender.send(constructEmail(subject, html, toEmail, cc, true));
+             constructEmail(subject, html, toEmail, cc, true);
          } catch (MessagingException e) {
              e.printStackTrace();
          }
@@ -43,13 +45,13 @@ public class EmailService {
 
     public void sendStringEmail(String toEmail, String subject, String body, String cc) {
         try {
-            this.javaMailSender.send(constructEmail(subject, body, toEmail, cc,  false));
+            constructEmail(subject, body, toEmail, cc,  false);
         } catch (MessagingException e) {
             e.printStackTrace();
         }
     }
-
-    private MimeMessage constructEmail(String subject, String body, String toEmail, String cc, boolean isHtml) throws MessagingException {
+    @Async
+    private void constructEmail(String subject, String body, String toEmail, String cc, boolean isHtml) throws MessagingException {
         final MimeMessage mimeMessage = this.javaMailSender.createMimeMessage();
         final MimeMessageHelper message = new MimeMessageHelper(mimeMessage,true, "UTF-8");
         message.setSubject(subject);
@@ -57,7 +59,8 @@ public class EmailService {
         message.setTo(toEmail);
         if(!ObjectUtils.isEmpty(cc)) message.setCc(cc);
         message.setText(body, isHtml);
-        return mimeMessage;
+        this.javaMailSender.send(mimeMessage);
+     //   return mimeMessage;
     }
 
 }

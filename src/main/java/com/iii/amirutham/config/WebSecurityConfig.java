@@ -72,10 +72,10 @@ public class WebSecurityConfig  extends WebSecurityConfigurerAdapter {
 	
 
 
-	 @Bean(name="GeoIPCountry")
-	    public DatabaseReader databaseReader() throws IOException, GeoIp2Exception {
-	        final File resource = new File("src/main/resources/maxmind/geolite2-country.mmdb");
-	        return new DatabaseReader.Builder(resource).build();
-	    }
+//	 @Bean(name="GeoIPCountry")
+//	    public DatabaseReader databaseReader() throws IOException, GeoIp2Exception {
+//	        final File resource = new File("src/main/resources/maxmind/geolite2-country.mmdb");
+//	        return new DatabaseReader.Builder(resource).build();
+//	    }
 
 }

@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -78,6 +79,10 @@ public class OrderProduct extends BaseEntity {
 	@ManyToOne(targetEntity = Orders.class)
 	@JoinColumn(name = "ORDER_ID", nullable = true)
 	private Orders order;
+	
+	@OneToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+	@JoinColumn(name = "orderitemid",referencedColumnName = "id")
+	private OrderTaxInfo ordertaxinfo;
 	
 
 }

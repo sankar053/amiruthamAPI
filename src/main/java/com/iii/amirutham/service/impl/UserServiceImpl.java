@@ -1,7 +1,6 @@
 package com.iii.amirutham.service.impl;
 
 import java.net.InetAddress;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -9,7 +8,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,9 +20,6 @@ import org.springframework.stereotype.Service;
 
 import com.iii.amirutham.common.EmailService;
 import com.iii.amirutham.common.mail.dto.OnetimePasswordMail;
-import com.iii.amirutham.common.mail.dto.OrderDataMail;
-import com.iii.amirutham.common.mail.dto.OrderDeliveryDetails;
-import com.iii.amirutham.common.mail.dto.OrderItemsMail;
 import com.iii.amirutham.common.mail.dto.RegistationMail;
 import com.iii.amirutham.config.UserDetailsImpl;
 import com.iii.amirutham.dto.model.UserDto;
@@ -47,7 +42,6 @@ import com.iii.amirutham.repo.UserRepository;
 import com.iii.amirutham.repo.VerificationTokenRepository;
 import com.iii.amirutham.service.UserService;
 import com.iii.amirutham.utills.AmirthumUtills;
-import com.maxmind.geoip2.DatabaseReader;
 
 /**
  * @author sanka
@@ -77,9 +71,9 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private VerificationTokenRepository tokenRepository;
 
-	@Autowired
-	@Qualifier("GeoIPCountry")
-	private DatabaseReader databaseReader;
+//	@Autowired
+//	@Qualifier("GeoIPCountry")
+//	private DatabaseReader databaseReader;
 
 	@Autowired
 	private OrderRepository orderRepository;

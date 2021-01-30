@@ -17,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -27,6 +28,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.iii.amirutham.model.Address;
 import com.iii.amirutham.model.BaseEntity;
+import com.iii.amirutham.model.MerchantStore;
 import com.iii.amirutham.model.user.User;
 
 import lombok.AllArgsConstructor;
@@ -46,45 +48,50 @@ public class Orders extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	@Column (name ="ORDER_STATUS")
+	@Column(name = "ORDER_STATUS")
 	@Enumerated(value = EnumType.STRING)
 	private OrderStatus orderStatus = OrderStatus.ORDERED;
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column (name ="LAST_MODIFIED")
+	@Column(name = "LAST_MODIFIED")
 	private Date lastModified;
-	
-	@Column (name ="ORDER_RECEIVER_NAME")
+
+	@Column(name = "ORDER_RECEIVER_NAME")
 	private String receiverName;
-	
-	@Column (name ="ORDER_RECEIVER_PHONE_NUMBER")
+
+	@Column(name = "ORDER_RECEIVER_PHONE_NUMBER")
 	private String receiverPhoneNumber;
-	
-	
+
 	@Temporal(TemporalType.DATE)
-	@Column (name ="DATE_PURCHASED")
+	@Column(name = "DATE_PURCHASED")
 	private Date datePurchased;
-	
-	@Column (name ="ORDER_TOTAL")
-	private BigDecimal total;
-	
-	@Column(name = "ORDER_CODE", nullable=true)
+
+	@Column(name = "ORDER_GROSS_TOTAL")
+	private BigDecimal grossTotal;
+
+	@Column(name = "ORDER_GST_TOTAL")
+	private BigDecimal gstTotal;
+
+	@Column(name = "ORDER_NET_TOTAL")
+	private BigDecimal netTotal;
+
+	@Column(name = "ORDER_CODE", nullable = true)
 	private String orderCode;
-	
-	@Column(name = "CART_CODE", nullable=true)
+
+	@Column(name = "CART_CODE", nullable = true)
 	private String shoppingCartCode;
 
-	@Column (name ="CHANNEL")
+	@Column(name = "CHANNEL")
 	@Enumerated(value = EnumType.STRING)
 	private OrderChannel channel = OrderChannel.OFFLINE;
-	
-	@Column (name ="ORDER_TYPE")
+
+	@Column(name = "ORDER_TYPE")
 	@Enumerated(value = EnumType.STRING)
 	private OrderType orderType = OrderType.ORDER;
 
-	@Column (name ="PAYMENT_TYPE")
+	@Column(name = "PAYMENT_TYPE")
 	@Enumerated(value = EnumType.STRING)
-	private PaymentType paymentType =PaymentType.COD;
+	private PaymentType paymentType = PaymentType.COD;
 
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
 	private Set<OrderProduct> orderProducts = new LinkedHashSet<OrderProduct>();
@@ -94,11 +101,13 @@ public class Orders extends BaseEntity {
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JsonIgnore
 	private User user;
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "addressId" ,nullable = true)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-	@JsonIgnore
-    private Address address;
+
+	@OneToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+	@JoinColumn(name = "orderid", referencedColumnName = "id")
+	private MerchantStore merchantStore;
+
+	@OneToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+	@JoinColumn(name = "addressId", referencedColumnName = "id")
+	private Address address;
 
 }

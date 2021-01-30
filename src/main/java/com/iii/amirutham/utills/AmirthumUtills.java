@@ -8,6 +8,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Random;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.modelmapper.ModelMapper;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -62,6 +64,12 @@ public class AmirthumUtills {
 		 * 
 		 * if (!directory.exists()) directory.mkdir();
 		 */
+	}
+	
+	public static String htmlToXhtml(String html) {
+	    Document document = Jsoup.parse(html);
+	    document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
+	    return document.html();
 	}
 
 }

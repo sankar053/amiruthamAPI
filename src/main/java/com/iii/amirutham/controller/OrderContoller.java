@@ -3,6 +3,10 @@
  */
 package com.iii.amirutham.controller;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,6 +14,8 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -63,7 +69,7 @@ public class OrderContoller {
 	}
 	
 	@GetMapping("/placeorder/{id}")
-	@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+	//@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
 	public ResponseEntity<Orders> getOrdersById(@PathVariable(required = true) Integer id) {
 
 		Orders orderDao = orderService.getOrdersById(id);
@@ -71,13 +77,31 @@ public class OrderContoller {
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(orderDao);
 
 	}
-	@GetMapping("/{id}/{status}")
-	@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-	public ResponseEntity<GenericResponse> updateOrderprocess(HttpServletRequest request,@PathVariable(required = true) Integer id,@PathVariable(required = true) OrderStatus status) {
+	@GetMapping(value ="/{id}/{status}",produces = MediaType.APPLICATION_PDF_VALUE)
+	//@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+	public ResponseEntity<InputStreamResource>  updateOrderprocess(HttpServletRequest request,@PathVariable(required = true) Integer id,@PathVariable(required = true) OrderStatus status) {
 
-		orderService.updateOrderprocess(id,status);
-		
-		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(new GenericResponse(messages.getMessage("order.message.success", null, request.getLocale())));
+		File invoice =orderService.updateOrderprocess(id,status);
+		InputStream targetStream = null;
+		try {
+			targetStream = new FileInputStream(invoice);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
+		//return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(new GenericResponse(messages.getMessage("order.message.success", null, request.getLocale())));
+		 var headers = new HttpHeaders();
+	        headers.add("Content-Disposition", "inline; filename=citiesreport.pdf");
+	        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+	        headers.add("Pragma", "no-cache");
+	        headers.add("Expires", "0");
+
+	        return ResponseEntity
+	                .ok()
+	                .headers(headers)
+	                .contentLength(invoice.length())
+	                .contentType(MediaType.parseMediaType("application/octet-stream"))
+	                .body(new InputStreamResource(targetStream));
 	}
 }
