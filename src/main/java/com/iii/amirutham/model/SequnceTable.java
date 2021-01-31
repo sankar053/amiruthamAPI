@@ -13,9 +13,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/*INSERT INTO `sequnce` (`id`,`creation_ts`,`update_ts`,`active_yn`,`deleted_yn`,`sequenceCharacter`,`sequenceCurrentValue`,`sequenceLimitValue`,`sequenceName`,`sequenceNextValue`,`created_by`,`updated_by`) VALUES (1,'2020-12-06 16:10:54','2020-12-06 17:31:41','Y','N','PROD',15,999999,'PRODUCT',16,NULL,NULL);
-INSERT INTO `sequnce` (`id`,`creation_ts`,`update_ts`,`active_yn`,`deleted_yn`,`sequenceCharacter`,`sequenceCurrentValue`,`sequenceLimitValue`,`sequenceName`,`sequenceNextValue`,`created_by`,`updated_by`) VALUES (2,'2020-12-06 16:10:54','2020-12-06 16:57:50','Y','N','CATE',6,999999,'CATEGERY',7,NULL,NULL);
-INSERT INTO `amirutham`.`sequnce` (`id`, `creation_ts`, `update_ts`, `active_yn`, `deleted_yn`, `sequencecharacter`, `sequencecurrentvalue`, `sequencelimitvalue`, `sequencename`, `sequencenextvalue`) VALUES ('3', '2020-12-06 16:10:54', '2020-12-06 16:10:54', 'Y', 'N', 'CART', '1', '999999', 'CART', '1');
+/*INSERT INTO `sequence` (`id`,`created_by`,`creation_ts`,`active_yn`,`deleted_yn`,`updated_by`,`update_ts`,`sequencecharacter`,`sequencecurrentvalue`,`sequencelimitvalue`,`sequencename`,`sequencenextvalue`) VALUES (1,NULL,'2020-12-06 16:10:54','Y','N',NULL,'2021-01-17 17:35:35','PROD',1,999999,'PRODUCT',1);
+INSERT INTO `sequence` (`id`,`created_by`,`creation_ts`,`active_yn`,`deleted_yn`,`updated_by`,`update_ts`,`sequencecharacter`,`sequencecurrentvalue`,`sequencelimitvalue`,`sequencename`,`sequencenextvalue`) VALUES (2,NULL,'2020-12-06 16:10:54','Y','N',NULL,'2021-01-17 06:03:03','CATE',1,999999,'CATEGERY',1);
+INSERT INTO `sequence` (`id`,`created_by`,`creation_ts`,`active_yn`,`deleted_yn`,`updated_by`,`update_ts`,`sequencecharacter`,`sequencecurrentvalue`,`sequencelimitvalue`,`sequencename`,`sequencenextvalue`) VALUES (3,NULL,'2020-12-06 16:10:54','Y','N',NULL,'2021-01-31 05:20:29','CART',1,999999,'CART',1);
+INSERT INTO `sequence` (`id`,`created_by`,`creation_ts`,`active_yn`,`deleted_yn`,`updated_by`,`update_ts`,`sequencecharacter`,`sequencecurrentvalue`,`sequencelimitvalue`,`sequencename`,`sequencenextvalue`) VALUES (4,NULL,'2020-12-06 16:10:54','Y','N',NULL,'2021-01-31 05:20:43','AMIR_OD',1,999999,'ORDER',1);
+INSERT INTO `sequence` (`id`,`created_by`,`creation_ts`,`active_yn`,`deleted_yn`,`updated_by`,`update_ts`,`sequencecharacter`,`sequencecurrentvalue`,`sequencelimitvalue`,`sequencename`,`sequencenextvalue`) VALUES (5,NULL,'2020-12-06 16:10:54','Y','N',NULL,'2021-01-17 05:24:54','BANNER',1,999999,'BANNER',1);;
 
 */
 @Entity(name = "sequence")

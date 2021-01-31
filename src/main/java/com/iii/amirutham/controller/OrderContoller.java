@@ -77,11 +77,23 @@ public class OrderContoller {
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(orderDao);
 
 	}
-	@GetMapping(value ="/{id}/{status}",produces = MediaType.APPLICATION_PDF_VALUE)
-	//@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-	public ResponseEntity<InputStreamResource>  updateOrderprocess(HttpServletRequest request,@PathVariable(required = true) Integer id,@PathVariable(required = true) OrderStatus status) {
+	@GetMapping(value ="/{id}/{status}")
+	@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+	public ResponseEntity<GenericResponse>  updateOrderprocess(HttpServletRequest request,@PathVariable(required = true) Integer id,@PathVariable(required = true) OrderStatus status) {
 
-		File invoice =orderService.updateOrderprocess(id,status);
+		orderService.updateOrderprocess(id,status);
+		
+		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(new GenericResponse("Order status got updated Successfully"));
+		
+	}
+	
+	@GetMapping(value ="invoice/{id}",produces = MediaType.APPLICATION_PDF_VALUE)
+	//@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+	public ResponseEntity<InputStreamResource>  getOrderInvoice(HttpServletRequest request,
+			@PathVariable(required = true) Integer id) {
+
+		Orders reportData =orderService.getOrdersById(id);
+		File invoice =orderService.getOrderInvoice(reportData);
 		InputStream targetStream = null;
 		try {
 			targetStream = new FileInputStream(invoice);
@@ -92,7 +104,7 @@ public class OrderContoller {
 
 		//return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(new GenericResponse(messages.getMessage("order.message.success", null, request.getLocale())));
 		 var headers = new HttpHeaders();
-	        headers.add("Content-Disposition", "inline; filename=citiesreport.pdf");
+	        headers.add("Content-Disposition", "inline; filename=Invoiceport"+"-"+reportData.getOrderCode()+".pdf");
 	        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
 	        headers.add("Pragma", "no-cache");
 	        headers.add("Expires", "0");

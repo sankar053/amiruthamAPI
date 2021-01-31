@@ -202,23 +202,15 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public File updateOrderprocess(Integer id, OrderStatus status) {
+	public void updateOrderprocess(Integer id, OrderStatus status) {
 		// TODO Auto-generated method stub
 		Optional<Orders> oorder = orderRepository.findById(id);
 		if (oorder.isPresent()) {
 			orderRepository.updateOrderStatus(id, status);
 
-			try {
-				return reportservice.getpdfTemplate("invoice-template", generateInvoice(oorder.get()), "output.pdf");
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
 		} else {
 			throw new UserNotFoundException("Selected orger is invalid");
 		}
-		return null;
 
 	}
 
@@ -230,27 +222,36 @@ public class OrderServiceImpl implements OrderService {
 		if (null != orderedProducts) {
 			for (OrderProduct product : orderedProducts) {
 
-				orderedItem.add(new OrderItemsReportData(product.getOrderedproductName(),
-						product.getOrderedQuantity(),
-						product.getSubTotal(),
-						product.getSubTotal().add(product.getOrdertaxinfo().getFinalTaxAmount()),
+				orderedItem.add(new OrderItemsReportData(product.getOrderedproductName(), product.getOrderedQuantity(),
+						product.getSubTotal(), product.getSubTotal().add(product.getOrdertaxinfo().getFinalTaxAmount()),
 						product.getOrdertaxinfo().getFinalTaxAmount()));
 			}
 		}
 
 		Address shippingAddress = orderDao.getAddress();
-		InvoiceDelivaryAddressData shippingAddressdata =  new InvoiceDelivaryAddressData(orderDao.getReceiverName(), 
-				shippingAddress.getAddress1(), shippingAddress.getAddress2(),
-				shippingAddress.getCity() , shippingAddress.getState(),shippingAddress.getPostalCopde());
+		InvoiceDelivaryAddressData shippingAddressdata = new InvoiceDelivaryAddressData(orderDao.getReceiverName(),
+				shippingAddress.getAddress1(), shippingAddress.getAddress2(), shippingAddress.getCity(),
+				shippingAddress.getState(), shippingAddress.getPostalCopde());
 		ReportInvoiceData invoiceData = new ReportInvoiceData(orderDao.getOrderCode(), orderDao.getReceiverName(),
-				"Free Shipping", "50", "COD", 
-				orderDao.getGrossTotal(),
-				orderDao.getNetTotal(),
-				orderDao.getNetTotal().subtract(orderDao.getGrossTotal()),
-				orderedItem, shippingAddressdata,
-				new InvoiceMerchentData(),
-				"http:localhost:4200/home");
+				"Free Shipping", "50", "COD", orderDao.getGrossTotal(), orderDao.getNetTotal(),
+				orderDao.getNetTotal().subtract(orderDao.getGrossTotal()), orderedItem, shippingAddressdata,
+				new InvoiceMerchentData(), "http:localhost:4200/home");
 		return invoiceData;
+
+	}
+
+	@Override
+	public File getOrderInvoice(Orders reportData) {
+
+		// TODO Auto-generated method stub
+
+		try {
+			return reportservice.getpdfTemplate("invoice-template", generateInvoice(reportData), "output.pdf");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 
 	}
 

@@ -22,7 +22,9 @@ public interface OrderService {
 
 	public List<Orders> getAllOrders();
 
-	public File updateOrderprocess(Integer id, OrderStatus status);
+	public void updateOrderprocess(Integer id, OrderStatus status);
+
+	public File getOrderInvoice(Orders reportData);
 
 }
 	

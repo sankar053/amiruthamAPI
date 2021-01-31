@@ -103,8 +103,8 @@ public class UserController {
 
 		final User registered = userService.registerNewUserAccount(accountDto);
 		userService.addUserLocation(registered, getClientIP(request));
-		eventPublisher
-				.publishEvent(new OnRegistrationCompleteEvent(registered, request.getLocale(), getAppUrl(request)));
+//		eventPublisher
+//				.publishEvent(new OnRegistrationCompleteEvent(registered, request.getLocale(), getAppUrl(request)));
 
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
 				.body(new GenericResponse(messages.getMessage("login.message.success", null, request.getLocale())));

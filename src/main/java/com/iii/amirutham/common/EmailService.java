@@ -19,7 +19,8 @@ public class EmailService {
     @Value("${support.email}")
     private String fromEmail;
     
-
+    @Value("${isemail.enable}")
+    private String ismailenable;
     
     private final TemplateEngine templateEngine;
     private final JavaMailSender javaMailSender;
@@ -37,6 +38,7 @@ public class EmailService {
 //         context.setVariable("otp", 123);
          String html = this.templateEngine.process(templateName, context);
          try {
+        	 if("true".equals(ismailenable))
              constructEmail(subject, html, toEmail, cc, true);
          } catch (MessagingException e) {
              e.printStackTrace();
@@ -45,6 +47,7 @@ public class EmailService {
 
     public void sendStringEmail(String toEmail, String subject, String body, String cc) {
         try {
+        	 if("true".equals(ismailenable))
             constructEmail(subject, body, toEmail, cc,  false);
         } catch (MessagingException e) {
             e.printStackTrace();

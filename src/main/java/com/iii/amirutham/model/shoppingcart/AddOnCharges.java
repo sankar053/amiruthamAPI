@@ -16,8 +16,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity(name = "addonChatges")
-@Table(name = "addonChatges")
+@Entity(name = "addonCharges")
+@Table(name = "addonCharges")
 @Getter
 @Setter
 @AllArgsConstructor

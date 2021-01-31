@@ -139,9 +139,7 @@ public class BannerServiceImpl implements BannerService {
 
 		bannerDao.setId(bannerdto.getId());
 		bannerDao.setBannerName(bannerdto.getBannerName());
-		SequnceDto sequence = seqservice.findMySeQuence("BANNER");
-		bannerDao.setBannerCode(sequence.getSeqChar() + String.format("%05d", sequence.getSeqNxtVal()));
-		seqservice.updateMySeQuence(sequence);
+		bannerDao.setBannerCode(bannerdto.getBannerCode());
 		bannerDao.setBannerDesc(bannerdto.getBannerDesc());
 		bannerDao.setInstaLink(bannerdto.getInstaLink());
 		bannerDao.setFacebookLink(bannerdto.getFacebookLink());
@@ -169,7 +167,7 @@ public class BannerServiceImpl implements BannerService {
 					Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
 					String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-							.path("/banner/downloadFile/").path(productfilename + "/" + bannerDao.getBannerCode())
+							.path("/home/banner/downloadFile/").path(productfilename + "/" + bannerDao.getBannerCode())
 							.toUriString();
 
 					mediaArray.add(new HomeBannerMedia(productfilename, targetLocation.toString(), fileDownloadUri,

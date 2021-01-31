@@ -20,6 +20,7 @@ public class BannerDto extends BaseEntityDto {
 
 	
 	private String bannerName;
+	private String bannerCode;
 
 	private String bannerDesc;
 	

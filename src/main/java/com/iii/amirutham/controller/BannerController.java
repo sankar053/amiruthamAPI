@@ -44,7 +44,7 @@ public class BannerController {
 	private MessageSource messages;
 
 	@PostMapping("/banner")
-	@PreAuthorize("hasRole('ADMIN')")
+	//@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<GenericResponse> createHomeBanner(HttpServletRequest request,
 			@RequestPart("payload") String payload,
 			@RequestPart("file") @Valid @NotNull @NotBlank List<MultipartFile> files) {
@@ -91,7 +91,7 @@ public class BannerController {
 
 	}
 
-	@GetMapping("/downloadFile/{fileName:.+}/{bannerCode}")
+	@GetMapping("banner/downloadFile/{fileName:.+}/{bannerCode}")
 	public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, @PathVariable String bannerCode,
 			HttpServletRequest request) {
 		// Load file as Resource
