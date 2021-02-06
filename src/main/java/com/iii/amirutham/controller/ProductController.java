@@ -41,7 +41,7 @@ public class ProductController {
 
 	@PostMapping
 	public ResponseEntity<Object> saveProducts(HttpServletRequest request, @RequestPart("payload") String payload,
-			@RequestPart("file") @Valid @NotNull @NotBlank List<MultipartFile> files) {
+			@RequestPart(name = "file",required=false) List<MultipartFile> files) {
 		
 		ProductDto productsDto = (ProductDto) AmirthumUtills.convertJsontoObject(ProductDto.class, payload);
 		if (productsDto.getId() != 0) {

@@ -52,7 +52,7 @@ import com.iii.amirutham.utills.AmirthumUtills;
  */
 @Service
 public class BannerServiceImpl implements BannerService {
-	
+
 	@Autowired
 	private UserService userService;
 
@@ -67,14 +67,12 @@ public class BannerServiceImpl implements BannerService {
 
 	@Autowired
 	private SequenceService seqservice;
-	
+
 	@Autowired
 	private NewsLetterRepository newsLetterRepository;
 
 	@Value("${amirthum.file.upload-dir}")
 	private String Upload_Path;
-	
-	
 
 	private Path fileStorageLocation;
 
@@ -127,73 +125,71 @@ public class BannerServiceImpl implements BannerService {
 			bannerDao = bannerRepo.save(bannerDao);
 		}
 
-		
-
 	}
 
 	@Override
 	public void updateHomeBanner(BannerDto bannerdto, List<MultipartFile> files) {
 		// TODO Auto-generated method stub
 		UserDetailsImpl user = userService.getUserDetails();
-		HomeBanner bannerDao = new HomeBanner();
+		Optional<HomeBanner> OptionalDao = bannerRepo.findById(bannerdto.getId());
 
-		bannerDao.setId(bannerdto.getId());
-		bannerDao.setBannerName(bannerdto.getBannerName());
-		bannerDao.setBannerCode(bannerdto.getBannerCode());
-		bannerDao.setBannerDesc(bannerdto.getBannerDesc());
-		bannerDao.setInstaLink(bannerdto.getInstaLink());
-		bannerDao.setFacebookLink(bannerdto.getFacebookLink());
-		bannerDao.setYoutubeLink(bannerdto.getYoutubeLink());
-		bannerDao.setWhatsappLink(bannerdto.getWhatsappLink());
-		bannerDao.setUpdatedBy(user.getFirstName());
-		List<HomeBannerMedia> mediaArray = new ArrayList<HomeBannerMedia>();
-		
-		if (null != files) {
-			fileStorageLocation = Paths
-					.get(Upload_Path + "Banner" + File.separator + bannerDao.getBannerCode() + File.separator)
-					.toAbsolutePath().normalize();
-			AmirthumUtills.makeaDirectory(fileStorageLocation);
-			int filecount = 0;
-			for (MultipartFile file : files) {
+		if (OptionalDao.isPresent()) {
+			HomeBanner bannerDao = OptionalDao.get();
+			bannerDao.setBannerName(bannerdto.getBannerName());
+			bannerDao.setBannerCode(bannerdto.getBannerCode());
+			bannerDao.setBannerDesc(bannerdto.getBannerDesc());
+			bannerDao.setInstaLink(bannerdto.getInstaLink());
+			bannerDao.setFacebookLink(bannerdto.getFacebookLink());
+			bannerDao.setYoutubeLink(bannerdto.getYoutubeLink());
+			bannerDao.setWhatsappLink(bannerdto.getWhatsappLink());
+			bannerDao.setUpdatedBy(user.getFirstName());
 
-				try {
-					String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-					if (fileName.contains("..")) {
-						throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
+			if (null != files) {
+				fileStorageLocation = Paths
+						.get(Upload_Path + "Banner" + File.separator + bannerDao.getBannerCode() + File.separator)
+						.toAbsolutePath().normalize();
+				AmirthumUtills.makeaDirectory(fileStorageLocation);
+				for (MultipartFile file : files) {
+
+					try {
+						String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+						if (fileName.contains("..")) {
+							throw new FileStorageException(
+									"Sorry! Filename contains invalid path sequence " + fileName);
+						}
+						String productfilename = bannerDao.getBannerCode() + "_" + fileName
+								+ fileName.substring(fileName.lastIndexOf("."));
+						Path targetLocation = fileStorageLocation.resolve(productfilename);
+						Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+
+						String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+								.path("/home/banner/downloadFile/")
+								.path(productfilename + "/" + bannerDao.getBannerCode()).toUriString();
+
+						bannerDao.getBannerImgs().add(new HomeBannerMedia(productfilename, targetLocation.toString(),
+								fileDownloadUri, file.getContentType(), file.getSize(), bannerDao));
+					} catch (IOException e) { // TODO Auto-generated catch block e.printStackTrace(); }
+						e.printStackTrace();
 					}
-					String productfilename = bannerDao.getBannerCode() + "_" + filecount++
-							+ fileName.substring(fileName.lastIndexOf("."));
-					Path targetLocation = fileStorageLocation.resolve(productfilename);
-					Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-
-					String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-							.path("/home/banner/downloadFile/").path(productfilename + "/" + bannerDao.getBannerCode())
-							.toUriString();
-
-					mediaArray.add(new HomeBannerMedia(productfilename, targetLocation.toString(), fileDownloadUri,
-							file.getContentType(), file.getSize(), bannerDao));
-				} catch (IOException e) { // TODO Auto-generated catch block e.printStackTrace(); }
-					e.printStackTrace();
+					// TODO Auto-generated method stub
 				}
-				// TODO Auto-generated method stub
+
 			}
-			bannerDao.setBannerImgs(mediaArray);
-			bannerDao = bannerRepo.save(bannerDao);
+			bannerRepo.save(bannerDao);
 		}
-	
+
 	}
 
 	@Override
 	public BannerDto retriveActiveBanner() {
 		// TODO Auto-generated method stub
-		BannerDto homeBanner=null;
+		BannerDto homeBanner = null;
 		HomeBanner banner = bannerRepo.findByIsActive("Y");
 		if (banner != null) {
 			List<AmiruthamProducts> allprod = productRepo.findAll();
 			List<AmiruthamProducts> bestselling = allprod.stream().filter(p -> "Y".equals(p.getProductBestSellingYN()))
 					.collect(Collectors.toList());
-			
-			
+
 			List<ProductDto> productlistdto = new ArrayList<ProductDto>();
 
 			for (AmiruthamProducts prod : bestselling) {
@@ -203,7 +199,7 @@ public class BannerServiceImpl implements BannerService {
 					mediaarray = prod.getProdMedias().stream()
 							.map(prodmed -> new ProductMediaDto(prodmed.getId(), prodmed.getProdImgNm(),
 									prodmed.getProdImgPath(), prodmed.getProdImgUrl(), prodmed.getProdImgType(),
-									prodmed.getProdImgSize(),prodmed.getProductCode()))
+									prodmed.getProdImgSize(), prodmed.getProductCode()))
 							.collect(Collectors.toList());
 
 				}
@@ -217,16 +213,16 @@ public class BannerServiceImpl implements BannerService {
 				}
 				ProductDto prodDto = new ProductDto(prod.getId(), prod.getCategory().getId(), prod.getProductCode(),
 						prod.getProductNm(), prod.getProductDesc(), prod.getProductuses(), prod.getProductincredience(),
-						mediaarray, productVarient, prod.getProductBestSellingYN(),prod.getProductRating(),prod.getNoofReviews());
+						mediaarray, productVarient, prod.getProductBestSellingYN(), prod.getProductRating(),
+						prod.getNoofReviews());
 				prodDto.setUpdatedBy(prod.getUpdatedBy());
 				prodDto.setCreatedTs(prod.getCreatedTs());
 				productlistdto.add(prodDto);
 
 			}
-			
+
 			homeBanner = ((BannerDto) AmirthumUtills.convertToDto(banner, BannerDto.class, modelMapper));
 			homeBanner.setBestselling(productlistdto);
-		
 
 		}
 		return (homeBanner);
@@ -242,7 +238,6 @@ public class BannerServiceImpl implements BannerService {
 			List<AmiruthamProducts> allprod = productRepo.findAll();
 			List<AmiruthamProducts> bestselling = allprod.stream().filter(p -> "Y".equals(p.getProductBestSellingYN()))
 					.collect(Collectors.toList());
-			
 
 			List<ProductDto> productlistdto = new ArrayList<ProductDto>();
 
@@ -253,7 +248,7 @@ public class BannerServiceImpl implements BannerService {
 					mediaarray = prod.getProdMedias().stream()
 							.map(prodmed -> new ProductMediaDto(prodmed.getId(), prodmed.getProdImgNm(),
 									prodmed.getProdImgPath(), prodmed.getProdImgUrl(), prodmed.getProdImgType(),
-									prodmed.getProdImgSize(),prodmed.getProductCode()))
+									prodmed.getProdImgSize(), prodmed.getProductCode()))
 							.collect(Collectors.toList());
 
 				}
@@ -267,15 +262,14 @@ public class BannerServiceImpl implements BannerService {
 				}
 				ProductDto prodDto = new ProductDto(prod.getId(), prod.getCategory().getId(), prod.getProductCode(),
 						prod.getProductNm(), prod.getProductDesc(), prod.getProductuses(), prod.getProductincredience(),
-						mediaarray, productVarient, prod.getProductBestSellingYN(),prod.getProductRating(),prod.getNoofReviews());
+						mediaarray, productVarient, prod.getProductBestSellingYN(), prod.getProductRating(),
+						prod.getNoofReviews());
 				prodDto.setUpdatedBy(prod.getUpdatedBy());
 				prodDto.setCreatedTs(prod.getCreatedTs());
 				productlistdto.add(prodDto);
 
 			}
-			
-			
-			
+
 			homeBanner = ((BannerDto) AmirthumUtills.convertToDto(bannerDao.get(), BannerDto.class, modelMapper));
 			homeBanner.setBestselling(productlistdto);
 		}
@@ -298,11 +292,12 @@ public class BannerServiceImpl implements BannerService {
 			throw new MyFileNotFoundException("File not found " + fileName, ex);
 		}
 	}
-	
+
 	@Override
 	public Resource loadEmailTemplateResource(String fileName, String templateCode) {
 		try {
-			fileStorageLocation = Paths.get(Upload_Path + "EmailTemplate" + File.separator + templateCode + File.separator)
+			fileStorageLocation = Paths
+					.get(Upload_Path + "EmailTemplate" + File.separator + templateCode + File.separator)
 					.toAbsolutePath().normalize();
 			Path filePath = fileStorageLocation.resolve(fileName).normalize();
 			Resource resource = new UrlResource(filePath.toUri());
@@ -326,10 +321,9 @@ public class BannerServiceImpl implements BannerService {
 	@Override
 	public void addHomecontactreference(CustomerNewsLetterDto contactus) {
 		// TODO Auto-generated method stub
-		
-		
-		newsLetterRepository.save(new CustomerNewsLetter(contactus.getEmail(),"Guest"));
-		
+
+		newsLetterRepository.save(new CustomerNewsLetter(contactus.getEmail(), "Guest"));
+
 	}
 
 	@Override
@@ -340,8 +334,7 @@ public class BannerServiceImpl implements BannerService {
 			List<AmiruthamProducts> allprod = productRepo.findAll();
 			List<AmiruthamProducts> bestselling = allprod.stream().filter(p -> "Y".equals(p.getProductBestSellingYN()))
 					.collect(Collectors.toList());
-			
-			
+
 			List<ProductDto> productlistdto = new ArrayList<ProductDto>();
 
 			for (AmiruthamProducts prod : bestselling) {
@@ -351,7 +344,7 @@ public class BannerServiceImpl implements BannerService {
 					mediaarray = prod.getProdMedias().stream()
 							.map(prodmed -> new ProductMediaDto(prodmed.getId(), prodmed.getProdImgNm(),
 									prodmed.getProdImgPath(), prodmed.getProdImgUrl(), prodmed.getProdImgType(),
-									prodmed.getProdImgSize(),prodmed.getProductCode()))
+									prodmed.getProdImgSize(), prodmed.getProductCode()))
 							.collect(Collectors.toList());
 
 				}
@@ -365,14 +358,14 @@ public class BannerServiceImpl implements BannerService {
 				}
 				ProductDto prodDto = new ProductDto(prod.getId(), prod.getCategory().getId(), prod.getProductCode(),
 						prod.getProductNm(), prod.getProductDesc(), prod.getProductuses(), prod.getProductincredience(),
-						mediaarray, productVarient, prod.getProductBestSellingYN(),prod.getProductRating(),prod.getNoofReviews());
+						mediaarray, productVarient, prod.getProductBestSellingYN(), prod.getProductRating(),
+						prod.getNoofReviews());
 				prodDto.setUpdatedBy(prod.getUpdatedBy());
 				prodDto.setCreatedTs(prod.getCreatedTs());
 				productlistdto.add(prodDto);
 
 			}
-			
-			
+
 			for (HomeBanner banner : bannerDaoList) {
 				BannerDto homeBanner = ((BannerDto) AmirthumUtills.convertToDto(banner, BannerDto.class, modelMapper));
 				homeBanner.setBestselling(productlistdto);
@@ -380,6 +373,7 @@ public class BannerServiceImpl implements BannerService {
 			}
 
 		}
-		return (homeBannerList);}
+		return (homeBannerList);
+	}
 
 }

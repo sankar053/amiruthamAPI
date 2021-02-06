@@ -29,7 +29,7 @@ import com.iii.amirutham.repo.UserRepository;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 public class LoginController {
 	
 	@Autowired

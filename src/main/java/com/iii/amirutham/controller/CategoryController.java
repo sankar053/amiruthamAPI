@@ -47,7 +47,7 @@ public class CategoryController {
 	@PreAuthorize("hasRole('ADMIN')")
 	@PostMapping
 	public ResponseEntity<GenericResponse> saveCategory(HttpServletRequest request,
-			@RequestPart("payload") String payload, @RequestPart("file") @Valid @NotNull @NotBlank List<MultipartFile> files) {
+			@RequestPart("payload") String payload, @RequestPart(name = "file",required=false) List<MultipartFile> files) {
 
 		CategoryDto categoryDto = (CategoryDto) AmirthumUtills.convertJsontoObject(CategoryDto.class, payload);
 		AmiruthamCategory categoryDao;

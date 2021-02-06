@@ -47,7 +47,7 @@ public class BannerController {
 	//@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<GenericResponse> createHomeBanner(HttpServletRequest request,
 			@RequestPart("payload") String payload,
-			@RequestPart("file") @Valid @NotNull @NotBlank List<MultipartFile> files) {
+			@RequestPart(name = "file",required=false) List<MultipartFile> files) {
 
 		BannerDto bannerdto = (BannerDto) AmirthumUtills.convertJsontoObject(BannerDto.class, payload);
 		if (bannerdto.getId() == 0) {
