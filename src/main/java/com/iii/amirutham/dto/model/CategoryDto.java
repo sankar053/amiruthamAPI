@@ -36,6 +36,8 @@ public class CategoryDto extends BaseEntityDto{
 	@NotNull
 	private Integer categoryOrder;
 	
+	private String categoryActiveYN;
+	
    //@JsonIgnore
    private List<ProductDto> products =new ArrayList<ProductDto>();
    

@@ -30,7 +30,7 @@ public class BaseEntityDto {
 
 	private String updatedBy;
 
-	@JsonIgnore
+	//@JsonIgnore
 	private String isActive;
 
 	@JsonIgnore

@@ -164,7 +164,7 @@ public class CategoryServiceImpl implements CategoryService {
 		category.setCategoryDesc(categoryDto.getCategoryDesc());
 		category.setCategoryNm(categoryDto.getCategoryNm());
 		category.setCategoryOrder(categoryDto.getCategoryOrder());
-
+		categoryDao.setIsActive("true".equals(categoryDto.getCategoryActiveYN())?"Y":"N");
 		if (null != files) {
 			List<CategoryBanner> mediaArray = new ArrayList<CategoryBanner>();
 			fileStorageLocation = Paths.get(Upload_Path + "Banner" + File.separator + "category" + File.separator
@@ -218,9 +218,9 @@ public class CategoryServiceImpl implements CategoryService {
 			categoryDao.setCategoryDesc(categoryDto.getCategoryDesc());
 			categoryDao.setCategoryNm(categoryDto.getCategoryNm());
 			categoryDao.setCategoryOrder(categoryDto.getCategoryOrder());
-
+			categoryDao.setIsActive("true".equals(categoryDto.getCategoryActiveYN())?"Y":"N");
 			if (null != files) {
-				List<CategoryBanner> mediaArray = new ArrayList<CategoryBanner>();
+			
 				fileStorageLocation = Paths.get(Upload_Path + "Banner" + File.separator + "category" + File.separator
 						+ categoryDao.getCategoryCd() + File.separator).toAbsolutePath().normalize();
 				AmirthumUtills.makeaDirectory(fileStorageLocation);
@@ -242,21 +242,21 @@ public class CategoryServiceImpl implements CategoryService {
 								.path("/category/downloadFile/")
 								.path(productfilename + "/" + categoryDao.getCategoryCd()).toUriString();
 
-						mediaArray.add(new CategoryBanner(productfilename, targetLocation.toString(), fileDownloadUri,
+						categoryDao.getBannerImgs().add(new CategoryBanner(productfilename, targetLocation.toString(), fileDownloadUri,
 								file.getContentType(), file.getSize(), categoryDao));
 					} catch (IOException e) { // TODO Auto-generated catch block e.printStackTrace(); }
 						e.printStackTrace();
 					}
 
 				}
-				categoryDao.setBannerImgs(mediaArray);
-				return categryRepo.save(categoryDao);
+						
 			}
+			return categryRepo.save(categoryDao);
 
 		} else {
 			throw new UserNotFoundException("Category Not Found  " + categoryDto.getId());
 		}
-		return null;
+	
 
 	}
 
