@@ -159,6 +159,17 @@ public class CartServiceImpl implements CartService {
 	}
 
 	@Override
+	public List<ShoppingCart> getAllCart() {
+
+		List<ShoppingCart> mycartlist = cartRepository.findAll();
+//		ShoppingCart mycart = mycartlist.stream().filter(v -> "Pending".equals(v.getShoppingCartStatus())).findAny()
+//				.orElse(null);
+		return mycartlist;
+
+		// return cartDto;
+	}
+	
+	@Override
 	public CartDto getMyCart(Integer ConsumerId) {
 
 		List<ShoppingCart> mycartlist = cartRepository.findByCustomerId(ConsumerId);

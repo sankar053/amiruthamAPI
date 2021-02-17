@@ -47,7 +47,7 @@ public class OrderContoller {
 	private MessageSource messages;
 
 	@PostMapping("/placeorder")
-	@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<GenericResponse> placeOrder(HttpServletRequest request,@Valid @RequestBody OrderDto order) {
 
 		String OrderRef = orderService.placeOrder(order);
@@ -59,7 +59,7 @@ public class OrderContoller {
 	}
 	
 	@GetMapping
-	@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	public ResponseEntity<List<Orders>> getAllOrders() {
 
 		List<Orders> orderDaoList =orderService.getAllOrders();
@@ -69,7 +69,7 @@ public class OrderContoller {
 	}
 	
 	@GetMapping("/placeorder/{id}")
-	//@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	public ResponseEntity<Orders> getOrdersById(@PathVariable(required = true) Integer id) {
 
 		Orders orderDao = orderService.getOrdersById(id);
@@ -78,7 +78,7 @@ public class OrderContoller {
 
 	}
 	@GetMapping(value ="/{id}/{status}")
-	@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	public ResponseEntity<GenericResponse>  updateOrderprocess(HttpServletRequest request,@PathVariable(required = true) Integer id,@PathVariable(required = true) OrderStatus status) {
 
 		orderService.updateOrderprocess(id,status);
@@ -88,7 +88,7 @@ public class OrderContoller {
 	}
 	
 	@GetMapping(value ="invoice/{id}",produces = MediaType.APPLICATION_PDF_VALUE)
-	//@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<InputStreamResource>  getOrderInvoice(HttpServletRequest request,
 			@PathVariable(required = true) Integer id) {
 
