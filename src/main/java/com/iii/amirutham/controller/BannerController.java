@@ -44,7 +44,7 @@ public class BannerController {
 	private MessageSource messages;
 
 	@PostMapping("/banner")
-	//@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<GenericResponse> createHomeBanner(HttpServletRequest request,
 			@RequestPart("payload") String payload,
 			@RequestPart(name = "file",required=false) List<MultipartFile> files) {

@@ -43,6 +43,8 @@ public class ProductDto extends BaseEntityDto {
 	private String productHighlight;
 
 	private String productBestSellingYN;
+	
+	private String productActiveYN;
 
 	private boolean available;
 

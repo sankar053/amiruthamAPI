@@ -11,6 +11,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -107,6 +108,9 @@ public class OrderServiceImpl implements OrderService {
 			orderDao.setAddress(getShippingAddress(orderDto.getShippingAddress(), orderDao.getUser()));
 			orderDao.setMerchantStore(new MerchantStore());
 			Set<OrderProduct> orderProducts = new LinkedHashSet<OrderProduct>();
+			
+			
+					
 			for (ShoppingCartItem cartItem : mypendingCart.getLineItems()) {
 				Optional<AmiruthamProducts> product = productRepository.findById(cartItem.getProductId());
 				if (product.isPresent()) {

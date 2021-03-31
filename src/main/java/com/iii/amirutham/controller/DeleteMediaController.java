@@ -43,7 +43,7 @@ public class DeleteMediaController {
 		else if("CATEGORY".equals(page))
 				deleteMediaService.DeleteMediaCategoryBanner(id);
 		else if("PRODUCT".equals(page))
-				deleteMediaService.DeleteMediaCategoryBanner(id);
+				deleteMediaService.DeleteMediaProduct(id);
 		
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
 				.body(new GenericResponse(messages.getMessage("banner.message.detete.success", null, request.getLocale())));	
