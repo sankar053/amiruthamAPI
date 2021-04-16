@@ -3,10 +3,12 @@ package com.iii.amirutham.dto.model;
 import com.iii.amirutham.model.BaseEntity;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserAddressDto extends BaseEntity {

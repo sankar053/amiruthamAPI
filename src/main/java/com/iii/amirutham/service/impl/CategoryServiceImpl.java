@@ -164,7 +164,7 @@ public class CategoryServiceImpl implements CategoryService {
 		category.setCategoryDesc(categoryDto.getCategoryDesc());
 		category.setCategoryNm(categoryDto.getCategoryNm());
 		category.setCategoryOrder(categoryDto.getCategoryOrder());
-		categoryDao.setIsActive("true".equals(categoryDto.getCategoryActiveYN())?"Y":"N");
+		category.setIsActive("true".equals(categoryDto.getCategoryActiveYN())?"Y":"N");
 		if (null != files) {
 			List<CategoryBanner> mediaArray = new ArrayList<CategoryBanner>();
 			fileStorageLocation = Paths.get(Upload_Path + "Banner" + File.separator + "category" + File.separator
