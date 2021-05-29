@@ -21,8 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.iii.amirutham.dto.base.GenericResponse;
+import com.iii.amirutham.dto.model.CategoryDto;
 import com.iii.amirutham.dto.model.ProductDto;
 import com.iii.amirutham.model.product.AmiruthamProducts;
+import com.iii.amirutham.service.CategoryService;
 import com.iii.amirutham.service.ProductService;
 import com.iii.amirutham.utills.AmirthumUtills;
 
@@ -32,6 +34,9 @@ public class ProductController {
 
 	@Autowired
 	private ProductService productService;
+	
+	@Autowired
+	private CategoryService categoryService;
 
 	@Autowired
 	private MessageSource messages;
@@ -61,6 +66,15 @@ public class ProductController {
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(productList);
 
 	}
+	
+	@GetMapping("/category/{id}")
+	public ResponseEntity<Object> retriveProductsByCategory(@PathVariable int id) {
+		CategoryDto category = categoryService.findProductsByCatogryId(id);
+
+		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(category);
+
+	}
+
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Object> retriveProducts(@PathVariable int id) {
@@ -78,7 +92,7 @@ public class ProductController {
 		List<ProductDto> productList = productService.retriveProducts();
 
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(new GenericResponse(
-				messages.getMessage("category.message.delete.success", null, request.getLocale()), productList));
+				messages.getMessage("product.message.delete.success", null, request.getLocale()), productList));
 	}
 
 	@GetMapping("/downloadFile/{fileName:.+}/{catCode}")

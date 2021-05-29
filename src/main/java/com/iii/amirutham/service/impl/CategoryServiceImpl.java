@@ -10,6 +10,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -30,13 +31,9 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.iii.amirutham.dto.base.CategoryRequest;
 import com.iii.amirutham.dto.model.CategoryDto;
-import com.iii.amirutham.dto.model.ProductDto;
-import com.iii.amirutham.dto.model.ProductMediaDto;
-import com.iii.amirutham.dto.model.ProductVarientDto;
 import com.iii.amirutham.dto.model.SequnceDto;
 import com.iii.amirutham.exception.FileStorageException;
 import com.iii.amirutham.exception.MyFileNotFoundException;
@@ -98,9 +95,13 @@ public class CategoryServiceImpl implements CategoryService {
 						Path targetLocation = fileStorageLocation.resolve(productfilename);
 						Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
-						String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-								.path("/category/downloadFile/").path(productfilename + "/" + category.getCategoryCd())
-								.toUriString();
+						
+						String fileDownloadUri = "http://localhost:8085/api"+
+						"/category/downloadFile/"+productfilename + "/" + category.getCategoryCd();
+					
+//						String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+//								.path(":8085/category/downloadFile/").path(productfilename + "/" + category.getCategoryCd())
+//								.toUriString();
 
 						mediaArray.add(new CategoryBanner(productfilename, targetLocation.toString(), fileDownloadUri,
 								file.getContentType(), file.getSize(), category));
@@ -139,6 +140,7 @@ public class CategoryServiceImpl implements CategoryService {
 		Optional<AmiruthamCategory> categoryDao = categryRepo.findById(id);
 
 		if (categoryDao.isPresent()) {
+			
 			CategoryDto catgryDto = ((CategoryDto) AmirthumUtills.convertToDto(categoryDao.get(), CategoryDto.class,
 					modelMapper));
 			return catgryDto;
@@ -183,9 +185,13 @@ public class CategoryServiceImpl implements CategoryService {
 					Path targetLocation = fileStorageLocation.resolve(productfilename);
 					Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
-					String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-							.path("/category/downloadFile/").path(productfilename + "/" + category.getCategoryCd())
-							.toUriString();
+					
+					String fileDownloadUri ="http://localhost:8085/api"+
+							"/category/downloadFile/"+productfilename + "/" + category.getCategoryCd();
+//					
+//					String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+//							.path(":8085/category/downloadFile/").path(productfilename + "/" + category.getCategoryCd())
+//							.toUriString();
 
 					mediaArray.add(new CategoryBanner(productfilename, targetLocation.toString(), fileDownloadUri,
 							file.getContentType(), file.getSize(), category));
@@ -238,9 +244,12 @@ public class CategoryServiceImpl implements CategoryService {
 						Path targetLocation = fileStorageLocation.resolve(productfilename);
 						Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
-						String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-								.path("/category/downloadFile/")
-								.path(productfilename + "/" + categoryDao.getCategoryCd()).toUriString();
+						
+						String fileDownloadUri = "http://localhost:8085/api"+"/category/downloadFile/"+
+						productfilename + "/" + categoryDao.getCategoryCd();
+//						String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+//								.path(":8085/category/downloadFile/")
+//								.path(productfilename + "/" + categoryDao.getCategoryCd()).toUriString();
 
 						categoryDao.getBannerImgs().add(new CategoryBanner(productfilename, targetLocation.toString(), fileDownloadUri,
 								file.getContentType(), file.getSize(), categoryDao));
@@ -354,6 +363,22 @@ public class CategoryServiceImpl implements CategoryService {
 		} catch (MalformedURLException ex) {
 			throw new MyFileNotFoundException("File not found " + fileName, ex);
 		}
+	}
+
+	@Override
+	public CategoryDto findProductsByCatogryId(int id) {
+		// TODO Auto-generated method stub
+		Optional<AmiruthamCategory> categoryDao = categryRepo.findById(id);
+
+		if (categoryDao.isPresent()) {
+			AmiruthamCategory category =categoryDao.get();
+			Set<AmiruthamProducts> Products =category.getProducts().stream().filter(pro -> pro.getProdVarient().size()>0).collect(Collectors.toSet());
+			category.setProducts(Products);
+			CategoryDto catgryDto = ((CategoryDto) AmirthumUtills.convertToDto(category, CategoryDto.class,
+					modelMapper));
+			return catgryDto;
+		}
+		return null;
 	}
 
 }

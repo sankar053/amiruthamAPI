@@ -86,8 +86,9 @@ public class ProductServiceImpl implements ProductService {
 							Path targetLocation = fileStorageLocation.resolve(productfilename);
 							Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 							
-							String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-									.path("/products/downloadFile/").path(productfilename+"/"+product.getProductCategoryCode()).toUriString();
+							String fileDownloadUri = "http://localhost:8085/api"+"/products/downloadFile/"+productfilename+"/"+product.getProductCategoryCode();
+//							String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+//									.path("/products/downloadFile/").path(productfilename+"/"+product.getProductCategoryCode()).toUriString();
 
 							mediaArray.add(new ProductMediaGallary(productfilename, targetLocation.toString(), fileDownloadUri,
 									file.getContentType(), file.getSize()));
@@ -140,8 +141,9 @@ public class ProductServiceImpl implements ProductService {
 						Path targetLocation = fileStorageLocation.resolve(productfilename);
 						Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 						
-						String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-								.path("/products/downloadFile/").path(productfilename+"/"+product.getProductCategoryCode()).toUriString();
+							String fileDownloadUri = "http://localhost:8085/api"+"/products/downloadFile/"+productfilename+"/"+product.getProductCategoryCode();
+//						String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+//								.path("/products/downloadFile/").path(productfilename+"/"+product.getProductCategoryCode()).toUriString();
 
 						mediaArray.add(new ProductMediaGallary(productfilename, targetLocation.toString(), fileDownloadUri,
 								file.getContentType(), file.getSize()));

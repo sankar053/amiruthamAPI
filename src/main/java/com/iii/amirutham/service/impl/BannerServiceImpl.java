@@ -110,9 +110,13 @@ public class BannerServiceImpl implements BannerService {
 					Path targetLocation = fileStorageLocation.resolve(productfilename);
 					Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
-					String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-							.path("/home/banner/downloadFile/").path(productfilename + "/" + bannerDao.getBannerCode())
-							.toUriString();
+					
+					String fileDownloadUri = "http://localhost:8085/api"+
+					"/home/banner/downloadFile/"+productfilename + "/" + bannerDao.getBannerCode();
+					
+//					String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+//							.path(":8085/home/banner/downloadFile/").path(productfilename + "/" + bannerDao.getBannerCode())
+//							.toUriString();
 
 					mediaArray.add(new HomeBannerMedia(productfilename, targetLocation.toString(), fileDownloadUri,
 							file.getContentType(), file.getSize(), bannerDao));
@@ -162,9 +166,12 @@ public class BannerServiceImpl implements BannerService {
 						Path targetLocation = fileStorageLocation.resolve(productfilename);
 						Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
-						String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-								.path("/home/banner/downloadFile/")
-								.path(productfilename + "/" + bannerDao.getBannerCode()).toUriString();
+						
+								String fileDownloadUri = "http://localhost:8085/api"+
+								"/home/banner/downloadFile/"+productfilename + "/" + bannerDao.getBannerCode();
+//						String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+//								.path(":8085/home/banner/downloadFile/")
+//								.path(productfilename + "/" + bannerDao.getBannerCode()).toUriString();
 
 						bannerDao.getBannerImgs().add(new HomeBannerMedia(productfilename, targetLocation.toString(),
 								fileDownloadUri, file.getContentType(), file.getSize(), bannerDao));
