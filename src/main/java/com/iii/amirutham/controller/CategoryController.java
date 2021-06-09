@@ -101,7 +101,7 @@ public class CategoryController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<Object> getCatogryById(@PathVariable int id) {
+	public ResponseEntity<Object> getCatogryById(@PathVariable Integer id) {
 		CategoryDto category = categoryService.findCatogryById(id);
 
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(category);

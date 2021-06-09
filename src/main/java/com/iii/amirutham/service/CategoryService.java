@@ -25,7 +25,7 @@ public interface CategoryService {
 	
 	public Resource loadBannerAsResource(String fileName, String catCode);
 
-	public CategoryDto findCatogryById(int id);
+	public CategoryDto findCatogryById(Integer id);
 	
 	public CategoryDto findProductsByCatogryId(int id);
 

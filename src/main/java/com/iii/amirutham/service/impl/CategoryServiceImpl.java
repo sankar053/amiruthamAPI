@@ -34,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.iii.amirutham.dto.base.CategoryRequest;
 import com.iii.amirutham.dto.model.CategoryDto;
+import com.iii.amirutham.dto.model.ProductDto;
 import com.iii.amirutham.dto.model.SequnceDto;
 import com.iii.amirutham.exception.FileStorageException;
 import com.iii.amirutham.exception.MyFileNotFoundException;
@@ -135,7 +136,7 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public CategoryDto findCatogryById(int id) {
+	public CategoryDto findCatogryById(Integer id) {
 
 		Optional<AmiruthamCategory> categoryDao = categryRepo.findById(id);
 
@@ -143,6 +144,8 @@ public class CategoryServiceImpl implements CategoryService {
 			
 			CategoryDto catgryDto = ((CategoryDto) AmirthumUtills.convertToDto(categoryDao.get(), CategoryDto.class,
 					modelMapper));
+			List<ProductDto> activeProducts =catgryDto.getProducts().stream().filter(a->("Y".equals(a.getIsActive()) && "N".equals(a.getIsDeleted()))).collect(Collectors.toList());
+			catgryDto.setProducts(activeProducts);
 			return catgryDto;
 		}
 		return null;

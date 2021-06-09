@@ -20,7 +20,6 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.iii.amirutham.dto.model.ProductDto;
 import com.iii.amirutham.dto.model.ProductMediaDto;
@@ -43,6 +42,7 @@ public class ProductServiceImpl implements ProductService {
 
 	@Autowired
 	private ProductRepository productRepo;
+	
 	@Value("${amirthum.file.upload-dir}")
 	private String Upload_Path;
 
@@ -239,9 +239,9 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public void deleteProductById(int id) {
+	public void deleteProductById(Integer id) {
 		// TODO Auto-generated method stub
-		productRepo.deleteById(id);
+			productRepo.updateactiveFlag(id,"Y");
 	}
 
 	public Resource loadProductAsResource(String fileName, String catCode) {

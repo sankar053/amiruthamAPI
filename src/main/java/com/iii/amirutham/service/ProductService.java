@@ -14,7 +14,7 @@ public interface ProductService {
 	
 	public List<ProductDto> retriveProducts();
 	public ProductDto retriveProductById(int id);
-	public void deleteProductById(int id);
+	public void deleteProductById(Integer id);
 	public AmiruthamProducts addProductandMedia(ProductDto productsDto,List<MultipartFile> files,HttpServletRequest request);
 	public Resource loadProductAsResource(String fileName,String catid);
 	public AmiruthamProducts updateProductandMedia(ProductDto productsDto, List<MultipartFile> files,
