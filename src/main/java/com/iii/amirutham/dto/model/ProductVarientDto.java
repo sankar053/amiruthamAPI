@@ -39,10 +39,10 @@ public class ProductVarientDto {
 	@NotNull
 	private String unitType;
 
-	@NotNull
+	//@NotNull
 	private String manufactureDate;
 
-	@NotNull
+//	@NotNull
 	private String bestBeforeDate;
 
 	private Integer prodid;

@@ -143,7 +143,7 @@ public class OrderServiceImpl implements OrderService {
 			orderDao = orderRepository.save(orderDao);
 			cartRepository.updateShoppingCartStatus(orderDto.getCartId(), "Converted");
 
-			sentMailforOrderConformation(orderDao, user);
+			sentMailforOrderConformation(orderDao, user,"order-Conformation-template");
 
 			return orderDao.getOrderCode();
 		}
@@ -151,7 +151,7 @@ public class OrderServiceImpl implements OrderService {
 
 	}
 
-	void sentMailforOrderConformation(Orders orderDao, UserDetailsImpl user) {
+	void sentMailforOrderConformation(Orders orderDao, UserDetailsImpl user,String template) {
 
 		List<OrderItemsMail> orderedItem = new ArrayList<OrderItemsMail>();
 
@@ -171,7 +171,30 @@ public class OrderServiceImpl implements OrderService {
 		OrderDataMail order = new OrderDataMail(orderDao.getOrderCode(), user.getFirstName(), orderDao.getGrossTotal(),
 				"Free Shipping", "50", "COD", orderDao.getNetTotal(), orderedItem, address, "http:localhost:4200/home");
 		emailService.sendTemplateEmail(user.getEmail(), "Your Amiruthum ePortal order has been received!",
-				"order-Conformation-template", order, null);
+				template, order, null);
+	}
+	
+	void sentMailforOrderstatus(Orders orderDao, User user,String template) {
+
+		List<OrderItemsMail> orderedItem = new ArrayList<OrderItemsMail>();
+
+		Set<OrderProduct> orderedProducts = orderDao.getOrderProducts();
+		if (null != orderedProducts) {
+			for (OrderProduct product : orderedProducts) {
+				orderedItem.add(new OrderItemsMail(product.getOrderedproductName(), product.getOrderedQuantity(),
+						product.getProductPrice()));
+			}
+		}
+
+		Address shippingAddress = orderDao.getAddress();
+		OrderDeliveryDetails address = new OrderDeliveryDetails(orderDao.getReceiverName(), user.getEmailAddress(),
+				orderDao.getReceiverPhoneNumber(), shippingAddress.getAddress1() + " " + shippingAddress.getAddress2(),
+				shippingAddress.getCity() + "-" + shippingAddress.getPostalCopde(), shippingAddress.getState());
+
+		OrderDataMail order = new OrderDataMail(orderDao.getOrderCode(), user.getFirstName(), orderDao.getGrossTotal(),
+				"Free Shipping", "50", "COD", orderDao.getNetTotal(), orderedItem, address, "http:localhost:4200/home");
+		emailService.sendTemplateEmail(user.getEmailAddress(), "Your Amiruthum ePortal order has been received!",
+				template, order, null);
 	}
 
 	public Address getShippingAddress(AddressDto addressDto, User u) {
@@ -211,7 +234,8 @@ public class OrderServiceImpl implements OrderService {
 		Optional<Orders> oorder = orderRepository.findById(id);
 		if (oorder.isPresent()) {
 			orderRepository.updateOrderStatus(id, status);
-
+			
+			sentMailforOrderstatus(oorder.get(), oorder.get().getUser(),"order-Status-Update-template");	
 		} else {
 			throw new UserNotFoundException("Selected orger is invalid");
 		}
