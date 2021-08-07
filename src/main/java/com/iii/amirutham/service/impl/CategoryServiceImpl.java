@@ -144,7 +144,7 @@ public class CategoryServiceImpl implements CategoryService {
 			
 			CategoryDto catgryDto = ((CategoryDto) AmirthumUtills.convertToDto(categoryDao.get(), CategoryDto.class,
 					modelMapper));
-			List<ProductDto> activeProducts =catgryDto.getProducts().stream().filter(a->("Y".equals(a.getIsActive()) && "N".equals(a.getIsDeleted()))).collect(Collectors.toList());
+			List<ProductDto> activeProducts =catgryDto.getProducts().stream().filter(a->("N".equals(a.getIsDeleted()))).collect(Collectors.toList());
 			catgryDto.setProducts(activeProducts);
 			return catgryDto;
 		}
@@ -206,7 +206,10 @@ public class CategoryServiceImpl implements CategoryService {
 			category.setBannerImgs(mediaArray);
 			return categryRepo.save(category);
 		}
-		return category;
+		else {
+			return categryRepo.save(category);
+		}
+
 
 	}
 
@@ -375,8 +378,8 @@ public class CategoryServiceImpl implements CategoryService {
 
 		if (categoryDao.isPresent()) {
 			AmiruthamCategory category =categoryDao.get();
-			Set<AmiruthamProducts> Products =category.getProducts().stream().filter(pro -> pro.getProdVarient().size()>0).collect(Collectors.toSet());
-			category.setProducts(Products);
+			Set<AmiruthamProducts> products =category.getProducts().stream().filter(pro ->pro.getIsActive().equals("Y") && pro.getProdVarient().size()>0).collect(Collectors.toSet());
+			category.setProducts(products);
 			CategoryDto catgryDto = ((CategoryDto) AmirthumUtills.convertToDto(category, CategoryDto.class,
 					modelMapper));
 			return catgryDto;

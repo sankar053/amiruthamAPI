@@ -123,7 +123,9 @@ public class ProductServiceImpl implements ProductService {
 			AmirthumUtills.makeaDirectory(fileStorageLocation);
 			product.setProductNm(productsDto.getProductNm());
 			product.setProductDesc(productsDto.getProductDesc());
-			product.setProductBestSellingYN("true".equals(productsDto.getBestSelling()) ? "Y" : "N");
+			product.setProductBestSellingYN("true".equals(productsDto.getProductBestSellingYN()) ? "Y" : "N");
+			product.setIsActive("true".equals(productsDto.getProductActiveYN()) ? "Y" : "N");
+			product.setAvailable("true".equals(productsDto.getProductActiveYN()) ? true : false);
 			product.setProductincredience(productsDto.getProductincredience());
 			product.setProductuses(productsDto.getProductuses());
 			List<ProductMediaGallary> mediaArray = product.getProdMedias();
@@ -171,6 +173,7 @@ public class ProductServiceImpl implements ProductService {
 		List<ProductDto> productlistdto = new ArrayList<ProductDto>();
 
 		for (AmiruthamProducts prod : prodList) {
+			
 			List<ProductMediaDto> mediaarray = null;
 			List<ProductVarientDto> productVarient = null;
 			if (null != prod.getProdMedias() && prod.getProdMedias().size() > 0) {

@@ -26,6 +26,7 @@ import com.iii.amirutham.common.report.dto.InvoiceMerchentData;
 import com.iii.amirutham.common.report.dto.OrderItemsReportData;
 import com.iii.amirutham.common.report.dto.ReportInvoiceData;
 import com.iii.amirutham.config.UserDetailsImpl;
+import com.iii.amirutham.dto.base.OrderStatusRequest;
 import com.iii.amirutham.dto.model.AddressDto;
 import com.iii.amirutham.dto.model.OrderDto;
 import com.iii.amirutham.dto.model.SequnceDto;
@@ -169,7 +170,8 @@ public class OrderServiceImpl implements OrderService {
 				shippingAddress.getCity() + "-" + shippingAddress.getPostalCopde(), shippingAddress.getState());
 
 		OrderDataMail order = new OrderDataMail(orderDao.getOrderCode(), user.getFirstName(), orderDao.getGrossTotal(),
-				"Free Shipping", "50", "COD", orderDao.getNetTotal(), orderedItem, address, "http:localhost:4200/home");
+				"Free Shipping", "50", "COD", orderDao.getNetTotal(), orderedItem, address, "http:localhost:4200/home",orderDao.getOrderStatus().getValue(),
+				orderDao.getOrderTrackingUrl());
 		emailService.sendTemplateEmail(user.getEmail(), "Your Amiruthum ePortal order has been received!",
 				template, order, null);
 	}
@@ -192,7 +194,8 @@ public class OrderServiceImpl implements OrderService {
 				shippingAddress.getCity() + "-" + shippingAddress.getPostalCopde(), shippingAddress.getState());
 
 		OrderDataMail order = new OrderDataMail(orderDao.getOrderCode(), user.getFirstName(), orderDao.getGrossTotal(),
-				"Free Shipping", "50", "COD", orderDao.getNetTotal(), orderedItem, address, "http:localhost:4200/home");
+				"Free Shipping", "50", "COD", orderDao.getNetTotal(), orderedItem, address, "http:localhost:4200/home",orderDao.getOrderStatus().getValue()
+				,orderDao.getOrderTrackingUrl());
 		emailService.sendTemplateEmail(user.getEmailAddress(), "Your Amiruthum ePortal order has been received!",
 				template, order, null);
 	}
@@ -229,11 +232,12 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public void updateOrderprocess(Integer id, OrderStatus status) {
+	public void updateOrderprocess(OrderStatusRequest orderStatusReq) {
 		// TODO Auto-generated method stub
-		Optional<Orders> oorder = orderRepository.findById(id);
+		Optional<Orders> oorder = orderRepository.findById(orderStatusReq.getOrderId());
 		if (oorder.isPresent()) {
-			orderRepository.updateOrderStatus(id, status);
+			
+			orderRepository.updateOrderStatus(orderStatusReq.getOrderId(), orderStatusReq.getOrderStatus());
 			
 			sentMailforOrderstatus(oorder.get(), oorder.get().getUser(),"order-Status-Update-template");	
 		} else {

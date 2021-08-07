@@ -77,6 +77,9 @@ public class Orders extends BaseEntity {
 
 	@Column(name = "ORDER_CODE", nullable = true)
 	private String orderCode;
+	
+	@Column(name = "ORDER_Tracking_Url", nullable = true)
+	private String orderTrackingUrl;
 
 	@Column(name = "CART_CODE", nullable = true)
 	private String shoppingCartCode;

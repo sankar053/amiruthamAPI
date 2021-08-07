@@ -6,6 +6,7 @@ package com.iii.amirutham.service;
 import java.io.File;
 import java.util.List;
 
+import com.iii.amirutham.dto.base.OrderStatusRequest;
 import com.iii.amirutham.dto.model.OrderDto;
 import com.iii.amirutham.model.order.OrderStatus;
 import com.iii.amirutham.model.order.Orders;
@@ -22,7 +23,7 @@ public interface OrderService {
 
 	public List<Orders> getAllOrders();
 
-	public void updateOrderprocess(Integer id, OrderStatus status);
+	public void updateOrderprocess(OrderStatusRequest orderStatusReq);
 
 	public File getOrderInvoice(Orders reportData);
 

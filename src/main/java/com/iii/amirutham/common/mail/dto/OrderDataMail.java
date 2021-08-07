@@ -22,9 +22,13 @@ public class OrderDataMail {
 	 private String orderNo;
 	 private String orderDate;
 	 
+	 private String trackingUrl;
+	 
 	 private String name;
 	 
 	 private String portalUrl;
+	 
+	 private String orderStatus;
 	 	 
 	 private BigDecimal subtotal;
 	 
@@ -42,7 +46,8 @@ public class OrderDataMail {
 
 	public OrderDataMail(String orderNo,  String name, BigDecimal subtotal, String shipping,
 			String codCharges, String paymentMethods, BigDecimal finalAmount, List<OrderItemsMail> orderedItem,
-			OrderDeliveryDetails orderDeliveryDetails,String portalUrl) {
+			OrderDeliveryDetails orderDeliveryDetails,String portalUrl,String orderStatus,
+			String trackingUrl) {
 		super();
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMM dd, YYYY");
 		this.orderNo = orderNo;
@@ -56,6 +61,8 @@ public class OrderDataMail {
 		this.orderedItem = orderedItem;
 		this.orderDeliveryDetails = orderDeliveryDetails;
 		this.portalUrl =portalUrl;
+		this.orderStatus = orderStatus;
+		this.trackingUrl = trackingUrl;
 	}
 
 //	public OrderDataMail(String name,String orderNo, List<OrderItemsMail> orderedItem,OrderDeliveryDetails orderDeliveryDetails) {

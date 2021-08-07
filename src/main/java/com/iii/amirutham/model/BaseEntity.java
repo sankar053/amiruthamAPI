@@ -40,7 +40,7 @@ public class BaseEntity {
 	private String updatedBy;
 
 	@JsonIgnore
-	@Column(name = "ACTIVE_YN", insertable = true, updatable = false)
+	@Column(name = "ACTIVE_YN")
 	private String isActive;
 
 	@JsonIgnore

@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.iii.amirutham.dto.base.GenericResponse;
+import com.iii.amirutham.dto.base.OrderStatusRequest;
 import com.iii.amirutham.dto.model.OrderDto;
 import com.iii.amirutham.model.order.OrderStatus;
 import com.iii.amirutham.model.order.Orders;
@@ -77,15 +78,19 @@ public class OrderContoller {
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(orderDao);
 
 	}
-	@GetMapping(value ="/{id}/{status}")
+	
+	
+	
+	@PostMapping(value ="/updateStatus")
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-	public ResponseEntity<GenericResponse>  updateOrderprocess(HttpServletRequest request,@PathVariable(required = true) Integer id,@PathVariable(required = true) OrderStatus status) {
+	public ResponseEntity<GenericResponse>  updateOrderprocess(HttpServletRequest request,@Valid @RequestBody OrderStatusRequest orderStatusReq) {
 
-		orderService.updateOrderprocess(id,status);
+		orderService.updateOrderprocess(orderStatusReq);
 		
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(new GenericResponse("Order status got updated Successfully"));
 		
 	}
+	
 	
 	@GetMapping(value ="invoice/{id}",produces = MediaType.APPLICATION_PDF_VALUE)
 	@PreAuthorize("hasRole('ADMIN')")

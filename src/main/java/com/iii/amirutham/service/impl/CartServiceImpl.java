@@ -94,7 +94,7 @@ public class CartServiceImpl implements CartService {
 
 					ShoppingCartItem item = new ShoppingCartItem();
 					item.setProduct(product.get());
-					item.setItemImgURL(null != media ? media.get(0).getProdImgUrl() : null);
+					item.setItemImgURL((null != media && media.size()>0) ? media.get(0).getProdImgUrl() : "");
 					item.setItemName(product.get().getProductNm());
 					item.setProductCode(product.get().getProductCode());
 					item.setProductId(product.get().getId());
