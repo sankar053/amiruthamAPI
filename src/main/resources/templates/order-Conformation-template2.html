@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title data-th-remove="all">Template for HTML email (editable)</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </head>
+    <body>
+       <div style="background-color: #ccc;">
+            <div style="padding: 40px;">
+                <div style="margin-left: auto; margin-right: auto; min-width: 120px; border: solid 1px #62ea92; border-radius: 3px;">
+                   
+                    <div style="padding: 15px 15px 30px 15px; font-family: Verdana, Arial, Helvetica, sans-serif; font-size:1em; background-color: #fff; color:#333;">
+                    
+					<div style="font-size:20px;line-height:34px;font-family:Georgia,serif;font-style:italic;font-weight:400;color:#999999">
+					Hello from Amiruthum ePortal!</div>
+					
+<h1 style="margin:0;text-align:center;font-size:32px;line-height:40px;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;font-style:normal;font-weight:600;color:#222222">
+Thanks for your order!</h1>
+					
+					
+                   <p>Dear  <span th:text="${data.name}">User</span></p>
+				   
+				   <p style="margin:0 0 16px">Your order has been received and is now being processed. Your order details are shown below for your reference:</p>
+				   
+				   <p style="margin:0 0 16px">Delivery : 5-7 Working Days.</p>
+				   <p style="margin:0 0 16px">Pay with cash upon delivery.</p>
+				   
+				   <div style="clear:both;height:1px"></div>
+				   
+				   <h2 style="display:block;margin:0 0 18px;font-size:28px;line-height:34px;padding-top:34px;padding-bottom:0px;margin-top:30px;margin-bottom:30px;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;font-style:normal;font-weight:700;text-transform:none;color:#222222;text-align:center;border-top-width:1px;border-top-style:dashed;border-top-color:#e5e5e5;border-bottom:0">
+			Order Details		</h2>
+			
+			
+			<table cellspacing="0" cellpadding="0" width="100%" border="0" style="border-collapse:collapse">
+			<tbody><tr>
+				<td align="left" valign="middle" style="padding:12px;padding-left:0;text-align:left">
+					<h3 style="display:block;margin:0px 0 8px;font-size:16px;line-height:30px;font-family:Georgia,serif;font-style:italic;font-weight:400;
+					color:#999999;text-align:left" th:text="'Order number:' + ${data.orderNo}">
+					Order number: 203871					</h3>
+				</td>
+				<td align="right" valign="middle" style="padding:12px;padding-right:0;text-align:right">
+					<h3 style="display:block;margin:0px 0 8px;font-size:16px;line-height:30px;font-family:Georgia,serif;font-style:italic;font-weight:400;
+					color:#999999;text-align:right" th:text="'Order date:' + ${data.orderDate}">
+						Order date: July 22, 2020					</h3>
+				</td>
+			</tr>
+		</tbody></table>
+		
+		
+		<div style="margin-bottom:40px">
+			<table cellspacing="0" cellpadding="6" width="100%" border="1" style="color:#747474;border:0;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;border-color:#e5e5e5;border-top-width:1px;border-top-style:dashed;width:100%;padding-left:0;padding-right:0;text-align:right">
+				<thead>
+					<tr>
+						<th scope="col" style="color:#747474;font-weight:bold;border:0;padding:12px;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;border-color:#e5e5e5;padding-top:12px;padding-bottom:12px;border-bottom-width:1px;border-bottom-style:dashed;padding-left:0;text-align:left">Product</th>
+						<th scope="col" style="color:#747474;font-weight:bold;border:0;padding:12px;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;border-color:#e5e5e5;padding-top:12px;padding-bottom:12px;border-bottom-width:1px;border-bottom-style:dashed;text-align:center">Quantity</th>
+						<th scope="col" style="color:#747474;font-weight:bold;border:0;padding:12px;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;border-color:#e5e5e5;padding-top:12px;padding-bottom:12px;border-bottom-width:1px;border-bottom-style:dashed;padding-right:0;text-align:right">Price</th>
+					</tr>
+				</thead>
+				<tbody>
+				
+							<tr th:each="item : ${data.orderedItem}">
+			<td style="color:#747474;border:0;padding:12px;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,
+			sans-serif;border-color:#e5e5e5;padding-top:12px;padding-bottom:12px;border-bottom-width:1px;border-bottom-style:dashed;vertical-align:middle;word-wrap:break-word;
+			padding-left:0;text-align:left" th:text="${item.productName}">
+			Try Catch Unisex Half Sleeve T-Shirt - Navy Blue, XXL			</td>
+			<td style="color:#747474;border:0;padding:12px;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,
+			sans-serif;border-color:#e5e5e5;padding-top:12px;padding-bottom:12px;border-bottom-width:1px;border-bottom-style:dashed;vertical-align:middle;
+			text-align:center" th:text="${item.productQuantity}">
+				1			</td>
+			<td style="color:#747474;border:0;padding:12px;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,
+			sans-serif;border-color:#e5e5e5;padding-top:12px;padding-bottom:12px;border-bottom-width:1px;border-bottom-style:dashed;
+			vertical-align:middle;padding-right:0;text-align:right" th:text="${item.productPrice}">
+				<span><span>₹</span>499.00</span>			</td>
+		</tr>
+		
+								</tbody>
+						<tfoot>
+													<tr>
+								<th scope="row" colspan="2" style="color:#747474;font-weight:bold;border:0;padding:12px;
+								font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;border-color:#e5e5e5;
+								padding-top:12px;padding-bottom:12px;border-bottom-width:1px;border-bottom-style:dashed;padding-left:0;
+								text-align:left">Subtotal:</th>
+								<td style="color:#747474;border:0;padding:12px;font-family:&quot;Helvetica Neue&quot;
+								,Helvetica,Roboto,Arial,sans-serif;border-color:#e5e5e5;padding-top:12px;padding-bottom:12px;border-bottom-width:1px;
+								border-bottom-style:dashed;padding-right:0;text-align:right" th:text="${data.subtotal}">
+								<span><span>₹</span>499.00</span></td>
+							</tr>
+														<tr>
+								<th scope="row" colspan="2" style="color:#747474;font-weight:bold;border:0;padding:12px;
+								font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;border-color:#e5e5e5;
+								padding-top:12px;padding-bottom:12px;border-bottom-width:1px;border-bottom-style:dashed;padding-left:0;
+								text-align:left">Shipping:</th>
+								<td style="color:#747474;border:0;padding:12px;font-family:&quot;Helvetica Neue&quot;
+								,Helvetica,Roboto,Arial,sans-serif;border-color:#e5e5e5;padding-top:12px;padding-bottom:12px;border-bottom-width:1px
+								;border-bottom-style:dashed;padding-right:0;text-align:right" th:text="${data.shipping}">Free Shipping</td>
+							</tr>
+														<tr>
+								<th scope="row" colspan="2" style="color:#747474;font-weight:bold;border:0;padding:12px;
+								font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;border-color:#e5e5e5;
+								padding-top:12px;padding-bottom:12px;border-bottom-width:1px;border-bottom-style:dashed;padding-left:0;
+								text-align:left">Cash on delivery:</th>
+								<td style="color:#747474;border:0;padding:12px;font-family:&quot;Helvetica Neue&quot;
+								,Helvetica,Roboto,Arial,sans-serif;border-color:#e5e5e5;padding-top:12px;padding-bottom:12px;
+								border-bottom-width:1px;border-bottom-style:dashed;padding-right:0;text-align:right" th:text="${data.codCharges}"><span><span>₹</span>50.00</span></td>
+							</tr>
+														<tr>
+								<th scope="row" colspan="2" style="color:#747474;font-weight:bold;border:0;padding:12px;
+								font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;border-color:#e5e5e5;
+								padding-top:12px;padding-bottom:12px;border-bottom-width:1px;border-bottom-style:dashed;padding-left:0;
+								text-align:left">Payment method:</th>
+								<td style="color:#747474;border:0;padding:12px;font-family:&quot;Helvetica Neue&quot;,
+								Helvetica,Roboto,Arial,sans-serif;border-color:#e5e5e5;padding-top:12px;padding-bottom:12px;
+								border-bottom-width:1px;border-bottom-style:dashed;padding-right:0;text-align:right" th:text="${data.paymentMethods}">Cash on delivery</td>
+							</tr>
+														<tr>
+								<th scope="row" colspan="2" style="color:#747474;font-weight:bold;border:0;padding:12px;
+								font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;border-color:#e5e5e5;
+								padding-top:12px;padding-bottom:12px;border-bottom-width:1px;border-bottom-style:dashed;padding-left:0;
+								text-align:left">Total:</th>
+								<td style="color:#747474;border:0;padding:12px;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,
+								Arial,sans-serif;border-color:#e5e5e5;padding-top:12px;padding-bottom:12px;border-bottom-width:1px;
+								border-bottom-style:dashed;padding-right:0;text-align:right" th:text="${data.finalAmount}"><span><span>₹</span>549.00</span></td>
+							</tr>
+													</tfoot>
+									</table>
+		</div>
+		
+		
+		<table id="m_5913849241674934108addresses" cellspacing="0" cellpadding="0" border="0" style="border-collapse:collapse;width:100%;vertical-align:top;margin-bottom:40px;padding:0">
+		<tbody><tr>
+			<td valign="top" width="50%" style="padding:12px;text-align:left;border:0">
+				<h2 style="display:block;margin:0 0 18px;font-size:28px;line-height:34px;padding-top:34px;padding-bottom:0px;margin-top:30px;margin-bottom:30px;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;font-style:normal;font-weight:700;text-transform:none;color:#222222;text-align:center;border-top-width:1px;border-top-style:dashed;border-top-color:#e5e5e5;border-bottom:0">Billing address</h2>
+
+				<address>
+					<table cellspacing="0" cellpadding="0" border="0" style="width:100%;padding:0">
+						<tbody><tr>
+							<td valign="top" style="border:1px solid #e5e5e5;padding:12px;border-width:1px;border-color:#e5e5e5;border-style:dashed;
+							color:#8f8f8f;text-align:center">
+							<p th:text="${data.orderDeliveryDetails.receiverName}">Recever Name</p>
+							<p th:text="${data.orderDeliveryDetails.addressline1}">Address</p>
+							<p th:text="${data.orderDeliveryDetails.dstPin}">District and pincode</p>
+							<p th:text="${data.orderDeliveryDetails.state}">state</p>
+							<a href="tel:9791255264" th:text="${data.orderDeliveryDetails.receiverPhone}" style="font-weight:normal;text-decoration:underline;color:#f96a01" target="_blank">receiver phone</a>			
+							<p style="margin:0"><a th:href="'mailto:' + ${data.orderDeliveryDetails.receiverEmail} " target="_blank" th:text="${data.orderDeliveryDetails.receiverEmail}">xxxx@gmail.com</a></p>
+							</td>
+						</tr>
+					</tbody></table>
+				</address>
+			</td>
+					</tr>
+	</tbody></table>
+<p style="margin:0 0 16px">Thanks for using <a th:href="${data.portalUrl} " target="_blank" >amiruthum.in</a>!<img src="https://ci6.googleusercontent.com/proxy/Sf3Mg2JKvvk3mI6x229a4_DqvSMvzZZWGpk70HU5iGBWT3BT7qMi0Ws2kQtfrzCLMsYri8cGcvqquEm-K2yyaN0ji0I0cFWmYRNzJpfEVu--FrCGz3qTihugn977rgLrZpPCCDLFmUn85zjgVCLlBGdWaCScF_KrHK-nAE0LqB-QLyaJheJELWxIrx6dknplbYDMCutEzyII27yGs-P6e9TrY6xWRCXb4Xp1irfJ1utzZEyMjGxvDZtt5brvalHRGVUr0XHvuOSEYBiBLdEuFdxcQfq7tS4bNQ=s0-d-e1-ft#https://www.google-analytics.com/collect?v=1&amp;tid=UA-132784462-1&amp;cid=1975863865.1595374885&amp;uid=17169&amp;t=event&amp;ec=Emails&amp;ea=open&amp;el=Processing+order&amp;dp=%2Femails%2Fprocessing-order&amp;dt=Processing+order" alt="" style="border:none;display:inline;font-weight:bold;height:auto;outline:none;text-decoration:none;text-transform:capitalize;font-size:14px;line-height:24px" class="CToWUd"></p>
+				   
+				   
+                  
+       <p>
+            <img src="https://raw.githubusercontent.com/sankar053/amiruthumimg/main/logo.png" />
+        </p>
+  	<p>
+      Regards, <br />
+      <em>Amiruthum Support</em>
+    </p> 
+						
+                    </div>
+                   
+                    </div>
+                </div>
+            </div>
+    
+    </body>
+</html>
+

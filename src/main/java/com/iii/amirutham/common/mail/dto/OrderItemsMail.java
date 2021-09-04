@@ -23,5 +23,7 @@ public class OrderItemsMail {
 	private Integer productQuantity;
 	
 	private BigDecimal productPrice;
+	
+	private String itemImgURLs;
 
 }

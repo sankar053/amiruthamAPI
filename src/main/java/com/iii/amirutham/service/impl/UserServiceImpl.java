@@ -1,6 +1,7 @@
 package com.iii.amirutham.service.impl;
 
 import java.net.InetAddress;
+import java.util.Base64;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -8,6 +9,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -70,6 +72,10 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private VerificationTokenRepository tokenRepository;
+	
+	@Value("${application.ui.base.url}")
+	private String uiBaseURL;
+	
 
 //	@Autowired
 //	@Qualifier("GeoIPCountry")
@@ -271,9 +277,9 @@ public class UserServiceImpl implements UserService {
 	public void constructOTPEmail(User user, String otp) {
 		// TODO Auto-generated method stub
 		
-		
+		String encriptedlink=uiBaseURL+"/account/forgot-password/"+Base64.getEncoder().encodeToString((otp+"-"+user.getEmailAddress()).getBytes());
 		emailService.sendTemplateEmail(user.getEmailAddress(), "Password Reset Request for Amirutham eportal", "otp-template", 
-					new OnetimePasswordMail(otp,user.getFirstName(),user.getEmailAddress()), null);
+					new OnetimePasswordMail(encriptedlink,user.getFirstName(),user.getEmailAddress()), null);
 		
 	}
 

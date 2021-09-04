@@ -6,6 +6,7 @@ package com.iii.amirutham.utills;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.Random;
 
 import org.jsoup.Jsoup;
@@ -36,6 +37,10 @@ public class AmirthumUtills {
 
 	}
 
+	public static <T> boolean IsNullOrEmpty(Collection<T> list) {
+		return list == null || list.isEmpty();
+	}
+	
 	@SuppressWarnings("unused")
 	public static Object convertToDto(Object conversionObject,Class c,ModelMapper modelMapper) {
 		return modelMapper.map(conversionObject, c);

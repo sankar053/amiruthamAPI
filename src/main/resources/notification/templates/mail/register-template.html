@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title data-th-remove="all">Template for HTML email (editable)</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </head>
+    <body>
+        <div style="background-color: #ccc;">
+            <div style="padding: 40px;">
+                <div style="margin-left: auto; margin-right: auto; min-width: 120px; border: solid 1px #62ea92; border-radius: 3px;">
+                   
+                    <div style="padding: 15px 15px 30px 15px; font-family: Verdana, Arial, Helvetica, sans-serif; font-size:1em; background-color: #fff; color:#333;">
+                    
+					
+					
+					
+					<div style="font-size:20px;line-height:34px;font-family:Georgia,serif;font-style:italic;font-weight:400;color:#999999">Hello from Amirutham ePortal!</div>
+					
+					
+					
+					
+					  <p>Hello <span th:text="${data.name}">User</span></p>
+					  
+					  <h1 style="margin:0;text-align:center;font-size:32px;line-height:40px;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;font-style:normal;font-weight:600;color:#222222">
+					  Welcome to Amirutham ePortal</h1>
+					  
+                        <p>
+                           Thanks for creating an account on Amirutham E-portal . Your username is 
+						   <a th:href="'mailto:' + ${data.email} " target="_blank" th:text="${data.email}">xxx@gmail.com</a> </p>
+						   
+						   
+						 
+						   
+						   <p style="margin:0 0 16px">You can access your account area to view your orders and 
+						   <span style="background:#ffc;color:#222" class="il">change</span> your <span style="background:#ffc;color:#222" class="il">password</span> here: <a th:href="${data.homeurl}"  
+						   style="font-weight:normal;text-decoration:underline;color:#f96a01" target="_blank" 
+						  th:text="${data.homeurl}">
+						   https://xxxx.in/my</a>.</p>
+						   
+					
+                  
+       <p>
+            <img src="https://raw.githubusercontent.com/sankar053/amiruthumimg/main/logo.png" />
+        </p>
+		
+		<p>
+      Regards, <br />
+      <em>Amiruthum Support</em>
+    </p>
+     
+						
+                    </div>
+                   
+                    </div>
+                </div>
+            </div>
+			
+			
+			
+        </div>
+    </body>
+</html>
+

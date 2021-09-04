@@ -5,16 +5,21 @@ package com.iii.amirutham.service.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
 import com.iii.amirutham.common.EmailService;
 import com.iii.amirutham.common.ReportService;
@@ -35,7 +40,6 @@ import com.iii.amirutham.model.Address;
 import com.iii.amirutham.model.MerchantStore;
 import com.iii.amirutham.model.order.OrderAttribute;
 import com.iii.amirutham.model.order.OrderProduct;
-import com.iii.amirutham.model.order.OrderStatus;
 import com.iii.amirutham.model.order.OrderTaxInfo;
 import com.iii.amirutham.model.order.Orders;
 import com.iii.amirutham.model.product.AmiruthamProducts;
@@ -51,6 +55,12 @@ import com.iii.amirutham.repo.UserRepository;
 import com.iii.amirutham.service.OrderService;
 import com.iii.amirutham.service.SequenceService;
 import com.iii.amirutham.service.UserService;
+import com.iii.amirutham.utills.AmirthumUtills;
+import com.iii.amirutham.utills.Constant;
+import com.iii.amirutham.utills.NotificationHelper;
+
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 
 /**
  * @author sanka
@@ -85,7 +95,29 @@ public class OrderServiceImpl implements OrderService {
 
 	@Autowired
 	private SequenceService seqservice;
+	
+	@Value("${mail.header.image}")
+	private String mailHeaderImage;
+	
+	@Autowired
+	private Configuration config;
+	
+	@Value("${mail.confirmOrderEmail.template}")
+	private String confirmOrderEmailTemplate;
+	
+	@Value("${mail.confirmOrderEmail.subject}")
+	private String confirmOrderEmailSubject;
+	
+	@Autowired
+	NotificationHelper notificationHelper;
+	@Value("${domain.url}")
+	private String domain;
 
+	@Value("${mail.orderCreationEmail.template}")
+	private String createOrderEmailTemplate;
+	
+	@Value("${mail.orderCreationEmail.subject}")
+	private String createOrderEmailSubject;
 	@Override
 	public String placeOrder(OrderDto orderDto) {
 		// TODO Auto-generated method stub
@@ -141,10 +173,13 @@ public class OrderServiceImpl implements OrderService {
 			}
 			orderDao.setOrderProducts(orderProducts);
 
-			orderDao = orderRepository.save(orderDao);
+			//orderDao = orderRepository.save(orderDao);
 			cartRepository.updateShoppingCartStatus(orderDto.getCartId(), "Converted");
+			
+	
+			sendOrderCreationMail(user, orderDao,LocalDateTime.now().toString());
 
-			sentMailforOrderConformation(orderDao, user,"order-Conformation-template");
+		//	sentMailforOrderConformation(orderDao, user,"order-Conformation-template");
 
 			return orderDao.getOrderCode();
 		}
@@ -160,7 +195,8 @@ public class OrderServiceImpl implements OrderService {
 		if (null != orderedProducts) {
 			for (OrderProduct product : orderedProducts) {
 				orderedItem.add(new OrderItemsMail(product.getOrderedproductName(), product.getOrderedQuantity(),
-						product.getProductPrice()));
+						product.getProductPrice(),"https://raw.githubusercontent.com/sankar053/amiruthumimg/main/Products/Oils/"
+				+product.getOrderedproductCode()+".jpg"));
 			}
 		}
 
@@ -172,7 +208,7 @@ public class OrderServiceImpl implements OrderService {
 		OrderDataMail order = new OrderDataMail(orderDao.getOrderCode(), user.getFirstName(), orderDao.getGrossTotal(),
 				"Free Shipping", "50", "COD", orderDao.getNetTotal(), orderedItem, address, "http:localhost:4200/home",orderDao.getOrderStatus().getValue(),
 				orderDao.getOrderTrackingUrl());
-		emailService.sendTemplateEmail(user.getEmail(), "Your Amiruthum ePortal order has been received!",
+		emailService.sendTemplateEmail(user.getEmail(), "Order #"+orderDao.getOrderCode()+" Confirmed!",
 				template, order, null);
 	}
 	
@@ -184,7 +220,7 @@ public class OrderServiceImpl implements OrderService {
 		if (null != orderedProducts) {
 			for (OrderProduct product : orderedProducts) {
 				orderedItem.add(new OrderItemsMail(product.getOrderedproductName(), product.getOrderedQuantity(),
-						product.getProductPrice()));
+						product.getProductPrice(),""));
 			}
 		}
 
@@ -286,5 +322,45 @@ public class OrderServiceImpl implements OrderService {
 		return null;
 
 	}
+	
+	@Async("specificTaskExecutor")
+	public void sendOrderCreationMail(UserDetailsImpl user, Orders order,String convertedTime) {
+		try {
+			List<String> productList = new ArrayList<>();
+			List<Integer> quantityList = new ArrayList<>();
+			if(!AmirthumUtills.IsNullOrEmpty(order.getOrderProducts())) {
+				for(OrderProduct orderItem : order.getOrderProducts()) {
+					if(orderItem!=null) {
+						productList.add(orderItem.getOrderedproductName());
+						quantityList.add(orderItem.getOrderedQuantity());
+					}
+				}
+			}
+			Map<String, Object> mailMap = new HashMap<>();
+			Map<String, Object> notificationMap = new HashMap<>();
+			mailMap.put("imgUrl", mailHeaderImage);
+			mailMap.put("name", user.getFirstName());
+			mailMap.put("itemName", String.valueOf(productList));
+			mailMap.put("quantity", String.valueOf(quantityList));
+			mailMap.put("orderNumber", order.getOrderCode());
+			mailMap.put("deliveryMode", convertedTime);
+			mailMap.put("url",domain);
+			Template mailTemplate = config.getTemplate(createOrderEmailTemplate);
+			String html = FreeMarkerTemplateUtils.processTemplateIntoString(mailTemplate, mailMap);
+			// Call Mail Service
+			notificationMap.put("userMail", user.getEmail());
+			notificationMap.put("subject", createOrderEmailSubject);
+			notificationMap.put("html", html);
+			boolean isMailSent = notificationHelper.sendNotification(Constant.NOTIFICATION_MAIL_TYPE, notificationMap);
+			if (!isMailSent) {
+//			throw new BusinessException(Constant.RESPONSE_FAIL, Constant.SERVER_ERROR, Constant.RESPONSE_EMPTY_DATA,
+//					500);
+				System.out.println("Mail Sending Failed");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+		}
 
+	}
 }
