@@ -38,14 +38,10 @@ public class UserSecurityService implements ISecurityUserService {
 	@Override
 	public String validateOneTimePassword(String otp) {
 		// TODO Auto-generated method stub
-		byte[] decriptedOtpByts = Base64.getDecoder().decode(otp);
-		String decriptedOtpstr = new String(decriptedOtpByts);
-		String[] otpArr = decriptedOtpstr.split("-");
-		if (otpArr.length > 0) {
-			final PasswordResetToken passToken = passwordTokenRepository.findByOneTimePassword(otpArr[0]);
 
-			return !isTokenFound(passToken) ? "invalidToken" : isTokenExpired(passToken) ? "expired" : null;
-		}
-		return null;
+		final PasswordResetToken passToken = passwordTokenRepository.findByOneTimePassword(otp);
+
+		return !isTokenFound(passToken) ? "invalidToken" : isTokenExpired(passToken) ? "expired" : null;
+
 	}
 }

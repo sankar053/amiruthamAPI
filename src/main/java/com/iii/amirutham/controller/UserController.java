@@ -1,5 +1,6 @@
 package com.iii.amirutham.controller;
 
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -153,22 +154,30 @@ public class UserController {
 	public @ResponseBody ResponseEntity<GenericResponse> validateOtp(@Valid @RequestBody ValidateOtpDto otpDto,
 			final HttpServletRequest request) {
 
-		final String result = securityUserService.validateOneTimePassword(otpDto.getOneTimePassword());
+		byte[] decriptedOtpByts = Base64.getDecoder().decode(otpDto.getOneTimePassword());
+		String decriptedOtpstr = new String(decriptedOtpByts);
+		String[] otpArr = decriptedOtpstr.split("-");
+		if (otpArr.length > 0) {
+			final String result = securityUserService.validateOneTimePassword(otpArr[0]);
 
-		if (result != null) {
-			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(
-					new GenericResponse(messages.getMessage("auth.message." + result, null, request.getLocale())));
-		}
+			if (result != null) {
+				return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(
+						new GenericResponse(messages.getMessage("auth.message." + result, null, request.getLocale())));
+			}
+			otpDto.setUserName(otpArr[1]);
+			boolean updated = userService.updatePassword(otpDto);
+			if (updated) {
 
-		boolean updated = userService.updatePassword(otpDto);
-		if (updated) {
-
-			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(
-					new GenericResponse(messages.getMessage("message.resetPasswordSuc", null, request.getLocale())));
-		} else {
-			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
-					.body(new GenericResponse(messages.getMessage("auth.message.invalid", null, request.getLocale())));
-		}
+				return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(new GenericResponse(
+						messages.getMessage("message.resetPasswordSuc", null, request.getLocale())));
+			} else {
+				return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(
+						new GenericResponse(messages.getMessage("auth.message.invalid", null, request.getLocale())));
+			}
+		}else
+			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(new GenericResponse(
+					messages.getMessage("message.resetPasswordFail", null, request.getLocale())));
+		
 
 	}
 
