@@ -18,6 +18,11 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
@@ -99,23 +104,22 @@ public class OrderServiceImpl implements OrderService {
 
 	@Autowired
 	private SequenceService seqservice;
-	
+
 	@Value("${mail.header.image}")
 	private String mailHeaderImage;
-	
+
 	@Autowired
 	private Configuration config;
-	
+
 	@Value("${mail.confirmOrderEmail.template}")
 	private String confirmOrderEmailTemplate;
-	
+
 	@Value("${mail.delivery.subject}")
 	private String orderStatusDelverySubject;
-	
+
 	@Value("${mail.delivery.template}")
 	private String orderStatusDelveryTemplate;
 
-	
 	@Autowired
 	NotificationHelper notificationHelper;
 	@Value("${domain.url}")
@@ -123,9 +127,10 @@ public class OrderServiceImpl implements OrderService {
 
 	@Value("${mail.orderCreationEmail.template}")
 	private String createOrderEmailTemplate;
-	
+
 	@Value("${mail.orderCreationEmail.subject}")
 	private String createOrderEmailSubject;
+
 	@Override
 	public String placeOrder(OrderDto orderDto) {
 		// TODO Auto-generated method stub
@@ -149,9 +154,7 @@ public class OrderServiceImpl implements OrderService {
 			orderDao.setAddress(getShippingAddress(orderDto.getShippingAddress(), orderDao.getUser()));
 			orderDao.setMerchantStore(new MerchantStore());
 			Set<OrderProduct> orderProducts = new LinkedHashSet<OrderProduct>();
-			
-			
-					
+
 			for (ShoppingCartItem cartItem : mypendingCart.getLineItems()) {
 				Optional<AmiruthamProducts> product = productRepository.findById(cartItem.getProductId());
 				if (product.isPresent()) {
@@ -181,13 +184,12 @@ public class OrderServiceImpl implements OrderService {
 			}
 			orderDao.setOrderProducts(orderProducts);
 
-			//orderDao = orderRepository.save(orderDao);
+			// orderDao = orderRepository.save(orderDao);
 			cartRepository.updateShoppingCartStatus(orderDto.getCartId(), "Converted");
-			
-	
-			sendOrderCreationMail(user, orderDao,orderDao.getAddress(),LocalDateTime.now().toString());
 
-		//	sentMailforOrderConformation(orderDao, user,"order-Conformation-template");
+			sendOrderCreationMail(user, orderDao, orderDao.getAddress(), LocalDateTime.now().toString());
+
+			// sentMailforOrderConformation(orderDao, user,"order-Conformation-template");
 
 			return orderDao.getOrderCode();
 		}
@@ -195,7 +197,7 @@ public class OrderServiceImpl implements OrderService {
 
 	}
 
-	void sentMailforOrderConformation(Orders orderDao, UserDetailsImpl user,String template) {
+	void sentMailforOrderConformation(Orders orderDao, UserDetailsImpl user, String template) {
 
 		List<OrderItemsMail> orderedItem = new ArrayList<OrderItemsMail>();
 
@@ -203,8 +205,9 @@ public class OrderServiceImpl implements OrderService {
 		if (null != orderedProducts) {
 			for (OrderProduct product : orderedProducts) {
 				orderedItem.add(new OrderItemsMail(product.getOrderedproductName(), product.getOrderedQuantity(),
-						product.getProductPrice(),"https://raw.githubusercontent.com/sankar053/amiruthumimg/main/Products/Oils/"
-				+product.getOrderedproductCode()+".jpg"));
+						product.getProductPrice(),
+						"https://raw.githubusercontent.com/sankar053/amiruthumimg/main/Products/Oils/"
+								+ product.getOrderedproductCode() + ".jpg"));
 			}
 		}
 
@@ -214,13 +217,13 @@ public class OrderServiceImpl implements OrderService {
 				shippingAddress.getCity() + "-" + shippingAddress.getPostalCopde(), shippingAddress.getState());
 
 		OrderDataMail order = new OrderDataMail(orderDao.getOrderCode(), user.getFirstName(), orderDao.getGrossTotal(),
-				"Free Shipping", "50", "COD", orderDao.getNetTotal(), orderedItem, address, "http:localhost:4200/home",orderDao.getOrderStatus().getValue(),
-				orderDao.getOrderTrackingUrl());
-		emailService.sendTemplateEmail(user.getEmail(), "Order #"+orderDao.getOrderCode()+" Confirmed!",
-				template, order, null);
+				"Free Shipping", "50", "COD", orderDao.getNetTotal(), orderedItem, address, "http:localhost:4200/home",
+				orderDao.getOrderStatus().getValue(), orderDao.getOrderTrackingUrl());
+		emailService.sendTemplateEmail(user.getEmail(), "Order #" + orderDao.getOrderCode() + " Confirmed!", template,
+				order, null);
 	}
-	
-	void sentMailforOrderstatus(Orders orderDao, User user,String template) {
+
+	void sentMailforOrderstatus(Orders orderDao, User user, String template) {
 
 		List<OrderItemsMail> orderedItem = new ArrayList<OrderItemsMail>();
 
@@ -228,7 +231,7 @@ public class OrderServiceImpl implements OrderService {
 		if (null != orderedProducts) {
 			for (OrderProduct product : orderedProducts) {
 				orderedItem.add(new OrderItemsMail(product.getOrderedproductName(), product.getOrderedQuantity(),
-						product.getProductPrice(),""));
+						product.getProductPrice(), ""));
 			}
 		}
 
@@ -238,8 +241,8 @@ public class OrderServiceImpl implements OrderService {
 				shippingAddress.getCity() + "-" + shippingAddress.getPostalCopde(), shippingAddress.getState());
 
 		OrderDataMail order = new OrderDataMail(orderDao.getOrderCode(), user.getFirstName(), orderDao.getGrossTotal(),
-				"Free Shipping", "50", "COD", orderDao.getNetTotal(), orderedItem, address, "http:localhost:4200/home",orderDao.getOrderStatus().getValue()
-				,orderDao.getOrderTrackingUrl());
+				"Free Shipping", "50", "COD", orderDao.getNetTotal(), orderedItem, address, "http:localhost:4200/home",
+				orderDao.getOrderStatus().getValue(), orderDao.getOrderTrackingUrl());
 		emailService.sendTemplateEmail(user.getEmailAddress(), "Your Amiruthum ePortal order has been received!",
 				template, order, null);
 	}
@@ -270,9 +273,12 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public List<Orders> getAllOrders() {
+	public Page<Orders> getAllOrders(Integer pageNo, Integer pageSize, Pageable pageable) {
 		// TODO Auto-generated method stub
-		return (List<Orders>) orderRepository.findAll();
+		if (pageNo != null && pageSize != null)
+			pageable = PageRequest.of(pageNo, pageSize, Sort.by(Order.desc("createdTs"), Order.desc("id")));
+		return orderRepository.findAll(pageable);
+
 	}
 
 	@Override
@@ -280,14 +286,15 @@ public class OrderServiceImpl implements OrderService {
 		// TODO Auto-generated method stub
 		Optional<Orders> oorder = orderRepository.findById(orderStatusReq.getOrderId());
 		if (oorder.isPresent()) {
-			
-			
-			if("PROCESSED".equalsIgnoreCase(orderStatusReq.getOrderStatus().getValue())) {
-				orderRepository.updateOrderStatus(orderStatusReq.getOrderId(), orderStatusReq.getOrderStatus(),orderStatusReq.getTrackingUrl());
-				sendOrderDelivaryMail(oorder.get().getUser(), oorder.get(),oorder.get().getAddress(),orderStatusReq.getTrackingUrl());
-			}else {
+
+			if ("PROCESSED".equalsIgnoreCase(orderStatusReq.getOrderStatus().getValue())) {
+				orderRepository.updateOrderStatus(orderStatusReq.getOrderId(), orderStatusReq.getOrderStatus(),
+						orderStatusReq.getTrackingUrl());
+				sendOrderDelivaryMail(oorder.get().getUser(), oorder.get(), oorder.get().getAddress(),
+						orderStatusReq.getTrackingUrl());
+			} else {
 				orderRepository.updateOrderStatus(orderStatusReq.getOrderId(), orderStatusReq.getOrderStatus());
-				sentMailforOrderstatus(oorder.get(), oorder.get().getUser(),"order-Status-Update-template");	
+				sentMailforOrderstatus(oorder.get(), oorder.get().getUser(), "order-Status-Update-template");
 			}
 		} else {
 			throw new UserNotFoundException("Selected orger is invalid");
@@ -335,45 +342,48 @@ public class OrderServiceImpl implements OrderService {
 		return null;
 
 	}
-	
+
 	@Async("specificTaskExecutor")
-	public void sendOrderCreationMail(UserDetailsImpl user, Orders order,Address shippingAddress, String convertedTime) {
+	public void sendOrderCreationMail(UserDetailsImpl user, Orders order, Address shippingAddress,
+			String convertedTime) {
 		try {
 			List<BuyerOrderResponse> buyerOrder = new ArrayList<>();
 			List<ProductDto> orderItemList = null;
 			BigDecimal totalAmount = new BigDecimal(0);
-				BuyerOrderResponse orderMail = new BuyerOrderResponse();
-				orderItemList = new ArrayList<>();
-				if(!AmirthumUtills.IsNullOrEmpty(order.getOrderProducts())) {
-					for(OrderProduct orderItem : order.getOrderProducts()) {
-						if(orderItem!=null) {
-							ProductDto product = new ProductDto();
-							product.setProductNm(orderItem.getOrderedproductName());
-							product.setPrice(orderItem.getProductPrice().multiply(new BigDecimal(orderItem.getOrderedQuantity())));
-							product.setDeliveryMode("Shipment");
-							product.setOrderQuantity(orderItem.getOrderedQuantity());
-							totalAmount = totalAmount.add(orderItem.getProductPrice());
+			BuyerOrderResponse orderMail = new BuyerOrderResponse();
+			orderItemList = new ArrayList<>();
+			if (!AmirthumUtills.IsNullOrEmpty(order.getOrderProducts())) {
+				for (OrderProduct orderItem : order.getOrderProducts()) {
+					if (orderItem != null) {
+						ProductDto product = new ProductDto();
+						product.setProductNm(orderItem.getOrderedproductName());
+						product.setPrice(
+								orderItem.getProductPrice().multiply(new BigDecimal(orderItem.getOrderedQuantity())));
+						product.setDeliveryMode("Shipment");
+						product.setOrderQuantity(orderItem.getOrderedQuantity());
+						totalAmount = totalAmount.add(orderItem.getProductPrice());
 //							product.setProductDesc(orderItem.getProduct().getProductDesc());
 //							if(Strings.isNullOrEmpty(orderItem.getProduct().getProductDesc())) {
 //								product.setProductDesc("Good");
 //							}
-							orderItemList.add(product);
-						}
+						orderItemList.add(product);
 					}
-					orderMail.setOrderNumber(order.getOrderCode());
-					orderMail.setOrderAmount(order.getGrossTotal());
-					orderMail.setTrackingNumber("143243242423");
-					orderMail.setOrderPlacedOn(AmirthumUtills.getDay()+", "+AmirthumUtills.timeStampFormat(order.getDatePurchased()));
-					orderMail.setProductList(orderItemList);
 				}
-				buyerOrder.add(orderMail);
-			
+				orderMail.setOrderNumber(order.getOrderCode());
+				orderMail.setOrderAmount(order.getGrossTotal());
+				orderMail.setTrackingNumber("143243242423");
+				orderMail.setOrderPlacedOn(
+						AmirthumUtills.getDay() + ", " + AmirthumUtills.timeStampFormat(order.getDatePurchased()));
+				orderMail.setProductList(orderItemList);
+			}
+			buyerOrder.add(orderMail);
+
 			Map<String, Object> mailMap = new HashMap<>();
 			Map<String, Object> notificationMap = new HashMap<>();
 			mailMap.put("buyerOrder", buyerOrder);
-			mailMap.put("name",user.getFirstName()+" "+user.getLastName());
+			mailMap.put("name", user.getFirstName() + " " + user.getLastName());
 			mailMap.put("line1", shippingAddress.getAddress1());
-			if(Strings.isNullOrEmpty(shippingAddress.getAddress2()))
+			if (Strings.isNullOrEmpty(shippingAddress.getAddress2()))
 				mailMap.put("line2", "");
 			else
 				mailMap.put("line2", shippingAddress.getAddress2());
@@ -382,7 +392,7 @@ public class OrderServiceImpl implements OrderService {
 			mailMap.put("zipcode", shippingAddress.getPostalCopde());
 			mailMap.put("country", "India");
 			mailMap.put("amiruthamInfo", Constant.AMIRUTHAM_INFO);
-			mailMap.put("loginurl",domain);
+			mailMap.put("loginurl", domain);
 			Template mailTemplate = config.getTemplate(createOrderEmailTemplate);
 			String html = FreeMarkerTemplateUtils.processTemplateIntoString(mailTemplate, mailMap);
 			// Call Mail Service
@@ -401,45 +411,47 @@ public class OrderServiceImpl implements OrderService {
 		}
 
 	}
-	
+
 	@Async("specificTaskExecutor")
-	public void sendOrderDelivaryMail(User user, Orders order,Address shippingAddress, String trackingid) {
+	public void sendOrderDelivaryMail(User user, Orders order, Address shippingAddress, String trackingid) {
 		try {
 			List<BuyerOrderResponse> buyerOrder = new ArrayList<>();
 			List<ProductDto> orderItemList = null;
 			BigDecimal totalAmount = new BigDecimal(0);
-				BuyerOrderResponse orderMail = new BuyerOrderResponse();
-				orderItemList = new ArrayList<>();
-				if(!AmirthumUtills.IsNullOrEmpty(order.getOrderProducts())) {
-					for(OrderProduct orderItem : order.getOrderProducts()) {
-						if(orderItem!=null) {
-							ProductDto product = new ProductDto();
-							product.setProductNm(orderItem.getOrderedproductName());
-							product.setPrice(orderItem.getProductPrice().multiply(new BigDecimal(orderItem.getOrderedQuantity())));
-							product.setDeliveryMode("Shipment");
-							product.setOrderQuantity(orderItem.getOrderedQuantity());
-							totalAmount = totalAmount.add(orderItem.getProductPrice());
+			BuyerOrderResponse orderMail = new BuyerOrderResponse();
+			orderItemList = new ArrayList<>();
+			if (!AmirthumUtills.IsNullOrEmpty(order.getOrderProducts())) {
+				for (OrderProduct orderItem : order.getOrderProducts()) {
+					if (orderItem != null) {
+						ProductDto product = new ProductDto();
+						product.setProductNm(orderItem.getOrderedproductName());
+						product.setPrice(
+								orderItem.getProductPrice().multiply(new BigDecimal(orderItem.getOrderedQuantity())));
+						product.setDeliveryMode("Shipment");
+						product.setOrderQuantity(orderItem.getOrderedQuantity());
+						totalAmount = totalAmount.add(orderItem.getProductPrice());
 //							product.setProductDesc(orderItem.getProduct().getProductDesc());
 //							if(Strings.isNullOrEmpty(orderItem.getProduct().getProductDesc())) {
 //								product.setProductDesc("Good");
 //							}
-							orderItemList.add(product);
-						}
+						orderItemList.add(product);
 					}
-					orderMail.setOrderNumber(order.getOrderCode());
-					orderMail.setOrderAmount(order.getGrossTotal());
-					orderMail.setTrackingNumber(trackingid);
-					orderMail.setOrderPlacedOn(AmirthumUtills.getDay()+", "+AmirthumUtills.timeStampFormat(order.getDatePurchased()));
-					orderMail.setProductList(orderItemList);
 				}
-				buyerOrder.add(orderMail);
-			
+				orderMail.setOrderNumber(order.getOrderCode());
+				orderMail.setOrderAmount(order.getGrossTotal());
+				orderMail.setTrackingNumber(trackingid);
+				orderMail.setOrderPlacedOn(
+						AmirthumUtills.getDay() + ", " + AmirthumUtills.timeStampFormat(order.getDatePurchased()));
+				orderMail.setProductList(orderItemList);
+			}
+			buyerOrder.add(orderMail);
+
 			Map<String, Object> mailMap = new HashMap<>();
 			Map<String, Object> notificationMap = new HashMap<>();
 			mailMap.put("buyerOrder", buyerOrder);
-			mailMap.put("name",user.getFirstName()+" "+user.getLastName());
+			mailMap.put("name", user.getFirstName() + " " + user.getLastName());
 			mailMap.put("line1", shippingAddress.getAddress1());
-			if(Strings.isNullOrEmpty(shippingAddress.getAddress2()))
+			if (Strings.isNullOrEmpty(shippingAddress.getAddress2()))
 				mailMap.put("line2", "");
 			else
 				mailMap.put("line2", shippingAddress.getAddress2());
@@ -448,7 +460,7 @@ public class OrderServiceImpl implements OrderService {
 			mailMap.put("zipcode", shippingAddress.getPostalCopde());
 			mailMap.put("country", "India");
 			mailMap.put("amiruthamInfo", Constant.AMIRUTHAM_INFO);
-			mailMap.put("loginurl",domain);
+			mailMap.put("loginurl", domain);
 			Template mailTemplate = config.getTemplate(orderStatusDelveryTemplate);
 			String html = FreeMarkerTemplateUtils.processTemplateIntoString(mailTemplate, mailMap);
 			// Call Mail Service
@@ -460,7 +472,7 @@ public class OrderServiceImpl implements OrderService {
 //			throw new BusinessException(Constant.RESPONSE_FAIL, Constant.SERVER_ERROR, Constant.RESPONSE_EMPTY_DATA,
 //					500);
 				System.out.println("Mail Sending Failed");
-				}
+			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -468,6 +480,5 @@ public class OrderServiceImpl implements OrderService {
 		}
 
 	}
-	
 
 }

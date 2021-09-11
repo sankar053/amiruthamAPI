@@ -23,6 +23,7 @@ import com.iii.amirutham.model.user.User;
 public interface OrderRepository extends PagingAndSortingRepository<Orders, Integer> {
 
 	Page<Orders> findByUser(User user,Pageable pageable);
+	//Page<Orders> findALL(Pageable pageable);
 	
 	  @Modifying
 	  @Transactional

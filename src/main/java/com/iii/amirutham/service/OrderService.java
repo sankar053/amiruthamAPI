@@ -4,11 +4,12 @@
 package com.iii.amirutham.service;
 
 import java.io.File;
-import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.iii.amirutham.dto.base.OrderStatusRequest;
 import com.iii.amirutham.dto.model.OrderDto;
-import com.iii.amirutham.model.order.OrderStatus;
 import com.iii.amirutham.model.order.Orders;
 
 /**
@@ -21,7 +22,7 @@ public interface OrderService {
 
 	public Orders getOrdersById(Integer id);
 
-	public List<Orders> getAllOrders();
+	public Page<Orders> getAllOrders(Integer pageNo, Integer pageSize,Pageable pageable);
 
 	public void updateOrderprocess(OrderStatusRequest orderStatusReq);
 
