@@ -70,9 +70,7 @@
                 </#list>
                 <p><b>Hello ${name},</b></p>
                 <p>
-                    Thank you for your order. We'll send a confirmation when your order ships. Your estimated delivery
-                    date is indicated below. If you would you like view the status of your order or make any changes to
-                    it, Please vision Order section.<br><br>
+                     Your order is on the way. Track your shipment to see the delivery status.<br><br>
 
                 <p><b>Order Summary</b></p>
                 <#list buyerOrder
@@ -81,12 +79,15 @@
                     <span style="float:left;">
                         Order ID: ${order.orderNumber}<br>
                         Placed on: ${order.orderPlacedOn}<br>
-                        Tracking: ${order.trackingNumber}<br>
+                        Bluedart tracking number: ${order.trackingNumber}<br>
+                        <br>
+                         <b>       Items in this shipment</b>
+    
                     </span>
                     <span style="float:right;">
                         <button><a style=color:#285F44;text-decoration:none;
                                href="${loginurl}"
-                               target=_blank><b>&nbsp;Manage Order&nbsp;</b></a>
+                               target=_blank><b>&nbsp;Track Your Order&nbsp;</b></a>
                     </span>
                     <br>
                     <#list order.productList

@@ -3,6 +3,7 @@
  */
 package com.iii.amirutham.dto.model;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
@@ -27,12 +28,18 @@ public class ProductDto extends BaseEntityDto {
 	private String productCode;
 
 	private String productBrand;
+	
+	private String deliveryMode;
+	
+	private BigDecimal price;
 
 	private String productCategoryCode;
 
 	private String productNm;
 
 	private String productDesc;
+	
+	private Integer orderQuantity;
 
 	private String productuses;
 

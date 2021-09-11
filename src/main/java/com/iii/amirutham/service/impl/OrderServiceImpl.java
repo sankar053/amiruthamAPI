@@ -5,6 +5,7 @@ package com.iii.amirutham.service.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,6 +22,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
+import com.google.common.base.Strings;
 import com.iii.amirutham.common.EmailService;
 import com.iii.amirutham.common.ReportService;
 import com.iii.amirutham.common.mail.dto.OrderDataMail;
@@ -33,7 +35,9 @@ import com.iii.amirutham.common.report.dto.ReportInvoiceData;
 import com.iii.amirutham.config.UserDetailsImpl;
 import com.iii.amirutham.dto.base.OrderStatusRequest;
 import com.iii.amirutham.dto.model.AddressDto;
+import com.iii.amirutham.dto.model.BuyerOrderResponse;
 import com.iii.amirutham.dto.model.OrderDto;
+import com.iii.amirutham.dto.model.ProductDto;
 import com.iii.amirutham.dto.model.SequnceDto;
 import com.iii.amirutham.exception.UserNotFoundException;
 import com.iii.amirutham.model.Address;
@@ -105,8 +109,12 @@ public class OrderServiceImpl implements OrderService {
 	@Value("${mail.confirmOrderEmail.template}")
 	private String confirmOrderEmailTemplate;
 	
-	@Value("${mail.confirmOrderEmail.subject}")
-	private String confirmOrderEmailSubject;
+	@Value("${mail.delivery.subject}")
+	private String orderStatusDelverySubject;
+	
+	@Value("${mail.delivery.template}")
+	private String orderStatusDelveryTemplate;
+
 	
 	@Autowired
 	NotificationHelper notificationHelper;
@@ -177,7 +185,7 @@ public class OrderServiceImpl implements OrderService {
 			cartRepository.updateShoppingCartStatus(orderDto.getCartId(), "Converted");
 			
 	
-			sendOrderCreationMail(user, orderDao,LocalDateTime.now().toString());
+			sendOrderCreationMail(user, orderDao,orderDao.getAddress(),LocalDateTime.now().toString());
 
 		//	sentMailforOrderConformation(orderDao, user,"order-Conformation-template");
 
@@ -273,9 +281,14 @@ public class OrderServiceImpl implements OrderService {
 		Optional<Orders> oorder = orderRepository.findById(orderStatusReq.getOrderId());
 		if (oorder.isPresent()) {
 			
-			orderRepository.updateOrderStatus(orderStatusReq.getOrderId(), orderStatusReq.getOrderStatus());
 			
-			sentMailforOrderstatus(oorder.get(), oorder.get().getUser(),"order-Status-Update-template");	
+			if("PROCESSED".equalsIgnoreCase(orderStatusReq.getOrderStatus().getValue())) {
+				orderRepository.updateOrderStatus(orderStatusReq.getOrderId(), orderStatusReq.getOrderStatus(),orderStatusReq.getTrackingUrl());
+				sendOrderDelivaryMail(oorder.get().getUser(), oorder.get(),oorder.get().getAddress(),orderStatusReq.getTrackingUrl());
+			}else {
+				orderRepository.updateOrderStatus(orderStatusReq.getOrderId(), orderStatusReq.getOrderStatus());
+				sentMailforOrderstatus(oorder.get(), oorder.get().getUser(),"order-Status-Update-template");	
+			}
 		} else {
 			throw new UserNotFoundException("Selected orger is invalid");
 		}
@@ -324,27 +337,52 @@ public class OrderServiceImpl implements OrderService {
 	}
 	
 	@Async("specificTaskExecutor")
-	public void sendOrderCreationMail(UserDetailsImpl user, Orders order,String convertedTime) {
+	public void sendOrderCreationMail(UserDetailsImpl user, Orders order,Address shippingAddress, String convertedTime) {
 		try {
-			List<String> productList = new ArrayList<>();
-			List<Integer> quantityList = new ArrayList<>();
-			if(!AmirthumUtills.IsNullOrEmpty(order.getOrderProducts())) {
-				for(OrderProduct orderItem : order.getOrderProducts()) {
-					if(orderItem!=null) {
-						productList.add(orderItem.getOrderedproductName());
-						quantityList.add(orderItem.getOrderedQuantity());
+			List<BuyerOrderResponse> buyerOrder = new ArrayList<>();
+			List<ProductDto> orderItemList = null;
+			BigDecimal totalAmount = new BigDecimal(0);
+				BuyerOrderResponse orderMail = new BuyerOrderResponse();
+				orderItemList = new ArrayList<>();
+				if(!AmirthumUtills.IsNullOrEmpty(order.getOrderProducts())) {
+					for(OrderProduct orderItem : order.getOrderProducts()) {
+						if(orderItem!=null) {
+							ProductDto product = new ProductDto();
+							product.setProductNm(orderItem.getOrderedproductName());
+							product.setPrice(orderItem.getProductPrice().multiply(new BigDecimal(orderItem.getOrderedQuantity())));
+							product.setDeliveryMode("Shipment");
+							product.setOrderQuantity(orderItem.getOrderedQuantity());
+							totalAmount = totalAmount.add(orderItem.getProductPrice());
+//							product.setProductDesc(orderItem.getProduct().getProductDesc());
+//							if(Strings.isNullOrEmpty(orderItem.getProduct().getProductDesc())) {
+//								product.setProductDesc("Good");
+//							}
+							orderItemList.add(product);
+						}
 					}
+					orderMail.setOrderNumber(order.getOrderCode());
+					orderMail.setOrderAmount(order.getGrossTotal());
+					orderMail.setTrackingNumber("143243242423");
+					orderMail.setOrderPlacedOn(AmirthumUtills.getDay()+", "+AmirthumUtills.timeStampFormat(order.getDatePurchased()));
+					orderMail.setProductList(orderItemList);
 				}
-			}
+				buyerOrder.add(orderMail);
+			
 			Map<String, Object> mailMap = new HashMap<>();
 			Map<String, Object> notificationMap = new HashMap<>();
-			mailMap.put("imgUrl", mailHeaderImage);
-			mailMap.put("name", user.getFirstName());
-			mailMap.put("itemName", String.valueOf(productList));
-			mailMap.put("quantity", String.valueOf(quantityList));
-			mailMap.put("orderNumber", order.getOrderCode());
-			mailMap.put("deliveryMode", convertedTime);
-			mailMap.put("url",domain);
+			mailMap.put("buyerOrder", buyerOrder);
+			mailMap.put("name",user.getFirstName()+" "+user.getLastName());
+			mailMap.put("line1", shippingAddress.getAddress1());
+			if(Strings.isNullOrEmpty(shippingAddress.getAddress2()))
+				mailMap.put("line2", "");
+			else
+				mailMap.put("line2", shippingAddress.getAddress2());
+			mailMap.put("city", shippingAddress.getCity());
+			mailMap.put("state", shippingAddress.getState());
+			mailMap.put("zipcode", shippingAddress.getPostalCopde());
+			mailMap.put("country", "India");
+			mailMap.put("amiruthamInfo", Constant.AMIRUTHAM_INFO);
+			mailMap.put("loginurl",domain);
 			Template mailTemplate = config.getTemplate(createOrderEmailTemplate);
 			String html = FreeMarkerTemplateUtils.processTemplateIntoString(mailTemplate, mailMap);
 			// Call Mail Service
@@ -363,4 +401,73 @@ public class OrderServiceImpl implements OrderService {
 		}
 
 	}
+	
+	@Async("specificTaskExecutor")
+	public void sendOrderDelivaryMail(User user, Orders order,Address shippingAddress, String trackingid) {
+		try {
+			List<BuyerOrderResponse> buyerOrder = new ArrayList<>();
+			List<ProductDto> orderItemList = null;
+			BigDecimal totalAmount = new BigDecimal(0);
+				BuyerOrderResponse orderMail = new BuyerOrderResponse();
+				orderItemList = new ArrayList<>();
+				if(!AmirthumUtills.IsNullOrEmpty(order.getOrderProducts())) {
+					for(OrderProduct orderItem : order.getOrderProducts()) {
+						if(orderItem!=null) {
+							ProductDto product = new ProductDto();
+							product.setProductNm(orderItem.getOrderedproductName());
+							product.setPrice(orderItem.getProductPrice().multiply(new BigDecimal(orderItem.getOrderedQuantity())));
+							product.setDeliveryMode("Shipment");
+							product.setOrderQuantity(orderItem.getOrderedQuantity());
+							totalAmount = totalAmount.add(orderItem.getProductPrice());
+//							product.setProductDesc(orderItem.getProduct().getProductDesc());
+//							if(Strings.isNullOrEmpty(orderItem.getProduct().getProductDesc())) {
+//								product.setProductDesc("Good");
+//							}
+							orderItemList.add(product);
+						}
+					}
+					orderMail.setOrderNumber(order.getOrderCode());
+					orderMail.setOrderAmount(order.getGrossTotal());
+					orderMail.setTrackingNumber(trackingid);
+					orderMail.setOrderPlacedOn(AmirthumUtills.getDay()+", "+AmirthumUtills.timeStampFormat(order.getDatePurchased()));
+					orderMail.setProductList(orderItemList);
+				}
+				buyerOrder.add(orderMail);
+			
+			Map<String, Object> mailMap = new HashMap<>();
+			Map<String, Object> notificationMap = new HashMap<>();
+			mailMap.put("buyerOrder", buyerOrder);
+			mailMap.put("name",user.getFirstName()+" "+user.getLastName());
+			mailMap.put("line1", shippingAddress.getAddress1());
+			if(Strings.isNullOrEmpty(shippingAddress.getAddress2()))
+				mailMap.put("line2", "");
+			else
+				mailMap.put("line2", shippingAddress.getAddress2());
+			mailMap.put("city", shippingAddress.getCity());
+			mailMap.put("state", shippingAddress.getState());
+			mailMap.put("zipcode", shippingAddress.getPostalCopde());
+			mailMap.put("country", "India");
+			mailMap.put("amiruthamInfo", Constant.AMIRUTHAM_INFO);
+			mailMap.put("loginurl",domain);
+			Template mailTemplate = config.getTemplate(orderStatusDelveryTemplate);
+			String html = FreeMarkerTemplateUtils.processTemplateIntoString(mailTemplate, mailMap);
+			// Call Mail Service
+			notificationMap.put("userMail", user.getEmailAddress());
+			notificationMap.put("subject", orderStatusDelverySubject);
+			notificationMap.put("html", html);
+			boolean isMailSent = notificationHelper.sendNotification(Constant.NOTIFICATION_MAIL_TYPE, notificationMap);
+			if (!isMailSent) {
+//			throw new BusinessException(Constant.RESPONSE_FAIL, Constant.SERVER_ERROR, Constant.RESPONSE_EMPTY_DATA,
+//					500);
+				System.out.println("Mail Sending Failed");
+				}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+		}
+
+	}
+	
+
 }

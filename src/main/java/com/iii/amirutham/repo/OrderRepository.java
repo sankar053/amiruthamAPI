@@ -28,6 +28,12 @@ public interface OrderRepository extends PagingAndSortingRepository<Orders, Inte
 	  @Transactional
 	  @Query("update orders u set u.orderStatus = :orderStatus where u.id = :id")
 	  void updateOrderStatus(@Param(value = "id") Integer id, @Param(value = "orderStatus") OrderStatus orderStatus);
+	  
+	  @Modifying
+	  @Transactional
+	  @Query("update orders u set u.orderStatus = :orderStatus, orderTrackingUrl= :orderTrackingUrl where u.id = :id")
+	  void updateOrderStatus(@Param(value = "id") Integer id, @Param(value = "orderStatus") OrderStatus orderStatus,
+			  @Param(value = "orderTrackingUrl") String orderTrackingUrl);
 	
 
 }

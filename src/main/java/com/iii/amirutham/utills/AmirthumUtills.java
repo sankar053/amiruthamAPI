@@ -6,7 +6,14 @@ package com.iii.amirutham.utills;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Random;
 
 import org.jsoup.Jsoup;
@@ -64,11 +71,23 @@ public class AmirthumUtills {
 			e.printStackTrace();
 		}
 
-		/*
-		 * File directory = new File(String.valueOf(path));
-		 * 
-		 * if (!directory.exists()) directory.mkdir();
-		 */
+	
+	}
+	
+	public static String getDay() {
+		DayOfWeek dayOfWeek = DayOfWeek.from(LocalDate.now());
+		return dayOfWeek.toString();
+	}
+	
+	public static String timeStampFormat(Date date1) throws ParseException {
+	
+		DateFormat df2 = new SimpleDateFormat(Constant.DEFAULT_DATE_FORMAT);
+		String end = df2.format(date1);
+		date1 = df2.parse(end);
+		
+		SimpleDateFormat month_date = new SimpleDateFormat("MMM dd,yyyy");
+		String monthName = month_date.format(date1.getTime());
+		return monthName;
 	}
 	
 	public static String htmlToXhtml(String html) {
