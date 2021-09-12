@@ -40,8 +40,16 @@ public class UserSecurityService implements ISecurityUserService {
 		// TODO Auto-generated method stub
 
 		final PasswordResetToken passToken = passwordTokenRepository.findByOneTimePassword(otp);
+		
+		if("Y".equals(passToken.getPwdActive())) {
+			passwordTokenRepository.updatePwdFlag(passToken.getId());
+			return !isTokenFound(passToken) ? "invalidToken" : isTokenExpired(passToken) ? "expired" : null;
+		}else {
+			return "invalidToken";
+		}
+		
 
-		return !isTokenFound(passToken) ? "invalidToken" : isTokenExpired(passToken) ? "expired" : null;
+		
 
 	}
 }

@@ -61,17 +61,16 @@
                     Local, Eat Great</span>
             </td>
         </tr>
-        <tr><b>Amirutham password reset</b></tr>
+        <tr> <td align="center"><b>Amirutham password reset</b></td></tr>
         <tr>
-            <td style="padding: 0px 30px 0px 30px;">
+            <td style="padding: 0px 20px 0px 20px;">
               <p><b>Hello ${name},</b></p>
 
-                <p> We heard that you lost your Amirutham password. Sorry about that!</p> <br>
-
+                <p> We heard that you lost your Amirutham password. Sorry about that!</p> 
 <p>But don’t worry! You can use the following button to reset your password:<br><br>
 
                 
-                    <span style="float:right;">
+                    <span style="float:center;">
                         <button><a style=color:#285F44;text-decoration:none;
                                href="${otp}"
                                target=_blank><b>&nbsp;Reset Your Password&nbsp;</b></a>

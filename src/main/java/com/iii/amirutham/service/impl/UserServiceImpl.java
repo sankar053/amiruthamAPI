@@ -1,9 +1,13 @@
 package com.iii.amirutham.service.impl;
 
+import java.math.BigDecimal;
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -16,19 +20,26 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
+import com.google.common.base.Strings;
 import com.iii.amirutham.common.EmailService;
 import com.iii.amirutham.common.mail.dto.OnetimePasswordMail;
 import com.iii.amirutham.common.mail.dto.RegistationMail;
 import com.iii.amirutham.config.UserDetailsImpl;
+import com.iii.amirutham.dto.model.BuyerOrderResponse;
+import com.iii.amirutham.dto.model.ProductDto;
 import com.iii.amirutham.dto.model.UserDto;
 import com.iii.amirutham.dto.model.ValidateOtpDto;
 import com.iii.amirutham.exception.TokenExpireException;
 import com.iii.amirutham.exception.UserAlreadyExistException;
 import com.iii.amirutham.exception.UserNotFoundException;
+import com.iii.amirutham.model.Address;
+import com.iii.amirutham.model.order.OrderProduct;
 import com.iii.amirutham.model.order.Orders;
 import com.iii.amirutham.model.user.ERole;
 import com.iii.amirutham.model.user.PasswordResetToken;
@@ -44,6 +55,11 @@ import com.iii.amirutham.repo.UserRepository;
 import com.iii.amirutham.repo.VerificationTokenRepository;
 import com.iii.amirutham.service.UserService;
 import com.iii.amirutham.utills.AmirthumUtills;
+import com.iii.amirutham.utills.Constant;
+import com.iii.amirutham.utills.NotificationHelper;
+
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 
 /**
  * @author sanka
@@ -75,6 +91,20 @@ public class UserServiceImpl implements UserService {
 	
 	@Value("${application.ui.base.url}")
 	private String uiBaseURL;
+	
+	@Value("${mail.forgotPassword.subject}")
+	private String forgotPasswordSubject;
+
+	@Value("${mail.forgotPassword.template}")
+	private String forgotPasswordTemplate;
+	
+	@Autowired
+	NotificationHelper notificationHelper;
+	@Value("${domain.url}")
+	private String domain;
+	
+	@Autowired
+	private Configuration config;
 	
 
 //	@Autowired
@@ -278,9 +308,38 @@ public class UserServiceImpl implements UserService {
 		// TODO Auto-generated method stub
 		
 		String encriptedlink=uiBaseURL+"/account/forgot-password/"+Base64.getEncoder().encodeToString((otp+"-"+user.getEmailAddress()).getBytes());
-		emailService.sendTemplateEmail(user.getEmailAddress(), "Password Reset Request for Amirutham eportal", "otp-template", 
-					new OnetimePasswordMail(encriptedlink,user.getFirstName(),user.getEmailAddress()), null);
+		sendMailForgotPassword(user,encriptedlink);
 		
+	}
+	
+	@Async("specificTaskExecutor")
+	public void sendMailForgotPassword(User user, String encriptedLink) {
+		try {
+
+			Map<String, Object> mailMap = new HashMap<>();
+			Map<String, Object> notificationMap = new HashMap<>();
+			mailMap.put("name", user.getFirstName() + " " + user.getLastName());
+			mailMap.put("otp", encriptedLink);
+			mailMap.put("amiruthamInfo", Constant.AMIRUTHAM_INFO);
+			mailMap.put("loginurl", domain);
+			Template mailTemplate = config.getTemplate(forgotPasswordTemplate);
+			String html = FreeMarkerTemplateUtils.processTemplateIntoString(mailTemplate, mailMap);
+			// Call Mail Service
+			notificationMap.put("userMail", user.getEmailAddress());
+			notificationMap.put("subject", forgotPasswordSubject);
+			notificationMap.put("html", html);
+			boolean isMailSent = notificationHelper.sendNotification(Constant.NOTIFICATION_MAIL_TYPE, notificationMap);
+			if (!isMailSent) {
+//			throw new BusinessException(Constant.RESPONSE_FAIL, Constant.SERVER_ERROR, Constant.RESPONSE_EMPTY_DATA,
+//					500);
+				System.out.println("Mail Sending Failed");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+		}
+
 	}
 
 }

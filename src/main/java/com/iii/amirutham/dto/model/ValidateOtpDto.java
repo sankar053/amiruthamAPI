@@ -20,8 +20,7 @@ public class ValidateOtpDto {
 	@NotNull(message = "{NotEmpty.user.otp}")
 	private String oneTimePassword;
 	
-	@NotEmpty(message = "{message.username}")
-	@NotNull(message = "{message.username}")
+	
 	private String userName;
 	
 	@ValidPassword

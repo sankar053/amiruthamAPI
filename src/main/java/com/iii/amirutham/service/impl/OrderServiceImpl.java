@@ -184,7 +184,7 @@ public class OrderServiceImpl implements OrderService {
 			}
 			orderDao.setOrderProducts(orderProducts);
 
-			// orderDao = orderRepository.save(orderDao);
+			orderDao = orderRepository.save(orderDao);
 			cartRepository.updateShoppingCartStatus(orderDto.getCartId(), "Converted");
 
 			sendOrderCreationMail(user, orderDao, orderDao.getAddress(), LocalDateTime.now().toString());

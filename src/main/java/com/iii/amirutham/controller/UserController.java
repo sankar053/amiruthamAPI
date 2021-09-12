@@ -39,7 +39,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.iii.amirutham.config.UserDetailsImpl;
 import com.iii.amirutham.dto.base.GenericResponse;
-import com.iii.amirutham.dto.base.OnRegistrationCompleteEvent;
 import com.iii.amirutham.dto.model.ChangePasswordRequest;
 import com.iii.amirutham.dto.model.UserDto;
 import com.iii.amirutham.dto.model.ValidateOtpDto;
@@ -67,9 +66,6 @@ public class UserController {
 
 	@Autowired
 	private Environment env;
-
-	@Autowired
-	private ApplicationEventPublisher eventPublisher;
 
 	@Autowired
 	private ISecurityUserService securityUserService;
