@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
@@ -234,12 +233,9 @@ public class UserController {
 	}
 
 	@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-	@GetMapping(value = { "/users/myorders" })
-	public @ResponseBody ResponseEntity<Page<Orders>> myorders(HttpServletRequest request,
-			@RequestParam(name = "page", required = false) Integer pageNo,
-			@RequestParam(name = "size", required = false) Integer pageSize,
-			@SortDefault.SortDefaults({ @SortDefault(sort = "createdTs", direction = Sort.Direction.DESC),
-					@SortDefault(sort = "id", direction = Sort.Direction.DESC) }) @Qualifier("my") Pageable pageable) {
+	@GetMapping(value = { "/user/myorders" })
+	public @ResponseBody ResponseEntity<Page<Orders>> myorders(@RequestParam(name = "page", required = false) Integer pageNo,
+			@RequestParam(name = "size", required = false) Integer pageSize, @Qualifier("amirthum") Pageable pageable) {
 		Page<Orders> orderList = userService.myorders(pageNo, pageSize, pageable);
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(orderList);
 

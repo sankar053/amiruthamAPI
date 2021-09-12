@@ -72,7 +72,7 @@ public class CartContoller {
 
 	@GetMapping
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-	public ResponseEntity<CartDto> savelgetMyCart(HttpServletRequest request) {
+	public ResponseEntity<CartDto> savedgetMyCart(HttpServletRequest request) {
 
 		UserDetailsImpl user = userService.getUserDetails();
 
