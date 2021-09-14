@@ -130,6 +130,13 @@ public class OrderServiceImpl implements OrderService {
 
 	@Value("${mail.orderCreationEmail.subject}")
 	private String createOrderEmailSubject;
+	
+	@Value("${mail.confirmOrderEmail.template}")
+	private String OrderConformationEmailTemplate;
+
+	@Value("${mail.confirmOrderEmail.subject}")
+	private String OrderConformationEmailSubject;
+	
 
 	@Override
 	public String placeOrder(OrderDto orderDto) {
@@ -287,12 +294,16 @@ public class OrderServiceImpl implements OrderService {
 		Optional<Orders> oorder = orderRepository.findById(orderStatusReq.getOrderId());
 		if (oorder.isPresent()) {
 
-			if ("PROCESSED".equalsIgnoreCase(orderStatusReq.getOrderStatus().getValue())) {
+			if ("In-Shipment".equalsIgnoreCase(orderStatusReq.getOrderStatus().getValue())) {
 				orderRepository.updateOrderStatus(orderStatusReq.getOrderId(), orderStatusReq.getOrderStatus(),
 						orderStatusReq.getTrackingUrl());
 				sendOrderDelivaryMail(oorder.get().getUser(), oorder.get(), oorder.get().getAddress(),
 						orderStatusReq.getTrackingUrl());
-			} else {
+			} else if ("CONFIRMED".equalsIgnoreCase(orderStatusReq.getOrderStatus().getValue())) {
+				orderRepository.updateOrderStatus(orderStatusReq.getOrderId(), orderStatusReq.getOrderStatus(),
+						orderStatusReq.getTrackingUrl());
+				sendOrderConformationMail(oorder.get().getUser(), oorder.get());
+			}else {
 				orderRepository.updateOrderStatus(orderStatusReq.getOrderId(), orderStatusReq.getOrderStatus());
 				sentMailforOrderstatus(oorder.get(), oorder.get().getUser(), "order-Status-Update-template");
 			}
@@ -480,5 +491,37 @@ public class OrderServiceImpl implements OrderService {
 		}
 
 	}
+	
+	
+	@Async("specificTaskExecutor")
+	public void sendOrderConformationMail(User user, Orders order) {
+		try {
+				
+			Map<String, Object> mailMap = new HashMap<>();
+			Map<String, Object> notificationMap = new HashMap<>();
+			mailMap.put("name", user.getFirstName() + " " + user.getLastName());
+			mailMap.put("orderNumber", order.getOrderCode());
+			mailMap.put("amiruthamInfo", Constant.AMIRUTHAM_INFO);
+			mailMap.put("loginurl", domain);
+			Template mailTemplate = config.getTemplate(OrderConformationEmailTemplate);
+			String html = FreeMarkerTemplateUtils.processTemplateIntoString(mailTemplate, mailMap);
+			// Call Mail Service
+			notificationMap.put("userMail", user.getEmailAddress());
+			notificationMap.put("subject", OrderConformationEmailSubject);
+			notificationMap.put("html", html);
+			boolean isMailSent = notificationHelper.sendNotification(Constant.NOTIFICATION_MAIL_TYPE, notificationMap);
+			if (!isMailSent) {
+//			throw new BusinessException(Constant.RESPONSE_FAIL, Constant.SERVER_ERROR, Constant.RESPONSE_EMPTY_DATA,
+//					500);
+				System.out.println("Mail Sending Failed");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+		}
+
+	}
+
 
 }

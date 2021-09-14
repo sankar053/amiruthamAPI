@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-    <title>Sending Email with Eatzos HTML Template Example</title>
+    <title>Sending Email with Amirutham HTML Template Example</title>
 
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -42,7 +42,7 @@
     <table align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse; border: 1px solid black;">
         <tr>
             <td align="center" style="padding: 20px 0 30px 0;">
-                <a href="https://seller-dev.eatzos.com/" target="_blank"><img src="https://seller-dev.eatzos.com/assets/mail/eatzos_logo.png" alt="Eatzos" height="25px" style="display: block;color:white" /></a>
+                <a href="http://localhost:4200/" target="_blank"><img src="https://raw.githubusercontent.com/sankar053/amiruthumimg/main/logo.png" alt="Amirutham" height="25px" style="display: block;color:white" /></a>
                 <span style="color:#9ed241;font: 700 16px/60px Foco Black, sans-serif; letter-spacing: normal;">Support
                     Local, Eat Great</span>
             </td>
@@ -51,32 +51,32 @@
             <td style="padding: 0px 30px 0px 30px;">
                 <p><b>Hello ${name},</b></p>
                 <p> Your order ${orderNumber} has been conformed.</p>
-                <p><b>Cheers,</b><br><b>The Eatzos Team</b></p>
+                <p><b>Cheers,</b><br><b>The Amirutham Team</b></p>
             </td>
         </tr>
 
         <tr>
             <td align="center">
                 <div style="margin: 0 auto; width: 200px">
-                    <a href="https://www.facebook.com/EATZOS/" target="_blank">
-                        <img src="https://seller-dev.eatzos.com/assets/mail/fb.png" alt="Eatzos" height="40px" style="display: block;color:white;padding:5px;float: left;" /></a>
-                    <a href="https://twitter.com/eatzos" target="_blank"><img src="https://seller-dev.eatzos.com/assets/mail/twitter.png" alt="Eatzos" height="40px" style="display: block;color:white;padding:5px;float: left;" /></a>
-                    <a href="https://www.pinterest.com/eatzos/_saved/" target="_blank"><img src="https://seller-dev.eatzos.com/assets/mail/printset.png" alt="Eatzos" height="40px" style="display: block;color:white;padding:5px;float: left;" /></a>
-                    <a href="https://www.instagram.com/eatzos/" target="_blank"><img src="https://seller-dev.eatzos.com/assets/mail/insta.png" alt="Eatzos" height="40px" style="display: block;color:white;padding:5px;float: left;" /></a>
+                    <a href="https://www.facebook.com/Amirutham/" target="_blank">
+                        <img src="https://raw.githubusercontent.com/sankar053/amiruthumimg/main/fb.png" alt="Amirutham" height="40px" style="display: block;color:white;padding:5px;float: left;" /></a>
+                    <a href="https://twitter.com/Amirutham" target="_blank"><img src="https://raw.githubusercontent.com/sankar053/amiruthumimg/main/twitter.png" alt="Amirutham" height="40px" style="display: block;color:white;padding:5px;float: left;" /></a>
+                    <a href="https://www.pinterest.com/Amirutham/_saved/" target="_blank"><img src="https://raw.githubusercontent.com/sankar053/amiruthumimg/main/printset.png" alt="Amirutham" height="40px" style="display: block;color:white;padding:5px;float: left;" /></a>
+                    <a href="https://www.instagram.com/Amirutham/" target="_blank"><img src="https://raw.githubusercontent.com/sankar053/amiruthumimg/main/insta.png" alt="Amirutham" height="40px" style="display: block;color:white;padding:5px;float: left;" /></a>
                 </div>
             </td>
         </tr>
         <tr>
             <td align="center">
                 <span>
-                    <p class="footer-link">Send with &#x2661; from Eatzos</p>
+                    <p class="footer-link">Send with &#x2661; from Amirutham</p>
                     <p class="footer-link"><a style="color:#ccc;" href="#">Unsubscribe</a></p>
 
-                    <p class="footer-link">Eatzos</p>
-                    <p class="footer-link">12140 Wallace Woods Lane</p>
-                    <p class="footer-link">Alpharetta, Georgia 30004</p>
-                    <p class="footer-link">United States</p>
-                    <p class="footer-link">(404) 392-6970</p>
+                    <p class="footer-link">Amirutham Cold Press Oil Shop</p>
+                    <p class="footer-link">101, 44/1, Mogappair Rd, Shantiniketan Colony,</p>
+                    <p class="footer-link">Thirumangalam, Padi, Chennai,</p>
+                    <p class="footer-link">Tamil Nadu 600058</p>
+                    <p class="footer-link">(+91) 9791255264</p>
                 </span>
             </td>
         </tr>
