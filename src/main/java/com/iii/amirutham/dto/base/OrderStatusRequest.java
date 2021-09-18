@@ -3,7 +3,12 @@
  */
 package com.iii.amirutham.dto.base;
 
+import java.time.LocalDateTime;
+
+import javax.validation.constraints.NotBlank;
+
 import com.iii.amirutham.model.order.OrderStatus;
+import com.iii.amirutham.model.order.PaymentType;
 import com.sun.istack.NotNull;
 
 import lombok.AllArgsConstructor;
@@ -28,6 +33,13 @@ public class OrderStatusRequest {
 	
 	@NotNull
 	private Integer orderId;
+	
+	@NotNull
+	private PaymentType paymentType;
+	
+	private String transactionRefNo;
+	
+	private LocalDateTime paymentOn;
 
 
 }

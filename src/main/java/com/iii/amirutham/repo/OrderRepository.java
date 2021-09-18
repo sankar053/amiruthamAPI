@@ -3,6 +3,8 @@
  */
 package com.iii.amirutham.repo;
 
+import java.time.LocalDateTime;
+
 import javax.transaction.Transactional;
 
 import org.springframework.data.domain.Page;
@@ -14,6 +16,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.iii.amirutham.model.order.OrderStatus;
 import com.iii.amirutham.model.order.Orders;
+import com.iii.amirutham.model.order.PaymentType;
 import com.iii.amirutham.model.user.User;
 
 /**
@@ -29,6 +32,12 @@ public interface OrderRepository extends PagingAndSortingRepository<Orders, Inte
 	  @Transactional
 	  @Query("update orders u set u.orderStatus = :orderStatus where u.id = :id")
 	  void updateOrderStatus(@Param(value = "id") Integer id, @Param(value = "orderStatus") OrderStatus orderStatus);
+	  
+	  @Modifying
+	  @Transactional
+	  @Query("update orders u set u.paymentType = :paymentType, transactionRefNo = :transactionRefNo,paymentOn=:paymentOn  where u.id = :id")
+	  void updateOrderTransStatus(@Param(value = "id") Integer id, @Param(value = "paymentType") PaymentType paymentType,String transactionRefNo, LocalDateTime paymentOn );
+	  
 	  
 	  @Modifying
 	  @Transactional

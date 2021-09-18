@@ -1,6 +1,7 @@
 package com.iii.amirutham.model.order;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -94,8 +95,14 @@ public class Orders extends BaseEntity {
 
 	@Column(name = "PAYMENT_TYPE")
 	@Enumerated(value = EnumType.STRING)
-	private PaymentType paymentType = PaymentType.COD;
+	private PaymentType paymentType = PaymentType.UNPAIED;
+	
+	@Column(name = "PAYMENT_DATE")
+	private LocalDateTime paymentOn;
 
+	@Column(name = "PAYMENT_TRANS_REF_NO")
+	private String transactionRefNo;
+	
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
 	private Set<OrderProduct> orderProducts = new LinkedHashSet<OrderProduct>();
 

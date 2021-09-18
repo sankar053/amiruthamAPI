@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import com.iii.amirutham.model.shoppingcart.ShoppingCart;
 
@@ -18,6 +19,7 @@ import com.iii.amirutham.model.shoppingcart.ShoppingCart;
  * @author sanka
  *
  */
+@Repository
 public interface CartRepository extends JpaRepository<ShoppingCart, Integer> {
 	
 	  List<ShoppingCart> findByCustomerId(Integer consumerId);

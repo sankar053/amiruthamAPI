@@ -3,24 +3,16 @@ public enum PaymentType {
 	
 	
 	
-	CREDITCARD("creditcard"), FREE("free"), COD("cod"), MONEYORDER("moneyorder"), PAYPAL("paypal");
+	CARD("Credit/Debit Card"), COD("cash On Delivary"), UPI("UPI-Wallet"), BANK("Bank"),UNPAIED("Pending");
 
+private String value;
 	
-	private String paymentType;
-	
-	PaymentType(String type) {
-		paymentType = type;
+	private PaymentType(String value) {
+		this.value = value;
 	}
 	
-    public static PaymentType fromString(String text) {
-		    if (text != null) {
-		      for (PaymentType b : PaymentType.values()) {
-		    	String payemntType = text.toUpperCase(); 
-		        if (payemntType.equalsIgnoreCase(b.name())) {
-		          return b;
-		        }
-		      }
-		    }
-		    return null;
+	public String getValue() {
+		return value;
 	}
+
 }

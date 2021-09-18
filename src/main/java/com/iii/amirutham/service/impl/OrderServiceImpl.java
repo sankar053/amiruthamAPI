@@ -307,6 +307,10 @@ public class OrderServiceImpl implements OrderService {
 				orderRepository.updateOrderStatus(orderStatusReq.getOrderId(), orderStatusReq.getOrderStatus());
 				sentMailforOrderstatus(oorder.get(), oorder.get().getUser(), "order-Status-Update-template");
 			}
+			
+			if(!"Pending".equalsIgnoreCase(orderStatusReq.getPaymentType().getValue())) {
+				orderRepository.updateOrderTransStatus(orderStatusReq.getOrderId(),orderStatusReq.getPaymentType(),orderStatusReq.getTransactionRefNo(),LocalDateTime.now());
+			}
 		} else {
 			throw new UserNotFoundException("Selected orger is invalid");
 		}
