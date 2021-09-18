@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -138,16 +139,35 @@ public class CartServiceImpl implements CartService {
 			return null != savedCart ? ((CartDto) AmirthumUtills.convertToDto(savedCart, CartDto.class, modelMapper))
 					: null;
 		}else {
+			if(pendingcart.getLineItems().size()<cartRequest.getCartItems().size()) {
 			for (CategoryRequestItems mycartItem : cartRequest.getCartItems()) {
 				ShoppingCartItem item=	cartItemRepository.findByProductIdAndVarientIdAndCartCode(mycartItem.getProductId(),
 						mycartItem.getVarientId(),pendingcart.getShoppingCartCode());
 				
 				if(null==item)
 					additemtoCart1(mycartItem,pendingcart);
-				else
-					updateitemtoCart1(item,pendingcart,mycartItem.getQuantity());
+			
 			
 			}
+			}else if(pendingcart.getLineItems().size()==cartRequest.getCartItems().size()) {
+				for (CategoryRequestItems mycartItem : cartRequest.getCartItems()) {
+					ShoppingCartItem item=	cartItemRepository.findByProductIdAndVarientIdAndCartCode(mycartItem.getProductId(),
+							mycartItem.getVarientId(),pendingcart.getShoppingCartCode());
+					
+					if(null!=item)
+						updateitemtoCart1(item,pendingcart,mycartItem.getQuantity());
+				
+				}
+			}else {
+				for (CategoryRequestItems mycartItem : cartRequest.getCartItems()) {
+				  ShoppingCartItem removeCart = pendingcart.getLineItems().stream().filter(ci->ci.getProduct().getId()!=mycartItem.getProductId()).findAny().orElse(null);
+				  if(removeCart!=null)
+					  deleteitemfromCart(removeCart);
+				}
+				
+			}
+				
+			
 			Optional<ShoppingCart> updatedcart = cartRepository.findById(pendingcart.getId());
 			return updatedcart.isPresent()
 					? ((CartDto) AmirthumUtills.convertToDto(updatedcart.get(), CartDto.class, modelMapper))
@@ -188,6 +208,8 @@ public class CartServiceImpl implements CartService {
 
 		if (cart.isPresent()) {
 			for (CategoryRequestItems mycartItem : cartRequest.getCartItems()) {
+				System.out.println(mycartItem.getItemUpdateStatus());
+				deleteitemfromCart(mycartItem, cart.get());
 				if ("A".equalsIgnoreCase(mycartItem.getItemUpdateStatus()))
 					additemtoCart(mycartItem, cart.get());
 				if ("U".equalsIgnoreCase(mycartItem.getItemUpdateStatus()))
@@ -361,6 +383,13 @@ public class CartServiceImpl implements CartService {
 		lineitem.setIsDeleted("Y");
 		cartItemRepository.updateIsDeletedStatus(mycartItem.getItemId(), "Y");
 		return updateCart;
+
+	}
+	public void deleteitemfromCart(ShoppingCartItem lineitem) {
+
+		lineitem.setIsDeleted("Y");
+		cartItemRepository.updateIsDeletedStatus(lineitem.getId(), "Y");
+	
 
 	}
 }
