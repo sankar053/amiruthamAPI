@@ -65,4 +65,10 @@ public class AddressServiceImpl implements AddressService{
 		
 	}
 
+	@Override
+	public void deleteAddressById(Integer id) {
+		// TODO Auto-generated method stub
+		addressRepo.updateDeleteFlag(id,"Y");
+	}
+
 }

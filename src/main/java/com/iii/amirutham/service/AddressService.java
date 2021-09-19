@@ -19,5 +19,7 @@ public interface AddressService {
 	public List<Address> getAlladdress();
 
 	public Address updateAddressById(@Valid AddressDto addressRequest);
+	
+	public void deleteAddressById(Integer id);
 
 }

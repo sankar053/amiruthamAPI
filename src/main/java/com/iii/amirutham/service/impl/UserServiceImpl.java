@@ -1,8 +1,6 @@
 package com.iii.amirutham.service.impl;
 
-import java.math.BigDecimal;
 import java.net.InetAddress;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,20 +24,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
-import com.google.common.base.Strings;
 import com.iii.amirutham.common.EmailService;
-import com.iii.amirutham.common.mail.dto.OnetimePasswordMail;
-import com.iii.amirutham.common.mail.dto.RegistationMail;
 import com.iii.amirutham.config.UserDetailsImpl;
-import com.iii.amirutham.dto.model.BuyerOrderResponse;
-import com.iii.amirutham.dto.model.ProductDto;
 import com.iii.amirutham.dto.model.UserDto;
 import com.iii.amirutham.dto.model.ValidateOtpDto;
 import com.iii.amirutham.exception.TokenExpireException;
 import com.iii.amirutham.exception.UserAlreadyExistException;
 import com.iii.amirutham.exception.UserNotFoundException;
-import com.iii.amirutham.model.Address;
-import com.iii.amirutham.model.order.OrderProduct;
 import com.iii.amirutham.model.order.Orders;
 import com.iii.amirutham.model.user.ERole;
 import com.iii.amirutham.model.user.PasswordResetToken;
@@ -97,6 +88,12 @@ public class UserServiceImpl implements UserService {
 
 	@Value("${mail.forgotPassword.template}")
 	private String forgotPasswordTemplate;
+	
+	@Value("${mail.accountCreation.subject}")
+	private String accountCreationSubject;
+
+	@Value("${mail.accountCreation.template}")
+	private String accountCreationTemplate;
 	
 	@Autowired
 	NotificationHelper notificationHelper;
@@ -186,9 +183,7 @@ public class UserServiceImpl implements UserService {
 			});
 			user.setRoles(roles);
 		}
-		emailService.sendTemplateEmail(user.getEmailAddress(), "Your Amirutham ePortal account has been created!", "register-template", 
-				new RegistationMail(user.getFirstName(),user.getEmailAddress(),"http://localhost:4200/home")
-				, null);
+		sendAccountCreationMail(user,domain);
 		return userRepository.save(user);
 		
 	}
@@ -327,6 +322,36 @@ public class UserServiceImpl implements UserService {
 			// Call Mail Service
 			notificationMap.put("userMail", user.getEmailAddress());
 			notificationMap.put("subject", forgotPasswordSubject);
+			notificationMap.put("html", html);
+			boolean isMailSent = notificationHelper.sendNotification(Constant.NOTIFICATION_MAIL_TYPE, notificationMap);
+			if (!isMailSent) {
+//			throw new BusinessException(Constant.RESPONSE_FAIL, Constant.SERVER_ERROR, Constant.RESPONSE_EMPTY_DATA,
+//					500);
+				System.out.println("Mail Sending Failed");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+		}
+
+	}
+	
+	@Async("specificTaskExecutor")
+	public void sendAccountCreationMail(User user, String homeUrl) {
+		try {
+
+			Map<String, Object> mailMap = new HashMap<>();
+			Map<String, Object> notificationMap = new HashMap<>();
+			mailMap.put("name", user.getFirstName() + " " + user.getLastName());
+			mailMap.put("homeUrl", homeUrl);
+			mailMap.put("amiruthamInfo", Constant.AMIRUTHAM_INFO);
+			mailMap.put("loginurl", domain);
+			Template mailTemplate = config.getTemplate(accountCreationTemplate);
+			String html = FreeMarkerTemplateUtils.processTemplateIntoString(mailTemplate, mailMap);
+			// Call Mail Service
+			notificationMap.put("userMail", user.getEmailAddress());
+			notificationMap.put("subject", accountCreationSubject);
 			notificationMap.put("html", html);
 			boolean isMailSent = notificationHelper.sendNotification(Constant.NOTIFICATION_MAIL_TYPE, notificationMap);
 			if (!isMailSent) {
