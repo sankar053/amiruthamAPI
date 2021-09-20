@@ -52,7 +52,7 @@
         <tr>
             <td align="center"
                 style="padding: 20px 0 30px 0;">
-                <a href="http://localhost/4200"
+                <a href="http://localhost/8000"
                    target="_blank"><img src="https://raw.githubusercontent.com/sankar053/amiruthumimg/main/logo.png"
                          alt="Amirutham"
                          height="25px"
@@ -162,8 +162,8 @@
                 
                 <br>Thank you for supporting independent producers!
                 <br><br> If you have any questions, please send us an email at ${amiruthamInfo} or visit our <a
-                   href="http:/localhost/4200"
-                   target="_blank">Amirutham support page</a>, or check out our <a href="http://localhost:4200/faqs"
+                   href="http:/localhost/8000"
+                   target="_blank">Amirutham support page</a>, or check out our <a href="http://localhost:8000/faqs"
                    target="_blank">FAQ page</a>.
                 <p>
                 <p><b>Cheers,</b><br><b>The Amirutham Team</b></p>
