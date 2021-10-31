@@ -4,6 +4,7 @@ import java.util.Locale;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.MessageSource;
@@ -15,10 +16,18 @@ import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.razorpay.RazorpayClient;
+import com.razorpay.RazorpayException;
 
 @SpringBootApplication
 public class AmiruthamApiApplication {
 
+	@Value(value = "${amirutham.payment.key}")
+	private String razorPayKey;
+	
+	@Value(value = "${amirutham.payment.secret}")
+	private String razorPaysecret;
+	
 	public static void main(String[] args) {
 		SpringApplication.run(AmiruthamApiApplication.class, args);
 	}
@@ -56,5 +65,18 @@ public class AmiruthamApiApplication {
 		    objectMapper.registerModule(new Jdk8Module());
 			return modelMapper;
 	  }
+	  
+	  @Bean
+	  public RazorpayClient razorpayClient() {
+		  
+		  try {
+			return new RazorpayClient(razorPayKey,razorPaysecret);
+		} catch (RazorpayException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	       
+	    }
 
 }

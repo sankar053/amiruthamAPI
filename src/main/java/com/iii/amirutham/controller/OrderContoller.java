@@ -55,9 +55,9 @@ public class OrderContoller {
 	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<GenericResponse> placeOrder(HttpServletRequest request,@Valid @RequestBody OrderDto order) {
 
-		String OrderRef = orderService.placeOrder(order);
-		if(null!=OrderRef)
-			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(new GenericResponse(messages.getMessage("order.message.success", null, request.getLocale())+OrderRef));
+		Orders OrderDao = orderService.placeOrder(order);
+		if(null!=OrderDao)
+			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(new GenericResponse(messages.getMessage("order.message.success", null, request.getLocale()),OrderDao));
 		else
 			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(new GenericResponse(messages.getMessage("order.message.failure", null, request.getLocale())));
 			

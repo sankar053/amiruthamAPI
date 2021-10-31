@@ -80,6 +80,12 @@ public class AmiruthamProducts extends BaseEntity {
 	@Column(name = "PROD_AVAILABLE")
 	private boolean available = true;
 	
+	@Column(name = "PROD_CONCERN_TYPE")
+	private String concernType;
+	
+	@Column(name = "PROD_CONCERN_SUB_TYPE")
+	private String concernSubType;
+	
 	@ManyToOne
     @JoinColumn(name="category_id", nullable=false)
     private AmiruthamCategory category;

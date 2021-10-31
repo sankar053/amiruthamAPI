@@ -1,5 +1,6 @@
 package com.iii.amirutham.model.order;
 
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -22,6 +23,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -99,9 +101,24 @@ public class Orders extends BaseEntity {
 	
 	@Column(name = "PAYMENT_DATE")
 	private LocalDateTime paymentOn;
+	
+	@Column(name = "ORDER_REFUND_DATE")
+	private LocalDateTime refundOn;
 
 	@Column(name = "PAYMENT_TRANS_REF_NO")
-	private String transactionRefNo;
+	private String razorPayTransReference;
+	
+	@Column(name = "PAYMENT_ORDER_REF_NO")
+	private String razorPayOrderReference;
+	
+	@Column(name = "PAYMENT_TRANS_REFUND_REF_NO")
+	private String razorPayRefundReference;
+	
+	@Column(name = "PAYMENT_ORDER_STATUS")
+	private String orderPaymentStatus;
+	
+	@Column(name = "ORDER_CURRENCY")
+	private String currency = "INR";
 	
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
 	private Set<OrderProduct> orderProducts = new LinkedHashSet<OrderProduct>();
@@ -119,5 +136,8 @@ public class Orders extends BaseEntity {
 	@OneToOne(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
 	@JoinColumn(name = "addressId", referencedColumnName = "id")
 	private Address address;
+	
+	@Transient
+	private String razorPayKey;
 
 }

@@ -71,6 +71,8 @@ public class ProductServiceImpl implements ProductService {
 				product.setProductBestSellingYN("true".equals(productsDto.getBestSelling()) ? "Y" : "N");
 				product.setProductincredience(productsDto.getProductincredience());
 				product.setProductuses(productsDto.getProductuses());
+				product.setConcernType(productsDto.getConcernType());
+				product.setConcernSubType(productsDto.getConcernSubType());
 				List<ProductMediaGallary> mediaArray = new ArrayList<ProductMediaGallary>();
 				if (null != files) {
 					int filecount=0;
@@ -128,6 +130,8 @@ public class ProductServiceImpl implements ProductService {
 			product.setAvailable("true".equals(productsDto.getProductActiveYN()) ? true : false);
 			product.setProductincredience(productsDto.getProductincredience());
 			product.setProductuses(productsDto.getProductuses());
+			product.setConcernType(productsDto.getConcernType());
+			product.setConcernSubType(productsDto.getConcernSubType());
 			List<ProductMediaGallary> mediaArray = product.getProdMedias();
 			if (null != files) {
 				int filecount=0;

@@ -5,6 +5,7 @@ package com.iii.amirutham.dto.model;
 
 import javax.validation.Valid;
 
+import com.iii.amirutham.model.order.OrderChannel;
 import com.sun.istack.NotNull;
 
 import lombok.AllArgsConstructor;
@@ -33,5 +34,9 @@ public class OrderDto {
 
 	@Valid
 	private AddressDto shippingAddress;
+	
+	private String razorPayOrderID;
+	
+	private OrderChannel channel;
 
 }

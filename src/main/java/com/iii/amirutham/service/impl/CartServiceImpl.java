@@ -70,7 +70,7 @@ public class CartServiceImpl implements CartService {
 	 * @Autowired private SellerRepository sellerRepository;
 	 */
 
-	@Transactional
+	//@Transactional
 	@Override
 	public CartDto addORUpdateMyLocalCart(CartRequest cartRequest) {
 		
@@ -260,6 +260,7 @@ public class CartServiceImpl implements CartService {
 		return updateCart;
 	}
 	
+	@Transactional
 	public ShoppingCart additemtoCart1(CategoryRequestItems mycartItem, ShoppingCart pendingCart) {
 
 		Optional<AmiruthamProducts> product = productRepository.findById(mycartItem.getProductId());
@@ -295,6 +296,7 @@ public class CartServiceImpl implements CartService {
 					varient.getCgst(),cgst,"Tax Deducted"));
 			
 			// item.set
+			item=cartItemRepository.save(item);
 			pendingCart.getLineItems().add(item);
 			pendingCart.getFinalpriceWithTax().add(st);
 			

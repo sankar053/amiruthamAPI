@@ -18,7 +18,7 @@ import com.iii.amirutham.model.order.Orders;
  */
 public interface OrderService {
 	
-	public String placeOrder(OrderDto order);
+	public Orders placeOrder(OrderDto order);
 
 	public Orders getOrdersById(Integer id);
 

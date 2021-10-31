@@ -4,6 +4,7 @@
 package com.iii.amirutham.repo;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -44,6 +45,24 @@ public interface OrderRepository extends PagingAndSortingRepository<Orders, Inte
 	  @Query("update orders u set u.orderStatus = :orderStatus, orderTrackingUrl= :orderTrackingUrl where u.id = :id")
 	  void updateOrderStatus(@Param(value = "id") Integer id, @Param(value = "orderStatus") OrderStatus orderStatus,
 			  @Param(value = "orderTrackingUrl") String orderTrackingUrl);
+	  
+	  
+	  Optional<Orders> findByRazorPayOrderReference(String razorOrderRef);
+	  
+	  Optional<Orders> findByRazorPayTransReference(String razorPaymentRef);
+	  
+	  @Modifying
+	  @Transactional
+	  @Query("update orders u set u.razorPayTransReference = :razorPayTransReference, u.orderPaymentStatus= 'PAID', u.paymentOn=:paymentOn where u.id = :id and u.razorPayOrderReference=:razorPayOrderReference")
+	  void updateOrderPaymentStatus( @Param(value = "razorPayTransReference") String razorPayTransReference,@Param(value = "paymentOn") LocalDateTime paymentOn,
+			  @Param(value = "razorPayOrderReference") String razorPayOrderReference,@Param(value = "id") Integer id);
+	  
+	  @Modifying
+	  @Transactional
+	  @Query("update orders u set u.razorPayRefundReference = :razorPayRefundReference, u.orderPaymentStatus= 'REFUNDED', u.refundOn=:refundOn where u.id = :id and u.razorPayTransReference=:razorPayTransReference")
+	  void updateOrderRefundStatus( @Param(value = "razorPayRefundReference") String razorPayRefundReference,@Param(value = "refundOn") LocalDateTime refundOn,
+			  @Param(value = "razorPayTransReference") String razorPayTransReference,@Param(value = "id") Integer id);
+	  
 	
-
+	  
 }

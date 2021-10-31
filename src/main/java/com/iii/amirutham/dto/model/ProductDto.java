@@ -6,6 +6,7 @@ package com.iii.amirutham.dto.model;
 import java.math.BigDecimal;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
@@ -69,6 +70,10 @@ public class ProductDto extends BaseEntityDto {
 	private String bestSelling;
 
 	private List<Object> bannerImg;
+	
+	private String concernType;
+	
+	private String concernSubType;
 
 	public ProductDto(Integer id, @NotNull Integer categoryid, String productCode, @NotNull String productNm,
 			@NotNull String productDesc, @NotNull String productuses, String productincredience,

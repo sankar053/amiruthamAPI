@@ -38,6 +38,8 @@ import com.iii.amirutham.common.report.dto.InvoiceMerchentData;
 import com.iii.amirutham.common.report.dto.OrderItemsReportData;
 import com.iii.amirutham.common.report.dto.ReportInvoiceData;
 import com.iii.amirutham.config.UserDetailsImpl;
+import com.iii.amirutham.controller.payment.PaymentRequest;
+import com.iii.amirutham.controller.payment.PaymentService;
 import com.iii.amirutham.dto.base.OrderStatusRequest;
 import com.iii.amirutham.dto.model.AddressDto;
 import com.iii.amirutham.dto.model.BuyerOrderResponse;
@@ -80,6 +82,9 @@ public class OrderServiceImpl implements OrderService {
 
 	@Autowired
 	private UserService userService;
+	
+	@Value(value = "${amirutham.payment.key}")
+	private String razorPayKey;
 
 	@Autowired
 	private EmailService emailService;
@@ -137,9 +142,12 @@ public class OrderServiceImpl implements OrderService {
 	@Value("${mail.confirmOrderEmail.subject}")
 	private String OrderConformationEmailSubject;
 	
+	@Autowired
+	private PaymentService paymentService;
+	
 
 	@Override
-	public String placeOrder(OrderDto orderDto) {
+	public Orders placeOrder(OrderDto orderDto) {
 		// TODO Auto-generated method stub
 		UserDetailsImpl user = userService.getUserDetails();
 		Optional<ShoppingCart> mycart = cartRepository.findById(orderDto.getCartId());
@@ -190,15 +198,33 @@ public class OrderServiceImpl implements OrderService {
 				}
 			}
 			orderDao.setOrderProducts(orderProducts);
+			// Creating order in Razorpay
+			if("ONLINE".equalsIgnoreCase(orderDto.getChannel().toString())) {
+			com.razorpay.Order razorPayOrder =paymentService.
+					createOrderWothRazorPay(new PaymentRequest(orderDao.getOrderCode(),orderDao.getId(),
+							orderDao.getGrossTotal(),orderDao.getCurrency(),""));
+			orderDao.setChannel(orderDto.getChannel());
+			orderDao.setRazorPayOrderReference(razorPayOrder.get("id"));
+			}else {
+				com.razorpay.Order razorPayOrder =paymentService.
+						createOrderWothRazorPay(new PaymentRequest(orderDao.getOrderCode(),orderDao.getId(),
+								orderDao.getGrossTotal(),orderDao.getCurrency(),""));
+				orderDao.setChannel(orderDto.getChannel());
+				orderDao.setRazorPayOrderReference(razorPayOrder.get("order_id"));
+				orderDao.setChannel(orderDto.getChannel());
+			}
 
 			orderDao = orderRepository.save(orderDao);
 			cartRepository.updateShoppingCartStatus(orderDto.getCartId(), "Converted");
+			
+			
+			
 
 			sendOrderCreationMail(user, orderDao, orderDao.getAddress(), LocalDateTime.now().toString());
 
-			// sentMailforOrderConformation(orderDao, user,"order-Conformation-template");
+			orderDao.setRazorPayKey(razorPayKey);
 
-			return orderDao.getOrderCode();
+			return orderDao;
 		}
 		return null;
 
