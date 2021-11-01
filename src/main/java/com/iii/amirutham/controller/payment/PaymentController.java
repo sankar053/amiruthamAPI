@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.iii.amirutham.dto.base.GenericResponse;
+import com.iii.amirutham.dto.model.PaymentFailureDto;
 import com.iii.amirutham.dto.model.PaymentSuccesDto;
 
 /**
@@ -21,41 +23,46 @@ import com.iii.amirutham.dto.model.PaymentSuccesDto;
 @RestController
 @RequestMapping("/payment/")
 public class PaymentController {
-	
-   @Autowired
-   private PaymentService paymentService;
-	
+
+	@Autowired
+	private PaymentService paymentService;
+
 	@PostMapping("creation")
-	public ResponseEntity<?> createPayment(@RequestBody PaymentRequest payReq){
-		paymentService.createOrderWothRazorPay(payReq);
-		
-		return ResponseEntity.ok("Order Created in Razorpay");
+	public ResponseEntity<?> createPayment(@RequestBody PaymentRequest payReq) {
+		GenericResponse response = paymentService.createOrderWothRazorPay(payReq);
+
+		return ResponseEntity.ok(response);
 	}
-	
+
 	@PostMapping("invoice")
-	public ResponseEntity<?> createInvoice(@RequestBody PaymentRequest payReq){
-		paymentService.createInvoice(payReq);
-		
-		return ResponseEntity.ok("invoice Created in Razorpay");
+	public ResponseEntity<?> createInvoice(@RequestBody PaymentRequest payReq) {
+		GenericResponse response = paymentService.createInvoice(payReq);
+
+		return ResponseEntity.ok(response);
 	}
-	
+
 	@PostMapping("capture")
-	public ResponseEntity<?> capturePayment(@RequestBody PaymentRequest payReq){
-		paymentService.capturePayment(payReq);
-		return ResponseEntity.ok("Payment captured in Razorpay");
+	public ResponseEntity<?> capturePayment(@RequestBody PaymentRequest payReq) {
+		GenericResponse response = paymentService.capturePayment(payReq);
+		return ResponseEntity.ok(response);
 	}
-	
-	
+
 	@PostMapping("success")
-	public ResponseEntity<?> getSuccessTransaction(@RequestBody PaymentSuccesDto paymentSuccessReq){
-		paymentService.getPaymentSuccessDetails(paymentSuccessReq);
-		return ResponseEntity.ok("Payment Success in Razorpay");
+	public ResponseEntity<?> getSuccessTransaction(@RequestBody PaymentSuccesDto paymentSuccessReq) {
+		GenericResponse response = paymentService.getPaymentSuccessDetails(paymentSuccessReq);
+		return ResponseEntity.ok(response);
 	}
-	
+
+	@PostMapping("failed")
+	public ResponseEntity<?> getFailedTransaction(@RequestBody PaymentFailureDto paymentSuccessReq) {
+		GenericResponse response = paymentService.getPaymentFailureDetails(paymentSuccessReq);
+		return ResponseEntity.ok(response);
+	}
+
 	@GetMapping("refund/{paymentId}")
-	public ResponseEntity<?> initiateRefundTransaction(@PathVariable(name = "paymentId") String paymentId){
-		paymentService.initiaterefund(paymentId);
-		return ResponseEntity.ok("Refund Success in Razorpay");
+	public ResponseEntity<?> initiateRefundTransaction(@PathVariable(name = "paymentId") String paymentId) {
+		GenericResponse response = paymentService.initiaterefund(paymentId);
+		return ResponseEntity.ok(response);
 	}
 
 }

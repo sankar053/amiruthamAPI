@@ -196,9 +196,13 @@ public class CartServiceImpl implements CartService {
 		List<ShoppingCart> mycartlist = cartRepository.findByCustomerId(ConsumerId);
 		ShoppingCart mycart = mycartlist.stream().filter(v -> "Pending".equals(v.getShoppingCartStatus())).findAny()
 				.orElse(null);
-		return null != mycart ? ((CartDto) AmirthumUtills.convertToDto(mycart, CartDto.class, modelMapper)) : null;
-
+		if(null!=mycart) {
+		Set<ShoppingCartItem> ShoppingCartItem=mycart.getLineItems().stream().filter(uc->"N".equalsIgnoreCase(uc.getIsDeleted())).collect(Collectors.toSet());
+		mycart.setLineItems(ShoppingCartItem);
+		return ((CartDto) AmirthumUtills.convertToDto(mycart, CartDto.class, modelMapper)) ;
+		}
 		// return cartDto;
+		return null;
 	}
 
 	@Override

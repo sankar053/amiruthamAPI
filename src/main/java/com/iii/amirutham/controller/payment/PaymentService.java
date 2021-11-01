@@ -1,19 +1,22 @@
 package com.iii.amirutham.controller.payment;
 
+import com.iii.amirutham.dto.base.GenericResponse;
+import com.iii.amirutham.dto.model.PaymentFailureDto;
 import com.iii.amirutham.dto.model.PaymentSuccesDto;
-import com.razorpay.Order;
 
 public interface PaymentService {
 	
 	
-	public Order createOrderWothRazorPay(PaymentRequest payreq);
+	public GenericResponse createOrderWothRazorPay(PaymentRequest payreq);
 	
-	public void createInvoice(PaymentRequest payreq);
+	public GenericResponse createInvoice(PaymentRequest payreq);
 	
-	public void capturePayment(PaymentRequest payreq);
+	public GenericResponse capturePayment(PaymentRequest payreq);
 	
-	public void getPaymentSuccessDetails(PaymentSuccesDto payreq);
+	public GenericResponse getPaymentSuccessDetails(PaymentSuccesDto payreq);
+	
+	public GenericResponse getPaymentFailureDetails(PaymentFailureDto payreq);
 
-	public void initiaterefund(String paymentId);
+	public GenericResponse initiaterefund(String paymentId);
 
 }

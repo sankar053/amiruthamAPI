@@ -40,6 +40,7 @@ import com.iii.amirutham.common.report.dto.ReportInvoiceData;
 import com.iii.amirutham.config.UserDetailsImpl;
 import com.iii.amirutham.controller.payment.PaymentRequest;
 import com.iii.amirutham.controller.payment.PaymentService;
+import com.iii.amirutham.dto.base.GenericResponse;
 import com.iii.amirutham.dto.base.OrderStatusRequest;
 import com.iii.amirutham.dto.model.AddressDto;
 import com.iii.amirutham.dto.model.BuyerOrderResponse;
@@ -82,7 +83,7 @@ public class OrderServiceImpl implements OrderService {
 
 	@Autowired
 	private UserService userService;
-	
+
 	@Value(value = "${amirutham.payment.key}")
 	private String razorPayKey;
 
@@ -135,16 +136,15 @@ public class OrderServiceImpl implements OrderService {
 
 	@Value("${mail.orderCreationEmail.subject}")
 	private String createOrderEmailSubject;
-	
+
 	@Value("${mail.confirmOrderEmail.template}")
 	private String OrderConformationEmailTemplate;
 
 	@Value("${mail.confirmOrderEmail.subject}")
 	private String OrderConformationEmailSubject;
-	
+
 	@Autowired
 	private PaymentService paymentService;
-	
 
 	@Override
 	public Orders placeOrder(OrderDto orderDto) {
@@ -199,26 +199,23 @@ public class OrderServiceImpl implements OrderService {
 			}
 			orderDao.setOrderProducts(orderProducts);
 			// Creating order in Razorpay
-			if("ONLINE".equalsIgnoreCase(orderDto.getChannel().toString())) {
-			com.razorpay.Order razorPayOrder =paymentService.
-					createOrderWothRazorPay(new PaymentRequest(orderDao.getOrderCode(),orderDao.getId(),
-							orderDao.getGrossTotal(),orderDao.getCurrency(),""));
-			orderDao.setChannel(orderDto.getChannel());
-			orderDao.setRazorPayOrderReference(razorPayOrder.get("id"));
-			}else {
-				com.razorpay.Order razorPayOrder =paymentService.
-						createOrderWothRazorPay(new PaymentRequest(orderDao.getOrderCode(),orderDao.getId(),
-								orderDao.getGrossTotal(),orderDao.getCurrency(),""));
+			if ("ONLINE".equalsIgnoreCase(orderDto.getChannel().toString())) {
+				GenericResponse response = paymentService
+						.createOrderWothRazorPay(new PaymentRequest(orderDao.getOrderCode(), orderDao.getId(),
+								orderDao.getGrossTotal(), orderDao.getCurrency(), ""));
+				if (Constant.PAYMENT_ORDER_SUCCESS.equalsIgnoreCase(response.getMessage())) {
+					com.razorpay.Order razorPayOrder = (com.razorpay.Order) response.getResponseObject();
+					orderDao.setChannel(orderDto.getChannel());
+					orderDao.setRazorPayOrderReference(razorPayOrder.get("id"));
+				}
+			} else {
+
 				orderDao.setChannel(orderDto.getChannel());
-				orderDao.setRazorPayOrderReference(razorPayOrder.get("order_id"));
-				orderDao.setChannel(orderDto.getChannel());
+
 			}
 
 			orderDao = orderRepository.save(orderDao);
 			cartRepository.updateShoppingCartStatus(orderDto.getCartId(), "Converted");
-			
-			
-			
 
 			sendOrderCreationMail(user, orderDao, orderDao.getAddress(), LocalDateTime.now().toString());
 
@@ -329,13 +326,14 @@ public class OrderServiceImpl implements OrderService {
 				orderRepository.updateOrderStatus(orderStatusReq.getOrderId(), orderStatusReq.getOrderStatus(),
 						orderStatusReq.getTrackingUrl());
 				sendOrderConformationMail(oorder.get().getUser(), oorder.get());
-			}else {
+			} else {
 				orderRepository.updateOrderStatus(orderStatusReq.getOrderId(), orderStatusReq.getOrderStatus());
 				sentMailforOrderstatus(oorder.get(), oorder.get().getUser(), "order-Status-Update-template");
 			}
-			
-			if(!"Pending".equalsIgnoreCase(orderStatusReq.getPaymentType().getValue())) {
-				orderRepository.updateOrderTransStatus(orderStatusReq.getOrderId(),orderStatusReq.getPaymentType(),orderStatusReq.getTransactionRefNo(),LocalDateTime.now());
+
+			if (!"Pending".equalsIgnoreCase(orderStatusReq.getPaymentType().getValue())) {
+				orderRepository.updateOrderTransStatus(orderStatusReq.getOrderId(), orderStatusReq.getPaymentType(),
+						orderStatusReq.getTransactionRefNo(), LocalDateTime.now());
 			}
 		} else {
 			throw new UserNotFoundException("Selected orger is invalid");
@@ -521,12 +519,11 @@ public class OrderServiceImpl implements OrderService {
 		}
 
 	}
-	
-	
+
 	@Async("specificTaskExecutor")
 	public void sendOrderConformationMail(User user, Orders order) {
 		try {
-				
+
 			Map<String, Object> mailMap = new HashMap<>();
 			Map<String, Object> notificationMap = new HashMap<>();
 			mailMap.put("name", user.getFirstName() + " " + user.getLastName());
@@ -552,6 +549,5 @@ public class OrderServiceImpl implements OrderService {
 		}
 
 	}
-
 
 }

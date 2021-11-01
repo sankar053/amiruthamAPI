@@ -1,21 +1,28 @@
 package com.iii.amirutham.controller.payment;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.iii.amirutham.dto.base.GenericResponse;
+import com.iii.amirutham.dto.model.PaymentFailureDto;
 import com.iii.amirutham.dto.model.PaymentSuccesDto;
+import com.iii.amirutham.model.PaymentFailure;
 import com.iii.amirutham.model.PaymentSuccess;
 import com.iii.amirutham.model.TransactionDetails;
 import com.iii.amirutham.model.order.Orders;
 import com.iii.amirutham.repo.OrderRepository;
+import com.iii.amirutham.repo.PaymentFailureRepository;
 import com.iii.amirutham.repo.PaymentSuccessRepo;
 import com.iii.amirutham.repo.TransactionDetailsRepo;
+import com.iii.amirutham.utills.AmirthumUtills;
+import com.iii.amirutham.utills.Constant;
 import com.razorpay.Invoice;
 import com.razorpay.Order;
 import com.razorpay.Payment;
@@ -37,16 +44,22 @@ public class PaymentServiceImpl implements PaymentService {
 
 	@Autowired
 	OrderRepository orderRepo;
+	
+	@Autowired
+	private ModelMapper modelMapper;
+	
+	@Autowired
+	private PaymentFailureRepository paymentFailureRepository;
 
 	@Override
-	public Order createOrderWothRazorPay(PaymentRequest payreq) {
+	public GenericResponse createOrderWothRazorPay(PaymentRequest payreq) {
 
 		try {
 
 			JSONObject options = new JSONObject();
-			// options.put("amount", payreq.getAmount().multiply(new BigDecimal("10000")));
+			 options.put("amount", payreq.getAmount().multiply(new BigDecimal("100")));
 			// // Note: The amount should be in paise.
-			options.put("amount", 100);
+			//options.put("amount", 100);
 			options.put("currency", payreq.getCurrency());
 			options.put("receipt", payreq.getAmirthumorderRef());
 			Order order = razorpayClient.Orders.create(options);
@@ -55,7 +68,7 @@ public class PaymentServiceImpl implements PaymentService {
 					"ORDER", "S");
 			transactionRepo.save(transaction);
 
-			return order;
+			return new GenericResponse(Constant.PAYMENT_ORDER_SUCCESS,order);
 			// System.out.println(order.toString());
 
 		} catch (RazorpayException e) {
@@ -64,19 +77,21 @@ public class PaymentServiceImpl implements PaymentService {
 			TransactionDetails transaction = new TransactionDetails(payreq.getAmirthumorderId(), "", "ORDER", "F");
 			transaction.setPaymentErrorReason(e.getMessage());
 			transactionRepo.save(transaction);
+			return new GenericResponse(Constant.PAYMENT_ORDER_FAIL,"1001");
 		} catch (Exception e) {
 			e.printStackTrace();
 			TransactionDetails transaction = new TransactionDetails(payreq.getAmirthumorderId(), "", "ORDER", "F");
 			transaction.setPaymentErrorReason(e.getMessage());
 			transactionRepo.save(transaction);
+			return new GenericResponse(Constant.PAYMENT_ORDER_FAIL,"1001");
 		}
 		// TODO Auto-generated method stub
-		return null;
+		
 
 	}
 
 	@Override
-	public void createInvoice(PaymentRequest payreq) {
+	public GenericResponse createInvoice(PaymentRequest payreq) {
 		// TODO Auto-generated method stub
 
 		try {
@@ -100,11 +115,12 @@ public class PaymentServiceImpl implements PaymentService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return null;
 
 	}
 
 	@Override
-	public void capturePayment(PaymentRequest payreq) {
+	public GenericResponse capturePayment(PaymentRequest payreq) {
 		// TODO Auto-generated method stub
 
 		try {
@@ -116,12 +132,14 @@ public class PaymentServiceImpl implements PaymentService {
 		} catch (RazorpayException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return new GenericResponse(Constant.PAYMENT_CAPTURE_FAIL,"1001");
 		}
+		return null;
 
 	}
 
 	@Override
-	public void getPaymentSuccessDetails(PaymentSuccesDto payreq) {
+	public GenericResponse getPaymentSuccessDetails(PaymentSuccesDto payreq) {
 		// TODO Auto-generated method stub
 
 		Optional<Orders> orderdao = orderRepo.findByRazorPayOrderReference(payreq.getRazorPayOrderId());
@@ -131,8 +149,8 @@ public class PaymentServiceImpl implements PaymentService {
 			if (Boolean.valueOf(payment.get("captured").toString()) && orderdao.isPresent()) {
 
 				Orders order = orderdao.get();
-				orderRepo.updateOrderPaymentStatus(payment.get("id"), LocalDateTime.now(), payreq.getRazorPayOrderId(),
-						order.getId());
+				orderRepo.updateOrderPaymentStatus(payment.get("id"), LocalDateTime.now(),order.getId(),
+						payreq.getRazorPayOrderId());
 				PaymentSuccess success = new PaymentSuccess();
 				success.setPaidAmount(payment.get("amount").toString());
 				success.setPaidMethod(payment.get("method"));
@@ -141,17 +159,19 @@ public class PaymentServiceImpl implements PaymentService {
 				success.setRazorResponse(payment.toString());
 				success.setRazorStatus(payment.get("status"));
 				raymentSuccessRepo.save(success);
-
+				return new GenericResponse(Constant.PAYMENT_SUCCESS);
 			}
-
+			return new GenericResponse(Constant.PAYMENT_NOTFOUND);
 		} catch (RazorpayException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return new GenericResponse(Constant.PAYMENT_FAIL,"1001");
 		}
+		
 	}
 
 	@Override
-	public void initiaterefund(String paymentId) {
+	public GenericResponse initiaterefund(String paymentId) {
 		// TODO Auto-generated method stub
 		Optional<Orders> orderdao = orderRepo.findByRazorPayTransReference(paymentId);
 
@@ -173,6 +193,7 @@ public class PaymentServiceImpl implements PaymentService {
 					transaction.setPaymentRefundReference(refund.get("id"));
 					transaction.setPaymentReference(order.getRazorPayTransReference());
 					transactionRepo.save(transaction);
+					return new GenericResponse(Constant.PAYMENT_SUCCESS);
 
 				}
 
@@ -182,15 +203,27 @@ public class PaymentServiceImpl implements PaymentService {
 						order.getRazorPayOrderReference(), "REFUND", "F");
 				transaction.setPaymentErrorReason(e.getMessage());
 				transactionRepo.save(transaction);
+				return new GenericResponse(Constant.PAYMENT_REFUND_FAIL,"1001");
 			} catch (Exception e) {
 				e.printStackTrace();
 				TransactionDetails transaction = new TransactionDetails(order.getId(), "", "REFUND", "F");
 				transaction.setPaymentErrorReason(e.getMessage());
 				transactionRepo.save(transaction);
+				return new GenericResponse(Constant.PAYMENT_REFUND_FAIL,"1001");
 			}
 
 		}
+		return new GenericResponse(Constant.PAYMENT_FAIL);
 
+	}
+
+	@Override
+	public GenericResponse getPaymentFailureDetails(PaymentFailureDto payreq) {
+		// TODO Auto-generated method stub
+		
+		PaymentFailure paymentFailure =(PaymentFailure) AmirthumUtills.convertToDto(payreq, PaymentFailure.class, modelMapper);
+		paymentFailureRepository.save(paymentFailure);
+		return new GenericResponse(Constant.PAYMENT_SUCCESS);
 	}
 
 }
