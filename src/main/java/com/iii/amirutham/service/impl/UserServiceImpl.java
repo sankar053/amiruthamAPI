@@ -26,6 +26,7 @@ import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
 import com.iii.amirutham.common.EmailService;
 import com.iii.amirutham.config.UserDetailsImpl;
+import com.iii.amirutham.controller.OrderContoller;
 import com.iii.amirutham.dto.model.UserDto;
 import com.iii.amirutham.dto.model.ValidateOtpDto;
 import com.iii.amirutham.exception.TokenExpireException;
@@ -51,11 +52,13 @@ import com.iii.amirutham.utills.NotificationHelper;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author sanka
  *
  */
+@Slf4j
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -131,7 +134,8 @@ public class UserServiceImpl implements UserService {
 		UserDetailsImpl userDetails = null;
 		try {
 			userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		} catch (Exception w) {
+		} catch (Exception e) {
+			log.error("Token expiry Service. {}",e.getMessage());
 			throw new TokenExpireException("Token Got Expired");
 		}
 		return userDetails;
@@ -235,6 +239,7 @@ public class UserServiceImpl implements UserService {
 			loc.setEnabled(true);
 			userLocationRepository.save(loc);
 		} catch (final Exception e) {
+			log.error("User Service. {}",e.getMessage());
 			throw new RuntimeException(e);
 		}
 	}
@@ -332,7 +337,7 @@ public class UserServiceImpl implements UserService {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println(e.getMessage());
+			log.error("User Service. {}",e.getMessage());
 		}
 
 	}
@@ -362,7 +367,7 @@ public class UserServiceImpl implements UserService {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println(e.getMessage());
+			log.error("User Service. {}",e.getMessage());
 		}
 
 	}

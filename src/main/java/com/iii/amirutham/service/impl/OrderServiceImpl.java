@@ -73,11 +73,13 @@ import com.iii.amirutham.utills.NotificationHelper;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author sanka
  *
  */
+@Slf4j
 @Service
 public class OrderServiceImpl implements OrderService {
 
@@ -163,7 +165,8 @@ public class OrderServiceImpl implements OrderService {
 			orderDao.setReceiverName(orderDto.getReceiverName());
 			orderDao.setReceiverPhoneNumber(orderDto.getReceiverPhoneNumber());
 			orderDao.setGrossTotal(mypendingCart.getFinalpriceWithoutTax());
-			orderDao.setNetTotal(mypendingCart.getFinalpriceWithTax());
+			orderDao.setNetTotal(orderDao.getGrossTotal().add(mypendingCart.getCharges().getChargeAmount()));
+			orderDao.setAdditionalCharges(mypendingCart.getCharges().getChargeAmount());
 			orderDao.setShoppingCartCode(mypendingCart.getShoppingCartCode());
 			orderDao.setUser(userRepository.findById(user.getId()).get());
 			orderDao.setAddress(getShippingAddress(orderDto.getShippingAddress(), orderDao.getUser()));
@@ -202,7 +205,7 @@ public class OrderServiceImpl implements OrderService {
 			if ("ONLINE".equalsIgnoreCase(orderDto.getChannel().toString())) {
 				GenericResponse response = paymentService
 						.createOrderWothRazorPay(new PaymentRequest(orderDao.getOrderCode(), orderDao.getId(),
-								orderDao.getGrossTotal(), orderDao.getCurrency(), ""));
+								orderDao.getNetTotal(), orderDao.getCurrency(), ""));
 				if (Constant.PAYMENT_ORDER_SUCCESS.equalsIgnoreCase(response.getMessage())) {
 					com.razorpay.Order razorPayOrder = (com.razorpay.Order) response.getResponseObject();
 					orderDao.setChannel(orderDto.getChannel());
@@ -376,6 +379,7 @@ public class OrderServiceImpl implements OrderService {
 			return reportservice.getpdfTemplate("invoice-template", generateInvoice(reportData), "output.pdf");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			log.error("Order Service. {}",e.getMessage());
 			e.printStackTrace();
 		}
 		return null;
@@ -446,7 +450,7 @@ public class OrderServiceImpl implements OrderService {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println(e.getMessage());
+			log.error("Order Service. {}",e.getMessage());
 		}
 
 	}
@@ -515,7 +519,7 @@ public class OrderServiceImpl implements OrderService {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println(e.getMessage());
+			log.error("Order Service. {}",e.getMessage());
 		}
 
 	}
@@ -545,7 +549,7 @@ public class OrderServiceImpl implements OrderService {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println(e.getMessage());
+			log.error("Order Service. {}",e.getMessage());
 		}
 
 	}

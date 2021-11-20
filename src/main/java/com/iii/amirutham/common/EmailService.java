@@ -13,7 +13,10 @@ import org.springframework.util.ObjectUtils;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class EmailService {
 
     @Value("${support.email}")
@@ -42,6 +45,7 @@ public class EmailService {
              constructEmail(subject, html, toEmail, cc, true);
          } catch (MessagingException e) {
              e.printStackTrace();
+             log.error(e.getMessage());
          }
     }
 
@@ -51,6 +55,7 @@ public class EmailService {
             constructEmail(subject, body, toEmail, cc,  false);
         } catch (MessagingException e) {
             e.printStackTrace();
+            log.error(e.getMessage());
         }
     }
     @Async

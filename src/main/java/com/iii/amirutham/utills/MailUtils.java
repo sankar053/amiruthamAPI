@@ -11,6 +11,9 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Configuration
 @PropertySource(ignoreResourceNotFound = false, value = "classpath:mail.properties")
 public class MailUtils {
@@ -34,6 +37,7 @@ public class MailUtils {
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
+			log.error("Error Mailservice. {}",e.getMessage());
 			return false;
 		}
 	}

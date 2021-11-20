@@ -37,10 +37,13 @@ import com.iii.amirutham.dto.model.OrderDto;
 import com.iii.amirutham.model.order.Orders;
 import com.iii.amirutham.service.OrderService;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @author sanka
  *
  */
+@Slf4j
 @RestController
 @RequestMapping("/order")
 public class OrderContoller {
@@ -111,6 +114,7 @@ public class OrderContoller {
 			targetStream = new FileInputStream(invoice);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
+			log.error("Error While invoice. {}",e.getMessage());
 			e.printStackTrace();
 		}
 

@@ -114,16 +114,16 @@
                                  <td align="left"
                                     style="padding: 20px 0 30px 0;">
                                     <b>Order Price:</b> <br>
-                                   ${product.price}<br>
+                                   Rs.${product.price}<br>
                                 </td>
                               
                             </tr>
                         </table>
                     </#list>
                     <br><br>
-                    <span style="float:right;text-align:right;"><b>Item Sub-total:<b> $${order.orderAmount}</span><br>
-                    <span style="float:right;text-align:right;"><b>Shipping & Handling:<b> $0</span><br>
-                    <span style="float:right;text-align:right;"><b>Order Total:<b> ${order.orderAmount}</b></span><br>
+                    <span style="float:right;text-align:right;"><b>Item Sub-total:<b> Rs.${order.orderAmount}</span><br>
+                    <span style="float:right;text-align:right;"><b>Shipping & Handling:<b> Rs.0</span><br>
+                    <span style="float:right;text-align:right;"><b>Order Total:<b> Rs.${order.orderAmount}</b></span><br>
                 </#list>
                 <br>
                 <table align="center"

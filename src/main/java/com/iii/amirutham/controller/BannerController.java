@@ -32,9 +32,12 @@ import com.iii.amirutham.dto.model.CustomerNewsLetterDto;
 import com.iii.amirutham.service.BannerService;
 import com.iii.amirutham.utills.AmirthumUtills;
 
+import lombok.extern.slf4j.Slf4j;
+
 
 @RestController
 @RequestMapping("/home")
+@Slf4j
 public class BannerController {
 
 	@Autowired
@@ -103,6 +106,7 @@ public class BannerController {
 			contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
 		} catch (IOException ex) {
 			System.out.println("Could not determine file type.");
+			log.error("Could not determine file type. {}",ex.getMessage());
 		}
 
 		// Fallback to the default content type if type could not be determined
@@ -127,6 +131,7 @@ public class BannerController {
 			contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
 		} catch (IOException ex) {
 			System.out.println("Could not determine file type.");
+			log.error("Could not determine file type. {}",ex.getMessage());
 		}
 
 		// Fallback to the default content type if type could not be determined

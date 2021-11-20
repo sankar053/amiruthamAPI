@@ -17,10 +17,13 @@ import com.iii.amirutham.model.product.ProductMediaGallary;
 import com.iii.amirutham.repo.BannerRepository;
 import com.iii.amirutham.service.DeleteMediaService;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @author sanka
  *
  */
+@Slf4j
 @Service
 public class DeleteMediaServiceImpl implements DeleteMediaService {
 
@@ -41,6 +44,7 @@ public class DeleteMediaServiceImpl implements DeleteMediaService {
 					System.out.println("Sorry, unable to delete the file.");
 				}
 			} catch (IOException e) {
+				log.error("media Delete Service. {}",e.getMessage());
 				e.printStackTrace();
 			}
 			bannerRepository.deleteSelectedHomeBannerImg(id);
@@ -64,6 +68,7 @@ public class DeleteMediaServiceImpl implements DeleteMediaService {
 					System.out.println("Sorry, unable to delete the file.");
 				}
 			} catch (IOException e) {
+				log.error("media Delete Service. {}",e.getMessage());
 				e.printStackTrace();
 			}
 			bannerRepository.deleteCategoryBanner(id);
@@ -86,6 +91,7 @@ public class DeleteMediaServiceImpl implements DeleteMediaService {
 					System.out.println("Sorry, unable to delete the file.");
 				}
 			} catch (IOException e) {
+				log.error("media Delete Service. {}",e.getMessage());
 				e.printStackTrace();
 			}
 			bannerRepository.deleteProductImage(id);

@@ -46,10 +46,13 @@ import com.iii.amirutham.service.SequenceService;
 import com.iii.amirutham.service.UserService;
 import com.iii.amirutham.utills.AmirthumUtills;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @author sanka
  *
  */
+@Slf4j
 @Service
 public class BannerServiceImpl implements BannerService {
 
@@ -121,6 +124,7 @@ public class BannerServiceImpl implements BannerService {
 					mediaArray.add(new HomeBannerMedia(productfilename, targetLocation.toString(), fileDownloadUri,
 							file.getContentType(), file.getSize(), bannerDao));
 				} catch (IOException e) { // TODO Auto-generated catch block e.printStackTrace(); }
+					log.error("Banner service. {}",e.getMessage());
 					e.printStackTrace();
 				}
 				// TODO Auto-generated method stub
@@ -176,6 +180,7 @@ public class BannerServiceImpl implements BannerService {
 						bannerDao.getBannerImgs().add(new HomeBannerMedia(productfilename, targetLocation.toString(),
 								fileDownloadUri, file.getContentType(), file.getSize(), bannerDao));
 					} catch (IOException e) { // TODO Auto-generated catch block e.printStackTrace(); }
+						log.error("Banner Service. {}",e.getMessage());
 						e.printStackTrace();
 					}
 					// TODO Auto-generated method stub
@@ -296,6 +301,7 @@ public class BannerServiceImpl implements BannerService {
 				throw new MyFileNotFoundException("File not found " + fileName);
 			}
 		} catch (MalformedURLException ex) {
+			log.error("Banner Service. {}",e.getMessage());
 			throw new MyFileNotFoundException("File not found " + fileName, ex);
 		}
 	}
@@ -314,6 +320,7 @@ public class BannerServiceImpl implements BannerService {
 				throw new MyFileNotFoundException("File not found " + fileName);
 			}
 		} catch (MalformedURLException ex) {
+			log.error("Banner Service. {}",e.getMessage());
 			throw new MyFileNotFoundException("File not found " + fileName, ex);
 		}
 	}

@@ -47,6 +47,9 @@ import com.iii.amirutham.service.CategoryService;
 import com.iii.amirutham.service.SequenceService;
 import com.iii.amirutham.utills.AmirthumUtills;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class CategoryServiceImpl implements CategoryService {
 
@@ -107,6 +110,7 @@ public class CategoryServiceImpl implements CategoryService {
 						mediaArray.add(new CategoryBanner(productfilename, targetLocation.toString(), fileDownloadUri,
 								file.getContentType(), file.getSize(), category));
 					} catch (IOException e) { // TODO Auto-generated catch block e.printStackTrace(); }
+						log.error("Categort Service. {}",e.getMessage());
 						e.printStackTrace();
 					}
 
@@ -199,6 +203,7 @@ public class CategoryServiceImpl implements CategoryService {
 					mediaArray.add(new CategoryBanner(productfilename, targetLocation.toString(), fileDownloadUri,
 							file.getContentType(), file.getSize(), category));
 				} catch (IOException e) { // TODO Auto-generated catch block e.printStackTrace(); }
+					log.error("Categort Service. {}",e.getMessage());
 					e.printStackTrace();
 				}
 
@@ -260,6 +265,7 @@ public class CategoryServiceImpl implements CategoryService {
 						categoryDao.getBannerImgs().add(new CategoryBanner(productfilename, targetLocation.toString(), fileDownloadUri,
 								file.getContentType(), file.getSize(), categoryDao));
 					} catch (IOException e) { // TODO Auto-generated catch block e.printStackTrace(); }
+						log.error("Categort Service. {}",e.getMessage());
 						e.printStackTrace();
 					}
 
@@ -313,6 +319,7 @@ public class CategoryServiceImpl implements CategoryService {
 			});
 
 		} catch (EncryptedDocumentException | InvalidFormatException | IOException e) {
+			log.error("Categort Service. {}",e.getMessage());
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -367,6 +374,7 @@ public class CategoryServiceImpl implements CategoryService {
 				throw new MyFileNotFoundException("File not found " + fileName);
 			}
 		} catch (MalformedURLException ex) {
+			log.error("Categort Service. {}",ex.getMessage());
 			throw new MyFileNotFoundException("File not found " + fileName, ex);
 		}
 	}

@@ -30,7 +30,10 @@ import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
 import com.razorpay.Refund;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class PaymentServiceImpl implements PaymentService {
 
 	@Autowired
@@ -73,12 +76,14 @@ public class PaymentServiceImpl implements PaymentService {
 
 		} catch (RazorpayException e) {
 			// TODO Auto-generated catch bltransactionock
+			 log.error("createOrderWothRazorPay {}",e.getMessage());
 			e.printStackTrace();
 			TransactionDetails transaction = new TransactionDetails(payreq.getAmirthumorderId(), "", "ORDER", "F");
 			transaction.setPaymentErrorReason(e.getMessage());
 			transactionRepo.save(transaction);
 			return new GenericResponse(Constant.PAYMENT_ORDER_FAIL,"1001");
 		} catch (Exception e) {
+			 log.error("createOrderWothRazorPay {}",e.getMessage());
 			e.printStackTrace();
 			TransactionDetails transaction = new TransactionDetails(payreq.getAmirthumorderId(), "", "ORDER", "F");
 			transaction.setPaymentErrorReason(e.getMessage());
@@ -113,6 +118,7 @@ public class PaymentServiceImpl implements PaymentService {
 			System.out.println(invoice.toJson());
 		} catch (RazorpayException e) {
 			// TODO Auto-generated catch block
+			 log.error("createInvoice {}",e.getMessage());
 			e.printStackTrace();
 		}
 		return null;
@@ -132,6 +138,7 @@ public class PaymentServiceImpl implements PaymentService {
 		} catch (RazorpayException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			 log.error("capturePayment {}",e.getMessage());
 			return new GenericResponse(Constant.PAYMENT_CAPTURE_FAIL,"1001");
 		}
 		return null;
@@ -164,6 +171,7 @@ public class PaymentServiceImpl implements PaymentService {
 			return new GenericResponse(Constant.PAYMENT_NOTFOUND);
 		} catch (RazorpayException e) {
 			// TODO Auto-generated catch block
+			log.error("getPaymentSuccessDetails {}",e.getMessage());
 			e.printStackTrace();
 			return new GenericResponse(Constant.PAYMENT_FAIL,"1001");
 		}
@@ -199,12 +207,14 @@ public class PaymentServiceImpl implements PaymentService {
 
 			} catch (RazorpayException e) {
 				// TODO Auto-generated catch block
+				log.error("initiaterefund {}",e.getMessage());
 				TransactionDetails transaction = new TransactionDetails(order.getId(),
 						order.getRazorPayOrderReference(), "REFUND", "F");
 				transaction.setPaymentErrorReason(e.getMessage());
 				transactionRepo.save(transaction);
 				return new GenericResponse(Constant.PAYMENT_REFUND_FAIL,"1001");
 			} catch (Exception e) {
+				log.error("initiaterefund {}",e.getMessage());
 				e.printStackTrace();
 				TransactionDetails transaction = new TransactionDetails(order.getId(), "", "REFUND", "F");
 				transaction.setPaymentErrorReason(e.getMessage());

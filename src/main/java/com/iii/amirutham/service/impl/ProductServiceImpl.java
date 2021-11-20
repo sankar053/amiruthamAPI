@@ -37,6 +37,24 @@ import com.iii.amirutham.service.ProductService;
 import com.iii.amirutham.service.SequenceService;
 import com.iii.amirutham.utills.AmirthumUtills;
 
+import lombok.extern.slf4j.Slf4j;
+
+/*
+ * Copyright 2021 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+@Slf4j
 @Service
 public class ProductServiceImpl implements ProductService {
 
@@ -96,6 +114,7 @@ public class ProductServiceImpl implements ProductService {
 									file.getContentType(), file.getSize()));
 						} catch (IOException e) { // TODO Auto-generated catch block e.printStackTrace(); }
 							e.printStackTrace();
+							log.error("Product Service. {}",e.getMessage());
 						}
 						// TODO Auto-generated method stub
 					}
@@ -155,6 +174,7 @@ public class ProductServiceImpl implements ProductService {
 								file.getContentType(), file.getSize()));
 					} catch (IOException e) { // TODO Auto-generated catch block e.printStackTrace(); }
 						e.printStackTrace();
+						log.error("Product Service. {}",e.getMessage());
 					}
 					// TODO Auto-generated method stub
 				}
@@ -262,6 +282,7 @@ public class ProductServiceImpl implements ProductService {
 				throw new MyFileNotFoundException("File not found " + fileName);
 			}
 		} catch (MalformedURLException ex) {
+			log.error("Product Service. {}",ex.getMessage());
 			throw new MyFileNotFoundException("File not found " + fileName, ex);
 		}
 	}

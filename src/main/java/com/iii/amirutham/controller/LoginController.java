@@ -27,6 +27,9 @@ import com.iii.amirutham.exception.UserNotFoundException;
 import com.iii.amirutham.repo.RoleRepository;
 import com.iii.amirutham.repo.UserRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/auth")
@@ -75,7 +78,9 @@ public class LoginController {
 												 userDetails.getIsPendingCartAvailable()));
 		}catch(Exception e) {
 			System.out.println(e.getMessage());
+			log.error("Error While login. {}",e.getMessage());
 			throw new UserNotFoundException("Error While login");
+			
 		}
 		
 

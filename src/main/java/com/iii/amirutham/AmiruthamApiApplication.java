@@ -19,6 +19,9 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @SpringBootApplication
 public class AmiruthamApiApplication {
 
@@ -73,6 +76,7 @@ public class AmiruthamApiApplication {
 			return new RazorpayClient(razorPayKey,razorPaysecret);
 		} catch (RazorpayException e) {
 			// TODO Auto-generated catch block
+			log.error("Error creating bean. {}",e.getMessage());
 			e.printStackTrace();
 		}
 		return null;

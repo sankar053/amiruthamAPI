@@ -28,6 +28,9 @@ import com.iii.amirutham.service.CategoryService;
 import com.iii.amirutham.service.ProductService;
 import com.iii.amirutham.utills.AmirthumUtills;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 @RequestMapping("/products")
 public class ProductController {
@@ -107,6 +110,7 @@ public class ProductController {
 			contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
 		} catch (IOException ex) {
 			System.out.println("Could not determine file type.");
+			log.error("Error downloadFile file. {}",e.getMessage());
 		}
 
 		// Fallback to the default content type if type could not be determined

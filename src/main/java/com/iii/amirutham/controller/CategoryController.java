@@ -34,6 +34,9 @@ import com.iii.amirutham.model.product.AmiruthamCategory;
 import com.iii.amirutham.service.CategoryService;
 import com.iii.amirutham.utills.AmirthumUtills;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 @RequestMapping("/category")
 public class CategoryController {
@@ -132,6 +135,7 @@ public class CategoryController {
 			contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
 		} catch (IOException ex) {
 			System.out.println("Could not determine file type.");
+			log.error("Could not determine file type. {}",ex.getMessage());
 		}
 
 		// Fallback to the default content type if type could not be determined

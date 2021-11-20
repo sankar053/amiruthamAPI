@@ -30,7 +30,7 @@ public class AddOnCharges extends BaseEntity{
 	private Integer id;
 
 	@Column(name = "chargeamount", nullable = false)
-	private BigDecimal chargeAmount=new BigDecimal(40.00);
+	private BigDecimal chargeAmount=new BigDecimal(50.00);
 
 	@Column(name = "description", nullable = false) // TODO CODE
 	private String description="ShipmentCharges";

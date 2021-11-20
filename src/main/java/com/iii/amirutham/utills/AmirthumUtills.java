@@ -6,7 +6,6 @@ package com.iii.amirutham.utills;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -23,10 +22,13 @@ import org.modelmapper.ModelMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @author sanka
  *
  */
+@Slf4j
 public class AmirthumUtills {
 
 	
@@ -38,6 +40,7 @@ public class AmirthumUtills {
 			return objMapper.readValue(jsonStr, c);
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
+			log.error("Error creating dto to dao. {}",e.getMessage());
 			e.printStackTrace();
 		}
 		return null;
@@ -68,6 +71,7 @@ public class AmirthumUtills {
 				Files.createDirectories(path);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			log.error("Error creating directory. {}",e.getMessage());
 			e.printStackTrace();
 		}
 

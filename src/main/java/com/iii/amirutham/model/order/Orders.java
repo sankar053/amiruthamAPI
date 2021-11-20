@@ -77,6 +77,9 @@ public class Orders extends BaseEntity {
 
 	@Column(name = "ORDER_NET_TOTAL")
 	private BigDecimal netTotal;
+	
+	@Column(name = "ORDER_ADD_CHARGES")
+	private BigDecimal additionalCharges; // Shipment charges
 
 	@Column(name = "ORDER_CODE", nullable = true)
 	private String orderCode;
