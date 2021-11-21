@@ -39,7 +39,7 @@ public class User extends BaseEntity {
 	@Column(name = "firstName")
 	private String firstName;
 
-	@Size(min = 2, message = "LastName Should have Atleast two character")
+	@Size(min = 1, message = "LastName Should have Atleast two character")
 	@Column(name = "lastName")
 	private String lastName;
 
