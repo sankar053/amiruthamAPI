@@ -56,7 +56,7 @@ public class OrderProduct extends BaseEntity {
 	private AmiruthamProducts product;
 
 	@Column (name="ORDER_QUANTITY")
-	private Integer orderedQuantity = new Integer(1);;
+	private Integer orderedQuantity = 1;
 	
 	@Column(name = "ORDER_PRODUCT_IMGURL", nullable = false) // TODO CODE
 	private String productImgURL;

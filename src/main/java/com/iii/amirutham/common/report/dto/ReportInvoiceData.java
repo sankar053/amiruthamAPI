@@ -8,9 +8,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import com.iii.amirutham.common.mail.dto.OrderDeliveryDetails;
-import com.iii.amirutham.common.mail.dto.OrderItemsMail;
-
 import lombok.Getter;
 import lombok.Setter;
 

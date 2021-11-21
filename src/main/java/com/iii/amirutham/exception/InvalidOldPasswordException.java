@@ -6,7 +6,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.UNAUTHORIZED, reason = "old Password does bot Matched ")
 public class InvalidOldPasswordException extends RuntimeException {
 	
-	  public InvalidOldPasswordException(String message) {
+	  /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public InvalidOldPasswordException(String message) {
 	        super(message);
 	    }
 

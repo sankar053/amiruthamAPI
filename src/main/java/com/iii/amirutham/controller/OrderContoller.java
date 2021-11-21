@@ -50,86 +50,86 @@ public class OrderContoller {
 
 	@Autowired
 	private OrderService orderService;
-	
+
 	@Autowired
 	private MessageSource messages;
 
 	@PostMapping("/placeorder")
 	@PreAuthorize("hasRole('USER')")
-	public ResponseEntity<GenericResponse> placeOrder(HttpServletRequest request,@Valid @RequestBody OrderDto order) {
+	public ResponseEntity<GenericResponse> placeOrder(HttpServletRequest request, @Valid @RequestBody OrderDto order) {
 
 		Orders OrderDao = orderService.placeOrder(order);
-		if(null!=OrderDao)
-			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(new GenericResponse(messages.getMessage("order.message.success", null, request.getLocale()),OrderDao));
+		if (null != OrderDao)
+			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(new GenericResponse(
+					messages.getMessage("order.message.success", null, request.getLocale()), OrderDao));
 		else
-			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(new GenericResponse(messages.getMessage("order.message.failure", null, request.getLocale())));
-			
+			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
+					.body(new GenericResponse(messages.getMessage("order.message.failure", null, request.getLocale())));
+
 	}
-	
+
 	@GetMapping
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	public ResponseEntity<Page<Orders>> getAllOrders(@RequestParam(name = "page", required = false) Integer pageNo,
 			@RequestParam(name = "size", required = false) Integer pageSize,
 			@SortDefault.SortDefaults({ @SortDefault(sort = "createdTs", direction = Sort.Direction.DESC),
 					@SortDefault(sort = "id", direction = Sort.Direction.DESC) }) @Qualifier("my") Pageable pageable) {
-		
-		Page<Orders> orderDaoList =orderService.getAllOrders(pageNo, pageSize, pageable);
-		
+
+		Page<Orders> orderDaoList = orderService.getAllOrders(pageNo, pageSize, pageable);
+
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(orderDaoList);
-		
+
 	}
-	
+
 	@GetMapping("/placeorder/{id}")
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	public ResponseEntity<Orders> getOrdersById(@PathVariable(required = true) Integer id) {
 
 		Orders orderDao = orderService.getOrdersById(id);
-		
+
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(orderDao);
 
 	}
-	
-	
-	
-	@PostMapping(value ="/updateStatus")
+
+	@PostMapping(value = "/updateStatus")
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-	public ResponseEntity<GenericResponse>  updateOrderprocess(HttpServletRequest request,@Valid @RequestBody OrderStatusRequest orderStatusReq) {
+	public ResponseEntity<GenericResponse> updateOrderprocess(HttpServletRequest request,
+			@Valid @RequestBody OrderStatusRequest orderStatusReq) {
 
 		orderService.updateOrderprocess(orderStatusReq);
-		
-		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(new GenericResponse("Order status got updated Successfully"));
-		
+
+		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
+				.body(new GenericResponse("Order status got updated Successfully"));
+
 	}
-	
-	
-	@GetMapping(value ="invoice/{id}",produces = MediaType.APPLICATION_PDF_VALUE)
+
+	@GetMapping(value = "invoice/{id}", produces = MediaType.APPLICATION_PDF_VALUE)
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<InputStreamResource>  getOrderInvoice(HttpServletRequest request,
+	public ResponseEntity<InputStreamResource> getOrderInvoice(HttpServletRequest request,
 			@PathVariable(required = true) Integer id) {
 
-		Orders reportData =orderService.getOrdersById(id);
-		File invoice =orderService.getOrderInvoice(reportData);
+		Orders reportData = orderService.getOrdersById(id);
+		File invoice = orderService.getOrderInvoice(reportData);
 		InputStream targetStream = null;
 		try {
 			targetStream = new FileInputStream(invoice);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
-			log.error("Error While invoice. {}",e.getMessage());
+			log.error("Error While invoice. {}", e.getMessage());
 			e.printStackTrace();
 		}
 
-		//return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(new GenericResponse(messages.getMessage("order.message.success", null, request.getLocale())));
-		 var headers = new HttpHeaders();
-	        headers.add("Content-Disposition", "inline; filename=Invoiceport"+"-"+reportData.getOrderCode()+".pdf");
-	        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
-	        headers.add("Pragma", "no-cache");
-	        headers.add("Expires", "0");
+		// return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(new
+		// GenericResponse(messages.getMessage("order.message.success", null,
+		// request.getLocale())));
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Content-Disposition", "inline; filename=Invoiceport" + "-" + reportData.getOrderCode() + ".pdf");
+		headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+		headers.add("Pragma", "no-cache");
+		headers.add("Expires", "0");
 
-	        return ResponseEntity
-	                .ok()
-	                .headers(headers)
-	                .contentLength(invoice.length())
-	                .contentType(MediaType.parseMediaType("application/octet-stream"))
-	                .body(new InputStreamResource(targetStream));
+		return ResponseEntity.ok().headers(headers).contentLength(invoice.length())
+				.contentType(MediaType.parseMediaType("application/octet-stream"))
+				.body(new InputStreamResource(targetStream));
 	}
 }

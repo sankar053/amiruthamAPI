@@ -23,7 +23,6 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.iii.amirutham.config.UserDetailsImpl;
 import com.iii.amirutham.dto.model.BannerDto;
@@ -301,7 +300,7 @@ public class BannerServiceImpl implements BannerService {
 				throw new MyFileNotFoundException("File not found " + fileName);
 			}
 		} catch (MalformedURLException ex) {
-			log.error("Banner Service. {}",e.getMessage());
+			log.error("Banner Service. {}",ex.getMessage());
 			throw new MyFileNotFoundException("File not found " + fileName, ex);
 		}
 	}
@@ -320,7 +319,7 @@ public class BannerServiceImpl implements BannerService {
 				throw new MyFileNotFoundException("File not found " + fileName);
 			}
 		} catch (MalformedURLException ex) {
-			log.error("Banner Service. {}",e.getMessage());
+			log.error("Banner Service. {}",ex.getMessage());
 			throw new MyFileNotFoundException("File not found " + fileName, ex);
 		}
 	}

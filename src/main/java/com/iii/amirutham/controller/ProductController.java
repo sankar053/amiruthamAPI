@@ -108,7 +108,7 @@ public class ProductController {
 		String contentType = null;
 		try {
 			contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
-		} catch (IOException ex) {
+		} catch (IOException e) {
 			System.out.println("Could not determine file type.");
 			log.error("Error downloadFile file. {}",e.getMessage());
 		}

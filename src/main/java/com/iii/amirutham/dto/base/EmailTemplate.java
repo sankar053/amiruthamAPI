@@ -14,7 +14,7 @@ public class EmailTemplate {
 
 	private String template;
 
-	private Map<String, String> replacementParams;
+//	private Map<String, String> replacementParams;
 
 	public EmailTemplate(String templateId) {
 		this.templateId = templateId;
@@ -27,7 +27,7 @@ public class EmailTemplate {
 	}
 
 	private String loadTemplate(String templateId) throws Exception {
-		ClassLoader classLoader = getClass().getClassLoader();
+		//ClassLoader classLoader = getClass().getClassLoader();
 		// File file = new File(classLoader.getResource(templateId).getFile());
 		File file = new File("C:\\Users\\sanka\\git\\amiruthamAPI\\" + templateId);
 		String content = "Empty";

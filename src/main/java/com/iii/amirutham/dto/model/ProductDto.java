@@ -6,7 +6,6 @@ package com.iii.amirutham.dto.model;
 import java.math.BigDecimal;
 import java.util.List;
 
-import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
