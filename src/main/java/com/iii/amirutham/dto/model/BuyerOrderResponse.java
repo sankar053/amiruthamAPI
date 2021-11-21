@@ -43,11 +43,9 @@ public class BuyerOrderResponse implements Serializable {
 	
 	private BigDecimal orderAmount;
 	
-	private Integer shippingCost;
+	private BigDecimal additionalCharges;
 	
-	private Long totalAmountWithShipping;
-	
-	private Long totalOrderAmount;
+	private BigDecimal netOrderAmount;
 	
 	private String line1;
 	

@@ -33,7 +33,7 @@ public class AmirthumUtills {
 
 	
 
-	public static Object convertJsontoObject(Class c, String jsonStr) {
+	public static Object convertJsontoObject(Class<?> c, String jsonStr) {
 
 		try {
 			ObjectMapper objMapper = new ObjectMapper();

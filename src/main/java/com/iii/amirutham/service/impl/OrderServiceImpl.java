@@ -414,6 +414,8 @@ public class OrderServiceImpl implements OrderService {
 				}
 				orderMail.setOrderNumber(order.getOrderCode());
 				orderMail.setOrderAmount(order.getGrossTotal());
+				orderMail.setAdditionalCharges(order.getAdditionalCharges());
+				orderMail.setNetOrderAmount(order.getNetTotal());
 				orderMail.setTrackingNumber("143243242423");
 				orderMail.setOrderPlacedOn(
 						AmirthumUtills.getDay() + ", " + AmirthumUtills.timeStampFormat(order.getDatePurchased()));
