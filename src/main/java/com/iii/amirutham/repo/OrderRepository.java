@@ -36,7 +36,7 @@ public interface OrderRepository extends PagingAndSortingRepository<Orders, Inte
 	  
 	  @Modifying
 	  @Transactional
-	  @Query("update orders u set u.paymentType = :paymentType, transactionRefNo = :transactionRefNo,paymentOn=:paymentOn  where u.id = :id")
+	  @Query("update orders u set u.paymentType = :paymentType, razorPayTransReference = :transactionRefNo,paymentOn=:paymentOn  where u.id = :id")
 	  void updateOrderTransStatus(@Param(value = "id") Integer id, @Param(value = "paymentType") PaymentType paymentType,String transactionRefNo, LocalDateTime paymentOn );
 	  
 	  

@@ -99,12 +99,12 @@ public class OrderContoller {
 		orderService.updateOrderprocess(orderStatusReq);
 
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
-				.body(new GenericResponse("Order status got updated Successfully"));
+				.body(new GenericResponse("Order status updated Successfully"));
 
 	}
 
 	@GetMapping(value = "invoice/{id}", produces = MediaType.APPLICATION_PDF_VALUE)
-	@PreAuthorize("hasRole('ADMIN')")
+	//@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<InputStreamResource> getOrderInvoice(HttpServletRequest request,
 			@PathVariable(required = true) Integer id) {
 

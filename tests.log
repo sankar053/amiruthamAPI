@@ -1,0 +1,23 @@
+1393758 [restartedMain] INFO  c.i.a.AmiruthamApiApplication - Starting AmiruthamApiApplication using Java 11.0.10 on DESKTOP-VAJ7Q39 with PID 11844 (C:\Users\admin\git\amiruthamAPI\target\classes started by admin in C:\Users\admin\git\amiruthamAPI)
+1393758 [restartedMain] INFO  c.i.a.AmiruthamApiApplication - The following profiles are active: dev
+1397082 [restartedMain] INFO  c.i.a.AmiruthamApiApplication - Started AmiruthamApiApplication in 3.388 seconds (JVM running for 1399.134)
+1427276 [restartedMain] INFO  c.i.a.AmiruthamApiApplication - Starting AmiruthamApiApplication using Java 11.0.10 on DESKTOP-VAJ7Q39 with PID 11844 (C:\Users\admin\git\amiruthamAPI\target\classes started by admin in C:\Users\admin\git\amiruthamAPI)
+1427276 [restartedMain] INFO  c.i.a.AmiruthamApiApplication - Starting AmiruthamApiApplication using Java 11.0.10 on DESKTOP-VAJ7Q39 with PID 11844 (C:\Users\admin\git\amiruthamAPI\target\classes started by admin in C:\Users\admin\git\amiruthamAPI)
+1427277 [restartedMain] INFO  c.i.a.AmiruthamApiApplication - The following profiles are active: dev
+1427277 [restartedMain] INFO  c.i.a.AmiruthamApiApplication - The following profiles are active: dev
+1428285 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8085"]
+1428285 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+1428285 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.39]
+1428316 [restartedMain] INFO  o.a.c.c.C.[.[localhost].[/api] - Initializing Spring embedded WebApplicationContext
+1428360 [restartedMain] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+1428429 [task-1] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+1428449 [task-1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-4 - Starting...
+1428454 [task-1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-4 - Start completed.
+1428455 [task-1] INFO  org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+1428877 [task-1] INFO  o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.iii.amirutham.model.TransactionDetails (class must be instantiated by Interceptor)
+1429209 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8085"]
+1429522 [task-1] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+1430410 [restartedMain] INFO  c.i.a.AmiruthamApiApplication - Started AmiruthamApiApplication in 3.201 seconds (JVM running for 1432.461)
+1430410 [restartedMain] INFO  c.i.a.AmiruthamApiApplication - Started AmiruthamApiApplication in 3.201 seconds (JVM running for 1432.461)
+1430706 [RMI TCP Connection(32)-127.0.0.1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-4 - Shutdown initiated...
+1430721 [RMI TCP Connection(32)-127.0.0.1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-4 - Shutdown completed.
