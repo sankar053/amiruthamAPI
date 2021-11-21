@@ -44,7 +44,7 @@
             <td align="center" style="padding: 20px 0 30px 0;">
                 <a href="http://localhost:4200/" target="_blank"><img src="https://raw.githubusercontent.com/sankar053/amiruthumimg/main/logo.png" alt="Amirutham" height="25px" style="display: block;color:white" /></a>
                 <span style="color:#9ed241;font: 700 16px/60px Foco Black, sans-serif; letter-spacing: normal;">Support
-                    Local, Eat Great</span>
+                    Local</span>
             </td>
         </tr>
         <tr>

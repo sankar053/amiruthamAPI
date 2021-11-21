@@ -58,7 +58,7 @@
                          height="25px"
                          style="display: block;color:white" /></a>
                 <span style="color:#9ed241;font: 700 16px/60px Foco Black, sans-serif; letter-spacing: normal;">Support
-                    Local, Eat Great</span>
+                    Local</span>
             </td>
         </tr>
         <tr>
@@ -79,7 +79,7 @@
                     <span style="float:left;">
                         Order ID: ${order.orderNumber}<br>
                         Placed on: ${order.orderPlacedOn}<br>
-                        Bluedart tracking number: ${order.trackingNumber}<br>
+                        Tracking number: ${order.trackingNumber}<br>
                         <br>
                          <b>       Items in this shipment</b>
     
@@ -122,8 +122,8 @@
                     </#list>
                     <br><br>
                     <span style="float:right;text-align:right;"><b>Item Sub-total:<b> Rs.${order.orderAmount}</span><br>
-                    <span style="float:right;text-align:right;"><b>Shipping & Handling:<b> Rs.0</span><br>
-                    <span style="float:right;text-align:right;"><b>Order Total:<b> Rs.${order.orderAmount}</b></span><br>
+                    <span style="float:right;text-align:right;"><b>Shipping & Handling:<b> Rs.${order.additionalCharges}</span><br>
+                    <span style="float:right;text-align:right;"><b>Order Total:<b> Rs.${order.netOrderAmount}</b></span><br>
                 </#list>
                 <br>
                 <table align="center"

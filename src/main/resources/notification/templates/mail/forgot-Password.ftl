@@ -58,7 +58,7 @@
                          height="25px"
                          style="display: block;color:white" /></a>
                 <span style="color:#9ed241;font: 700 16px/60px Foco Black, sans-serif; letter-spacing: normal;">Support
-                    Local, Eat Great</span>
+                    Local</span>
             </td>
         </tr>
         <tr> <td align="center"><b>Amirutham password reset</b></td></tr>

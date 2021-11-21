@@ -3,7 +3,7 @@ public enum PaymentType {
 	
 	
 	
-	CARD("Credit/Debit Card"), COD("cash On Delivary"), UPI("UPI-Wallet"), BANK("Bank"),UNPAIED("Pending");
+	CARD("Credit/Debit Card"), COD("cash On Delivary"), UPI("UPI-Wallet"), BANK("Bank"),UNPAIED("Pending"),ONLINE("ONLINE");
 
 private String value;
 	

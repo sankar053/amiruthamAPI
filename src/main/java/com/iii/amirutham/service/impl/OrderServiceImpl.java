@@ -203,9 +203,8 @@ public class OrderServiceImpl implements OrderService {
 			orderDao.setOrderProducts(orderProducts);
 			// Creating order in Razorpay
 			if ("ONLINE".equalsIgnoreCase(orderDto.getChannel().toString())) {
-				GenericResponse response = paymentService
-						.createOrderWothRazorPay(new PaymentRequest(orderDao.getOrderCode(), orderDao.getId(),
-								orderDao.getNetTotal(), orderDao.getCurrency(), ""));
+				GenericResponse response = paymentService.createOrderWothRazorPay(new PaymentRequest(
+						orderDao.getOrderCode(), orderDao.getId(), orderDao.getNetTotal(), orderDao.getCurrency(), ""));
 				if (Constant.PAYMENT_ORDER_SUCCESS.equalsIgnoreCase(response.getMessage())) {
 					com.razorpay.Order razorPayOrder = (com.razorpay.Order) response.getResponseObject();
 					orderDao.setChannel(orderDto.getChannel());
@@ -379,7 +378,7 @@ public class OrderServiceImpl implements OrderService {
 			return reportservice.getpdfTemplate("invoice-template", generateInvoice(reportData), "output.pdf");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			log.error("Order Service. {}",e.getMessage());
+			log.error("Order Service. {}", e.getMessage());
 			e.printStackTrace();
 		}
 		return null;
@@ -452,7 +451,7 @@ public class OrderServiceImpl implements OrderService {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			log.error("Order Service. {}",e.getMessage());
+			log.error("Order Service. {}", e.getMessage());
 		}
 
 	}
@@ -484,6 +483,8 @@ public class OrderServiceImpl implements OrderService {
 				}
 				orderMail.setOrderNumber(order.getOrderCode());
 				orderMail.setOrderAmount(order.getGrossTotal());
+				orderMail.setAdditionalCharges(order.getAdditionalCharges());
+				orderMail.setNetOrderAmount(order.getNetTotal());
 				orderMail.setTrackingNumber(trackingid);
 				orderMail.setOrderPlacedOn(
 						AmirthumUtills.getDay() + ", " + AmirthumUtills.timeStampFormat(order.getDatePurchased()));
@@ -521,7 +522,7 @@ public class OrderServiceImpl implements OrderService {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			log.error("Order Service. {}",e.getMessage());
+			log.error("Order Service. {}", e.getMessage());
 		}
 
 	}
@@ -551,7 +552,7 @@ public class OrderServiceImpl implements OrderService {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			log.error("Order Service. {}",e.getMessage());
+			log.error("Order Service. {}", e.getMessage());
 		}
 
 	}
