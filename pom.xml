@@ -16,7 +16,7 @@
 	<description>Project for Amirutham oil</description>
 
 	<properties>
-		<java.version>11</java.version>
+		<java.version>1.8</java.version>
 		<passay.version>1.0</passay.version>
 		<geoip2.version>2.12.0</geoip2.version>
 		<logstash-logback-encoder.version>4.8</logstash-logback-encoder.version>

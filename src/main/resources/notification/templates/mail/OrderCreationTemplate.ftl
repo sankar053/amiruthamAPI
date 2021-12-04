@@ -72,7 +72,7 @@
                 <p>
                     Thank you for your order. We'll send a confirmation when your order ships. Your estimated delivery
                     date is indicated below. If you would you like view the status of your order or make any changes to
-                    it, Please vision Order section.<br><br>
+                    it, Please Visit Order section.<br><br>
 
                 <p><b>Order Summary</b></p>
                 <#list buyerOrder

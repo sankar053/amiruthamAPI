@@ -134,7 +134,7 @@ public class CartServiceImpl implements CartService {
 			myCart.setLineItems(cartItems);
 			myCart.setCharges(new AddOnCharges());
 			myCart.setFinalpriceWithoutTax(finalPrice.setScale(2,BigDecimal.ROUND_HALF_DOWN));
-			myCart.setFinalpriceWithTax(finalPrice.add(myCart.getCharges().getChargeAmount()).setScale(2,BigDecimal.ROUND_HALF_DOWN));
+			myCart.setFinalpriceWithTax(finalPrice.add(myCart.getCharges().getChargeAmount()).setScale(2,BigDecimal.ROUND_HALF_DOWN));  // Charge Amount
 		//	myCart= calculateCartTotal(myCart);
 					
 			ShoppingCart savedCart= cartRepository.save(myCart);
@@ -326,7 +326,7 @@ public class CartServiceImpl implements CartService {
 
 		cartDao.setFinalpriceWithoutTax(finalPrcWthoutCharge.setScale(2,BigDecimal.ROUND_HALF_DOWN));
 		cartDao.setFinalpriceWithTax(
-				cartDao.getFinalpriceWithoutTax().add(TotalTaxforcart).setScale(2,BigDecimal.ROUND_HALF_DOWN));
+				cartDao.getFinalpriceWithoutTax().add(new BigDecimal(50.00)).setScale(2,BigDecimal.ROUND_HALF_DOWN));  //Added Charge amount  No tax applicable for now
 		return cartRepository.save(cartDao);
 
 	}
